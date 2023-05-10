@@ -10,7 +10,6 @@ export const Layout: FC<Props> = (props) => {
   return (
     <div className="h-screen dark:bg-slate-900">
       <NavbarAdmin />
-
       {children}
     </div>
   );
