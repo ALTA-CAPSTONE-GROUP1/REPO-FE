@@ -1,7 +1,15 @@
 import { FC } from "react";
 
 const Home: FC = () => {
-  return <div className=" text-red-700">this is a Home</div>;
+  return (
+    <div>
+      <div className=" font-bold text-red-600">this is a Home</div>
+
+      <div>
+        <progress className="progress w-56"></progress>
+      </div>
+    </div>
+  );
 };
 
 export default Home;
