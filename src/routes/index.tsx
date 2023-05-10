@@ -5,7 +5,7 @@ import Home from "@/pages";
 import { ThemeContext } from "@/utils/context";
 
 const Router: FC = () => {
-  const [theme, setTheme] = useState<string>("dark");
+  const [theme, setTheme] = useState<string>("light");
   const background = useMemo(() => ({ theme, setTheme }), [theme]);
 
   const router = createBrowserRouter([

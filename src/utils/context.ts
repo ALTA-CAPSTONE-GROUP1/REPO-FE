@@ -6,7 +6,7 @@ interface ThemeType {
 }
 
 const theme: ThemeType = {
-  theme: "light",
+  theme: "",
   setTheme: () => {},
 };
 
