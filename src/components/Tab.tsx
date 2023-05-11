@@ -1,85 +1,89 @@
-import React, { Component } from "react";
+import { FC } from "react";
 
-export class TabUser extends Component {
-  render() {
-    return (
-      <div className="tabs tabs-boxed justify-center p-4 gap-4 bg-white text-@Red">
-        <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-@Gray2 hover:bg-@Gray2">
-          User
-        </a>
-        <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2">
-          Position
-        </a>
-        <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2">
-          Submission
-        </a>
-        <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2">
-          Office
-        </a>
-      </div>
-    );
-  }
-}
+export const TabUser: FC = () => {
+  return (
+    <div className="tabs tabs-boxed justify-center p-4 gap-4 bg-white text-@Red">
+      <a
+        href="/admin"
+        className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-@Gray2 hover:bg-@Gray2"
+      >
+        User
+      </a>
+      <a
+        href="/position"
+        className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2"
+      >
+        Position
+      </a>
+      <a
+        href="/submission-type"
+        className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2"
+      >
+        Submission
+      </a>
+      <a
+        href="/office"
+        className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2"
+      >
+        Office
+      </a>
+    </div>
+  );
+};
 
-export class TabPosition extends Component {
-  render() {
-    return (
-      <div className="tabs tabs-boxed justify-center p-4 gap-4 bg-white text-@Red">
-        <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-@Gray2 hover:bg-@Gray2">
-          User
-        </a>
-        <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2">
-          Position
-        </a>
-        <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2">
-          Submission
-        </a>
-        <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2">
-          Office
-        </a>
-      </div>
-    );
-  }
-}
+export const TabPosition: FC = () => {
+  return (
+    <div className="tabs tabs-boxed justify-center p-4 gap-4 bg-white text-@Red">
+      <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-@Gray2 hover:bg-@Gray2">
+        User
+      </a>
+      <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2">
+        Position
+      </a>
+      <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2">
+        Submission
+      </a>
+      <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2">
+        Office
+      </a>
+    </div>
+  );
+};
 
-export class TabSubmisionType extends Component {
-  render() {
-    return (
-      <div className="tabs tabs-boxed justify-center p-4 gap-4 bg-white text-@Red">
-        <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-@Gray2 hover:bg-@Gray2">
-          User
-        </a>
-        <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2">
-          Position
-        </a>
-        <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2">
-          Submission
-        </a>
-        <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2">
-          Office
-        </a>
-      </div>
-    );
-  }
-}
+export const TabSubmisionType: FC = () => {
+  return (
+    <div className="tabs tabs-boxed justify-center p-4 gap-4 bg-white text-@Red">
+      <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-@Gray2 hover:bg-@Gray2">
+        User
+      </a>
+      <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2">
+        Position
+      </a>
+      <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2">
+        Submission
+      </a>
+      <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2">
+        Office
+      </a>
+    </div>
+  );
+};
 
-export class TabOffice extends Component {
-  render() {
-    return (
-      <div className="tabs tabs-boxed justify-center p-4 gap-4 bg-white text-@Red">
-        <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-@Gray2 hover:bg-@Gray2">
-          User
-        </a>
-        <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2">
-          Position
-        </a>
-        <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2">
-          Submission
-        </a>
-        <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2">
-          Office
-        </a>
-      </div>
-    );
-  }
-}
+export const TabOffice: FC = () => {
+  return (
+    <div className="tabs tabs-boxed justify-center p-4 gap-4 bg-white text-@Red">
+      <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-@Gray2 hover:bg-@Gray2">
+        User
+      </a>
+      <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2">
+        Position
+      </a>
+      <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2">
+        Submission
+      </a>
+      <a className="btn capitalize border-0 tab-lg text-@Red font-semibold rounded-full w-60 bg-white hover:bg-@Gray2">
+        Office
+      </a>
+    </div>
+  );
+};
