@@ -7,6 +7,7 @@ interface ThemeType {
 
 const theme: ThemeType = {
   theme: "",
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   setTheme: () => {},
 };
 
