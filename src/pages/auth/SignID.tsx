@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Input } from "@/components/Input";
 import { RedButton } from "@/components/Button";
 
@@ -10,10 +10,10 @@ const styles = {
   height: "100vh",
 };
 
-export const SignID = () => {
+export const SignID: FC = () => {
   return (
     <div className="flex justify-center items-center" style={styles}>
-      <form className="flex flex-col m-6 p-8 bg-white rounded-md md:w-fit h-fit">
+      <form className="flex flex-col m-6 p-8 bg-white rounded-md w-full md:w-fit h-fit">
         <img src="/images/Logo2.png" alt="" />
         <div className="mt-3">
           <h3 className="font-bold text-2xl text-black">Sign ID</h3>
