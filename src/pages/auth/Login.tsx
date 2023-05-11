@@ -13,7 +13,7 @@ const styles = {
 export const Login = () => {
   return (
     <div className="flex justify-center items-center" style={styles}>
-      <form className="flex flex-col m-6 p-8 bg-white rounded-md  md:w-fit h-fit">
+      <form className="flex flex-col m-6 p-8 bg-white rounded-md w-full md:w-fit h-fit">
         <img src="/images/Logo2.png" alt="" />
         <div className="mt-3">
           <h3 className="font-bold text-2xl text-black">Login</h3>
