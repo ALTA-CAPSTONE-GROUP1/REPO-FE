@@ -1,12 +1,6 @@
 import { FC } from "react";
 import { Link } from "react-router-dom";
-import { BsQuestionCircle, BsSearch } from "react-icons/bs";
-import {
-  RiDeleteBin6Line,
-  RiPencilLine,
-  RiArrowLeftLine,
-  RiArrowRightLine,
-} from "react-icons/ri";
+import { RiDeleteBin6Line, RiPencilLine } from "react-icons/ri";
 
 interface PropsTableUsers {
   name: string;
@@ -18,7 +12,7 @@ interface PropsTableUsers {
   link_update: string;
 }
 
-const CardTableUser: FC<PropsTableUsers> = (props) => {
+export const CardTableUser: FC<PropsTableUsers> = (props) => {
   const {
     name,
     id_user,
@@ -44,22 +38,47 @@ const CardTableUser: FC<PropsTableUsers> = (props) => {
       <td className="bg-white border-@Gray2">{position}</td>
       <td className="bg-white border-@Gray2">{office}</td>
       <th className="bg-white border-@Gray2">
-        <Link to={link_del}>
-          <button className="btn btn-ghost btn-xl text-xl text-@Red">
-            <RiDeleteBin6Line />
-          </button>
-        </Link>
+        <div className="flex justify-center">
+          <Link to={link_del}>
+            <button className="btn btn-ghost btn-xl text-xl text-@Red">
+              <RiDeleteBin6Line />
+            </button>
+          </Link>
 
-        <label
-          htmlFor="my-modal-3"
-          className="btn btn-ghost btn-xl text-xl text-@Blue"
-        >
-          <RiPencilLine />
-          {link_update}
-        </label>
+          <label
+            htmlFor="my-modal-3"
+            className="btn btn-ghost btn-xl text-xl text-@Blue"
+          >
+            <RiPencilLine />
+            {link_update}
+          </label>
+        </div>
       </th>
     </tr>
   );
 };
+interface PropsTablePosition {
+  position: string;
+  tag: string;
+  link_del: string;
+}
 
-export default CardTableUser;
+export const CardTablePosition: FC<PropsTablePosition> = (props) => {
+  const { position, tag, link_del } = props;
+
+  return (
+    <tr>
+      <td className="bg-white border-@Gray2">{position}</td>
+      <td className="uppercase bg-white border-@Gray2">{tag}</td>
+      <th className="bg-white border-@Gray2">
+        <div className="flex pr-3 justify-end">
+          <Link to={link_del}>
+            <button className="btn btn-ghost btn-xl text-xl text-@Red">
+              <RiDeleteBin6Line />
+            </button>
+          </Link>
+        </div>
+      </th>
+    </tr>
+  );
+};
