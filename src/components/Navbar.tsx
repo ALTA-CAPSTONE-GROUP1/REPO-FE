@@ -1,10 +1,8 @@
 import { FC } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BsBell } from "react-icons/bs";
-
 export const NavbarAdmin: FC = () => {
   const navigate = useNavigate();
-
   return (
     <header className="relative flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full bg-@Red text-xl py-2 ">
       <div
@@ -55,7 +53,7 @@ export const NavbarUser: FC = () => {
       >
         <div className="flex-1">
           <img src="/images/Logo.png" alt="" className=" w-40" />
-        </div>
+        </div>{" "}
         <div
           data-theme="light"
           className="flex-none text-white hover:bg-@Red text-base  bg-@Red"
@@ -63,12 +61,12 @@ export const NavbarUser: FC = () => {
           <ul className="menu menu-horizontal px-1">
             <li>
               <a className="capitalize font-semibold  btn btn-ghost">
-                User Name
-              </a>
+                User Name{" "}
+              </a>{" "}
               <ul className="p-2 bg-white text-@Red  ">
                 <li className="">
                   <a className=" hover:bg-@Red3 hover:text-black ">Profile</a>
-                </li>
+                </li>{" "}
               </ul>
             </li>
           </ul>
