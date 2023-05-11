@@ -72,7 +72,7 @@ const HomeAdmin: FC = () => {
             </div>
           </div>
         </form>
-        <div className="overflow-x-auto w-full mt-20 ">
+        <div className="overflow-x-auto w-full p-6 mt-20 ">
           <div className="flex flex-row p-2 bg-@Red2 text-black rounded-ss-md rounded-se-md justify-between items-center">
             <p className="font-bold">Team Members</p>
 
