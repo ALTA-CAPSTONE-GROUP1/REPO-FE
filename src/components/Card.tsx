@@ -1,5 +1,7 @@
 import { FC } from "react";
+import { BsFileEarmarkPdfFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
+import { BlueButton, Red2Button, RedButton } from "@/components/Button";
 import { RiDeleteBin6Line, RiPencilLine } from "react-icons/ri";
 
 interface PropsTableUsers {
@@ -131,5 +133,70 @@ export const CardTablePosition: FC<PropsTablePosition> = (props) => {
         </div>
       </th>
     </tr>
+  );
+};
+interface PropsApproving {
+  title: string;
+  type: string;
+  from: string;
+  cc: string;
+  message: string;
+  file: string;
+  to: string;
+}
+export const CardApproving: FC<PropsApproving> = (props) => {
+  const { title, type, from, cc, message, file, to } = props;
+
+  return (
+    <div className="overflow-x-auto w-full p-6 mt-2">
+      <h3 className="font-bold text-2xl text-black">Submission</h3>
+      <div className="mt-5">
+        <div className="flex justify-between">
+          <h3 className="font-bold text-3xl text-black">{title}</h3>
+          <h3 className="font-bold text-xl text-@Green">{type}</h3>
+        </div>
+        <div className="mt-2">
+          <h3 className="capitalize font-semibold text-2xl text-black">
+            {from}
+          </h3>
+          <h5 className="text-@Gray">{cc}</h5>
+          <p className="mt-5 text-xl">{message} </p>
+          <div className="mt-20 ">
+            <a className="text-9xl text-@Red">
+              <BsFileEarmarkPdfFill />
+            </a>
+            <h3 className="capitalize font-semibold text-2xl text-black">
+              {file} lampiran
+            </h3>
+            <h4 className="text-@Gray font-semibold">{to}</h4>
+          </div>
+          <div className="flex justify-end">
+            <div className="flex flex-col md:flex-row gap-2">
+              <div className="w-40">
+                <Red2Button
+                  label="Revise"
+                  id="button-approving-revise"
+                  type="submit"
+                />
+              </div>
+              <div className="w-40">
+                <RedButton
+                  label="Reject"
+                  id="button-approving-eject"
+                  type="submit"
+                />
+              </div>
+              <div className="w-40">
+                <BlueButton
+                  label="Approve"
+                  id="button-approving-approve"
+                  type="submit"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
