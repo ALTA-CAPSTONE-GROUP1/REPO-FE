@@ -8,8 +8,8 @@ interface Props {
 export const LayoutAdmin: FC<Props> = (props) => {
   const { children } = props;
   return (
-    <div className="h-full bg-white pb-20">
-      <NavbarAdmin />
+    <div data-theme="cupcake" className="h-screen">
+      <NavbarUser />
       {children}
     </div>
   );
@@ -18,7 +18,7 @@ export const LayoutAdmin: FC<Props> = (props) => {
 export const Layout: FC<Props> = (props) => {
   const { children } = props;
   return (
-    <div className="h-screen dark:bg-slate-900">
+    <div data-theme="cupcake" className="h-screen">
       <NavbarUser />
       {children}
     </div>

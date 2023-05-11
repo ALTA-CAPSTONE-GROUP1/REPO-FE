@@ -1,12 +1,12 @@
 import { Layout } from "@/components/Layout";
 import { FC } from "react";
+import UserHome from "./UserHome";
 
 const Home: FC = () => {
   return (
     <Layout>
-      <div className=" font-bold text-red-600">this is a Home</div>
-      <div>
-        <progress className="progress w-56"></progress>
+      <div className="h-[90%]">
+        <UserHome />
       </div>
     </Layout>
   );

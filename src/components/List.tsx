@@ -12,11 +12,11 @@ const List: FC<Props> = (props) => {
   const { status, time, opened } = props;
   useEffect(() => {
     if (status == "Approved") {
-      setColorStatus("[#064E3B]");
+      setColorStatus("text-@Green");
     } else if (status == "Reject") {
-      setColorStatus("@Red");
+      setColorStatus("text-@Red");
     } else if (status == "Revise") {
-      setColorStatus("[#FF9D28]");
+      setColorStatus("text-@Orange");
     }
 
     if (opened) {
@@ -44,7 +44,7 @@ const List: FC<Props> = (props) => {
           <p>File.pdf</p>
         </a>
       </div>
-      <div className={`text-${colorStatus} max-w-[3rem]`}>
+      <div className={`${colorStatus} max-w-[3rem]`}>
         <p>{status}</p>
       </div>
       <div className=" min-w-[5rem] text-right">
