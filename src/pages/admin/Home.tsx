@@ -10,7 +10,7 @@ import { RedButton } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { LayoutAdmin } from "@/components/Layout";
 import { TabUser } from "@/components/Tab";
-import CardTableUser from "@/components/Card";
+import { CardTableUser } from "@/components/Card";
 
 const HomeAdmin: FC = () => {
   return (
@@ -199,7 +199,9 @@ const HomeAdmin: FC = () => {
                   </p>
                 </div>
               </th>
-              <th className="capitalize  bg-@Gray2 text-black ">Action</th>
+              <th className="capitalize  bg-@Gray2 text-black ">
+                <div className="flex justify-center">Action</div>
+              </th>
             </thead>
             <tbody>
               <CardTableUser
