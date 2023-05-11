@@ -7,8 +7,14 @@ interface ThemeType {
 
 const theme: ThemeType = {
   theme: "",
+<<<<<<< HEAD
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   setTheme: () => {},
+=======
+  setTheme: () => {
+    "autumn";
+  },
+>>>>>>> 0e8045ce691bd5600820b6838b3bdedc89ec3d2b
 };
 
 export const ThemeContext = createContext(theme);

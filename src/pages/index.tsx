@@ -1,14 +1,12 @@
-import { FC } from "react";
-import { RedButton, Red2Button, BlueButton } from "@/components/Button";
-import { Input } from "@/components/Input";
 import { Layout } from "@/components/Layout";
-import { TabUser } from "@/components/Tab";
+import { FC } from "react";
 
 const Home: FC = () => {
   return (
     <Layout>
+      <div className=" font-bold text-red-600">this is a Home</div>
       <div>
-        <div className=" font-bold text-red-600">this is a Home</div>
+        <progress className="progress w-56"></progress>
       </div>
     </Layout>
   );
