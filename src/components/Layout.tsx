@@ -9,7 +9,7 @@ export const LayoutAdmin: FC<Props> = (props) => {
   const { children } = props;
   return (
     <div data-theme="light" className="h-screen">
-      <NavbarUser />
+      <NavbarAdmin />
       {children}
     </div>
   );
