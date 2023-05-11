@@ -7,7 +7,9 @@ interface ThemeType {
 
 const theme: ThemeType = {
   theme: "",
-  setTheme: () => {},
+  setTheme: () => {
+    "autumn";
+  },
 };
 
 export const ThemeContext = createContext(theme);

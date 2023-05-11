@@ -1,14 +1,14 @@
 import { FC } from "react";
+import UserHome from "./UserHome";
+import { Layout } from "@/components/Layout";
 
 const Home: FC = () => {
   return (
-    <div>
-      <div className=" font-bold text-red-600">this is a Home</div>
-
-      <div>
-        <progress className="progress w-56"></progress>
+    <Layout>
+      <div className="h-[90%]">
+        <UserHome />
       </div>
-    </div>
+    </Layout>
   );
 };
 
