@@ -10,6 +10,7 @@ import { SignID } from "@/pages/auth/SignID";
 import { Position } from "@/pages/admin/Position";
 import { SubmissionType } from "@/pages/admin/SubmissionType";
 import { Office } from "@/pages/admin/Office";
+import { Approving } from "@/pages/admin/Approving";
 
 const Router: FC = () => {
   // const [theme, setTheme] = useState<string>("light");
@@ -43,6 +44,10 @@ const Router: FC = () => {
     {
       path: "/office",
       element: <Office />,
+    },
+    {
+      path: "/approving",
+      element: <Approving />,
     },
   ]);
 

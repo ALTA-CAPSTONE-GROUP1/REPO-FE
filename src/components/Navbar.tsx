@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { BsBell } from "react-icons/bs";
+import { BsBell, BsFillFileEarmarkTextFill } from "react-icons/bs";
+import { RiAdminFill, RiLogoutBoxLine } from "react-icons/ri";
 export const NavbarAdmin: FC = () => {
   const navigate = useNavigate();
   return (
@@ -10,13 +11,15 @@ export const NavbarAdmin: FC = () => {
         aria-label="Global"
       >
         <div className="flex-1">
-          <img src="/images/Logo.png" alt="" />
+          <Link to="/admin">
+            <img src="/images/Logo.png" alt="" className=" w-40" />
+          </Link>
         </div>
         <div className="flex-none text-white hover:bg-@Red">
           <ul className="menu menu-horizontal px-1">
             <li>
-              <a className="capitalize font-semibold text-lg btn btn-ghost">
-                Admin
+              <a className="capitalize font-semibold text-white text-lg btn btn-ghost">
+                <RiAdminFill /> Admin
                 <svg
                   className="fill-current"
                   xmlns="http://www.w3.org/2000/svg"
@@ -29,10 +32,19 @@ export const NavbarAdmin: FC = () => {
               </a>
               <ul className="p-2 bg-white text-@Red ">
                 <li>
-                  <a className=" hover:bg-@Red3 hover:text-black ">Approving</a>
+                  <a
+                    href="/approving"
+                    className="flex items-center gap-2 hover:bg-@Red3 hover:text-black "
+                  >
+                    <BsFillFileEarmarkTextFill /> Approving
+                  </a>
                 </li>
                 <li>
-                  <a className=" hover:bg-@Red3 hover:text-black">Log Out</a>
+                  <a className="flex items-center gap-2 hover:bg-@Red3 hover:text-black">
+                    {" "}
+                    <RiLogoutBoxLine />
+                    Log Out
+                  </a>
                 </li>
               </ul>
             </li>
