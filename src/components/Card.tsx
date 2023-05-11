@@ -11,7 +11,6 @@ interface PropsTableUsers {
   link_del: string;
   link_update: string;
 }
-
 export const CardTableUser: FC<PropsTableUsers> = (props) => {
   const {
     name,
@@ -57,12 +56,35 @@ export const CardTableUser: FC<PropsTableUsers> = (props) => {
     </tr>
   );
 };
+
+interface PropsTableOffice {
+  office: string;
+  link_del: string;
+}
+export const CardTableOffice: FC<PropsTableOffice> = (props) => {
+  const { office, link_del } = props;
+
+  return (
+    <tr>
+      <td className="capitalize bg-white border-@Gray2">{office}</td>
+      <th className="bg-white border-@Gray2">
+        <div className="flex pr-3 justify-end">
+          <Link to={link_del}>
+            <button className="btn btn-ghost btn-xl text-xl text-@Red">
+              <RiDeleteBin6Line />
+            </button>
+          </Link>
+        </div>
+      </th>
+    </tr>
+  );
+};
+
 interface PropsTablePosition {
   position: string;
   tag: string;
   link_del: string;
 }
-
 export const CardTablePosition: FC<PropsTablePosition> = (props) => {
   const { position, tag, link_del } = props;
 
