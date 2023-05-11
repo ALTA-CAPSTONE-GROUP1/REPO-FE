@@ -1,9 +1,10 @@
 import { ReactNode, FC } from "react";
 interface Props {
   children: ReactNode;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 const SideBar: FC<Props> = (props) => {
-  const { children } = props;
+  const { children, onClick } = props;
 
   return (
     <div className="drawer drawer-mobile h-full ">
@@ -13,7 +14,10 @@ const SideBar: FC<Props> = (props) => {
         <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
         <ul className="menu p-4 w-80 text-base-content bg-@Red4  font-semibold ">
           <li className="bg-@Red rounded-full mt-3 text-white ">
-            <button className=" flex justify-center items-center">
+            <button
+              className=" flex justify-center items-center"
+              onClick={onClick}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

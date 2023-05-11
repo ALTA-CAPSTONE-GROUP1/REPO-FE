@@ -1,4 +1,5 @@
 import { FC, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 interface Props {
   status: string;
@@ -26,6 +27,15 @@ const List: FC<Props> = (props) => {
     }
   }, []);
 
+  const downloadFile = () => {
+    const link = document.createElement("a");
+    link.href = "/images/test.pdf";
+    // link.download = "/images/test.pdf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div
       className={`${colorBg} flex justify-around border-b-2 p-2 hover:border-slate-500 hover:border-t-2 hover:border-t-gray-200 font-bold text-sm`}
@@ -35,14 +45,13 @@ const List: FC<Props> = (props) => {
       </div>
       <div className="flex flex-col">
         <p>Courier Recruiitment</p>
-        <a
-          href="/path/to/file.pdf"
-          download
+        <button
+          onClick={downloadFile}
           className=" font-bold py-2 px-4 rounded flex justify-start items-center"
         >
           <img src="/images/pdf.png" alt="" className="w-6 h-6 object-cover" />
           <p>File.pdf</p>
-        </a>
+        </button>
       </div>
       <div className={`${colorStatus} max-w-[3rem]`}>
         <p>{status}</p>
