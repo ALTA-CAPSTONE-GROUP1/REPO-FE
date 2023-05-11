@@ -80,6 +80,35 @@ export const CardTableOffice: FC<PropsTableOffice> = (props) => {
   );
 };
 
+interface PropsTableSubmissionType {
+  sub_name: string;
+  sub_value: string;
+  sub_requirement: string;
+  link_del: string;
+}
+export const CardTableSubmissionType: FC<PropsTableSubmissionType> = (
+  props
+) => {
+  const { sub_name, sub_value, sub_requirement, link_del } = props;
+
+  return (
+    <tr>
+      <td className="capitalize bg-white border-@Gray2">{sub_name}</td>
+      <td className="capitalize bg-white border-@Gray2">{sub_value}</td>
+      <td className="capitalize bg-white border-@Gray2">{sub_requirement}</td>
+      <th className="bg-white border-@Gray2">
+        <div className="flex pr-3 justify-end">
+          <Link to={link_del}>
+            <button className="btn btn-ghost btn-xl text-xl text-@Red">
+              <RiDeleteBin6Line />
+            </button>
+          </Link>
+        </div>
+      </th>
+    </tr>
+  );
+};
+
 interface PropsTablePosition {
   position: string;
   tag: string;

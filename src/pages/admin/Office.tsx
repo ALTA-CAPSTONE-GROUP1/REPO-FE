@@ -31,7 +31,7 @@ export const Office: FC = () => {
                   id="input-office-location"
                 />
               </div>
-              <div className="mt-5 md:mt-10 w-40">
+              <div className="mt-5 md:mt-10 w-full md:w-40">
                 <RedButton
                   label="+ Add"
                   id="button-add-office-location"
@@ -44,7 +44,7 @@ export const Office: FC = () => {
 
         <div className="overflow-x-auto w-full p-6 mt-20 hidden md:block">
           <div className="flex flex-row p-2 bg-@Red2 text-black rounded-ss-md rounded-se-md justify-between items-center">
-            <p className="font-bold">Position List</p>
+            <p className="font-bold">Office List</p>
 
             <label className="relative block flex-initial w-64 rounded-full ">
               <input
