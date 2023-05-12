@@ -76,7 +76,12 @@ export const NavbarUser: FC = () => {
               </a>{" "}
               <ul className="p-2 bg-white text-@Red  ">
                 <li className="">
-                  <a className=" hover:bg-@Red3 hover:text-black ">Profile</a>
+                  <a
+                    href="/profile-users"
+                    className=" hover:bg-@Red3 hover:text-black "
+                  >
+                    Profile
+                  </a>
                 </li>{" "}
               </ul>
             </li>
