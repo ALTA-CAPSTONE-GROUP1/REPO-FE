@@ -211,12 +211,14 @@ interface PropsSubmission {
   to: string;
   action: string;
   status: string;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 export const CardSubmission: FC<PropsSubmission> = (props) => {
-  const { title, type, from, cc, message, file, to, action, status } = props;
+  const { title, type, from, cc, message, file, to, action, status, onClick } =
+    props;
 
   return (
-    <div className="overflow-x-auto w-full p-6 mt-2">
+    <div className="overflow-x-auto w-full px-6">
       <div className="mt-10">
         <div className="flex justify-between">
           <h3 className="font-bold text-3xl text-black">{title}</h3>
@@ -227,7 +229,7 @@ export const CardSubmission: FC<PropsSubmission> = (props) => {
             {from}
           </h3>
           <h5 className="text-@Gray">{cc}</h5>
-          <p className="mt-5 text-xl">{message} </p>
+          <p className="mt-5 text-base">{message} </p>
           <div className="mt-20 ">
             <a className="text-9xl text-@Red">
               <BsFileEarmarkPdfFill />
@@ -250,7 +252,12 @@ export const CardSubmission: FC<PropsSubmission> = (props) => {
           <div className="flex justify-end">
             <div className="flex flex-col md:flex-row gap-2">
               <div className="w-40">
-                <RedButton label="Edit" id="button-sub-edit" type="submit" />
+                <RedButton
+                  label="Edit"
+                  id="button-sub-edit"
+                  type="submit"
+                  onClick={onClick}
+                />
               </div>
             </div>
           </div>
