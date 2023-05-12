@@ -61,7 +61,9 @@ export const NavbarUser: FC = () => {
         aria-label="Global"
       >
         <div className="flex-1">
-          <img src="/images/Logo.png" alt="" className=" w-40" />
+          <Link to="/user">
+            <img src="/images/Logo.png" alt="" className=" w-40" />
+          </Link>
         </div>{" "}
         <div
           data-theme="light"
