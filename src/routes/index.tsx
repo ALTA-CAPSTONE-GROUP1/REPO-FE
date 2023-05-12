@@ -15,6 +15,8 @@ import ApproveDetail from "@/pages/user/ApproveDetail";
 import CC from "@/pages/user/CC";
 import UserIndex from "@/pages/user";
 import Approve from "@/pages/user/Approve";
+import App from "@/pages/App";
+import DrawCanvasExample from "@/pages/DrawCanvasExample";
 
 const Router: FC = () => {
   // const [theme, setTheme] = useState<string>("light");
@@ -81,6 +83,14 @@ const Router: FC = () => {
     {
       path: "/profile-users",
       element: <Profile />,
+    },
+    {
+      path: "/app",
+      element: <App />,
+    },
+    {
+      path: "/app2",
+      element: <DrawCanvasExample fileUrl="/images/test2.pdf" />,
     },
   ]);
 
