@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 const CC: FC = () => {
   return (
-    <div className="drawer-content flex flex-col">
+    <div className="drawer-content flex flex-col h-[90%]">
       <div className="p-7 w-full">
         <div className="form-control rounded-full flex flex-row relative border-2">
           <div className=" bg-@Red flex-initial w-[10%] rounded-l-full flex justify-center items-center">

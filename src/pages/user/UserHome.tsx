@@ -1,10 +1,9 @@
 import List from "@/components/List";
-import SideBar from "@/components/SideBar";
-import { Children, FC, ReactNode, useState } from "react";
+import { FC, ReactNode, useState } from "react";
 import { Link } from "react-router-dom";
 import { BsSearch } from "react-icons/bs";
-import { Input } from "@/components/Input";
-import { RiCloseCircleFill } from "react-icons/ri";
+import { RiMenu2Fill } from "react-icons/ri";
+
 interface Props {
   children: ReactNode;
 }
@@ -14,6 +13,12 @@ const UserHome: FC<Props> = (props) => {
   return (
     <div className="drawer-content flex flex-col">
       <div className="p-7 w-full">
+        <label
+          htmlFor="my-drawer-2"
+          className="btn  drawer-button lg:hidden bg-@Red text-white border-@Red mb-5"
+        >
+          <RiMenu2Fill />
+        </label>
         <div className="form-control rounded-full flex flex-row relative border-2">
           <div className=" bg-@Red flex-initial w-[10%] rounded-l-full flex justify-center items-center">
             <p className=" text-center">To</p>

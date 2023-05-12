@@ -27,30 +27,55 @@ const SideBar: FC<Props> = (props) => {
     <div className="drawer drawer-mobile h-full max-w-[1700px] mx-auto max-h-[90%]">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
       {children}
+
       <div className="drawer-side ">
         <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
         <ul className="menu p-4 w-80 text-base-content bg-@Red4  font-semibold ">
           <li className="bg-@Red rounded-full mt-3 text-white ">
-            <button
-              className=" flex justify-center items-center"
-              onClick={onClick}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
+            {bg1 ? (
+              <button
+                className="flex justify-center items-center"
+                onClick={onClick}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 4.5v15m7.5-7.5h-15"
-                />
-              </svg>
-              New Submission{" "}
-            </button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 4.5v15m7.5-7.5h-15"
+                  />
+                </svg>
+                New Submission{" "}
+              </button>
+            ) : (
+              <button
+                disabled
+                className="flex justify-center items-center disabled:bg-slate-400"
+                onClick={onClick}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 4.5v15m7.5-7.5h-15"
+                  />
+                </svg>
+                New Submission{" "}
+              </button>
+            )}
           </li>
           <li className={`${bg1 ? "bg-@Red3" : ""}  rounded-full mt-3 `}>
             <button onClick={onClickUserHome}>Submission</button>

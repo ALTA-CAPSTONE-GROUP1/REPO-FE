@@ -7,14 +7,19 @@ import {
   Worker,
 } from "@react-pdf-viewer/core";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
+import { FC } from "react";
+import { useLocation, useParams } from "react-router-dom";
 
 interface DrawCanvasExampleProps {
   fileUrl: string;
 }
 
-const DrawCanvasExample: React.FC<DrawCanvasExampleProps> = ({ fileUrl }) => {
+const DrawCanvasExample: FC = (props) => {
   const message = ["Approved By Reginal Manager", "test 2"];
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
+  const location = useLocation();
+
+  const urlnya = new URLSearchParams(location.search).get("url");
 
   const customCanvasPlugin = (): Plugin => {
     const onCanvasLayerRender = (e: PluginOnCanvasLayerRender) => {
@@ -54,11 +59,17 @@ const DrawCanvasExample: React.FC<DrawCanvasExampleProps> = ({ fileUrl }) => {
 
   return (
     <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-      <Viewer
-        fileUrl={fileUrl}
-        plugins={[customCanvasPluginInstance, defaultLayoutPluginInstance]}
-      />
-      ;
+      {urlnya !== null ? (
+        <Viewer
+          fileUrl={urlnya}
+          plugins={[customCanvasPluginInstance, defaultLayoutPluginInstance]}
+        />
+      ) : (
+        <Viewer
+          fileUrl=""
+          plugins={[customCanvasPluginInstance, defaultLayoutPluginInstance]}
+        />
+      )}
     </Worker>
   );
 };
