@@ -1,4 +1,6 @@
+import DrawCanvasExample from "@/pages/DrawCanvasExample";
 import { FC, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   status: string;
@@ -10,6 +12,7 @@ const List: FC<Props> = (props) => {
   const [colorStatus, setColorStatus] = useState<string>("");
   const [colorBg, setColorBg] = useState<string>("");
   const { status, time, opened } = props;
+  const navigate = useNavigate();
   useEffect(() => {
     if (status == "Approved") {
       setColorStatus("text-@Green");
@@ -28,12 +31,14 @@ const List: FC<Props> = (props) => {
   }, []);
 
   const downloadFile = () => {
-    const link = document.createElement("a");
-    link.href = "/images/test.pdf";
-    // link.download = "/images/test.pdf";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // const link = document.createElement("a");
+    // link.href = "/images/test.pdf";
+    // // link.download = "/images/test.pdf";
+    // document.body.appendChild(link);
+    // link.click();
+    // document.body.removeChild(link);
+    const url = "/images/test2.pdf";
+    window.open(`/app2?url=${url}`);
   };
 
   return (
@@ -49,7 +54,7 @@ const List: FC<Props> = (props) => {
           onClick={downloadFile}
           className=" font-bold py-2 px-4 rounded flex justify-start items-center"
         >
-          <img src="/images/pdf.png" alt="" className="w-6 h-6 object-cover" />
+          <img src="/images/pdf2.png" alt="" className="w-6 h-6 object-cover" />
           <p>File.pdf</p>
         </button>
       </div>

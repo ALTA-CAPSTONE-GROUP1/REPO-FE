@@ -17,6 +17,8 @@ import UserIndex from "@/pages/user";
 import Approve from "@/pages/user/Approve";
 import App from "@/pages/App";
 import DrawCanvasExample from "@/pages/DrawCanvasExample";
+import WaterMarkExample from "@/pages/WaterMarkExample";
+import ModalExample from "@/pages/ModalExample";
 
 const Router: FC = () => {
   // const [theme, setTheme] = useState<string>("light");
@@ -90,7 +92,15 @@ const Router: FC = () => {
     },
     {
       path: "/app2",
-      element: <DrawCanvasExample fileUrl="/images/test2.pdf" />,
+      element: <DrawCanvasExample />,
+    },
+    {
+      path: "/app3",
+      element: <WaterMarkExample fileUrl="/images/test2.pdf" />,
+    },
+    {
+      path: "/app4",
+      element: <ModalExample fileUrl="/images/test2.pdf" />,
     },
   ]);
 

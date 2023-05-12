@@ -21,15 +21,8 @@ const CCList: FC<Props> = (props) => {
   }, []);
 
   const downloadFile = () => {
-    window.open(
-      "https://drive.google.com/file/d/194CUCBxrqw4h8h6kRhAfZBvXs27C8mRf/view?usp=sharing"
-    );
-    // const link = document.createElement("a");
-    // link.href = "/images/test.pdf";
-    // // link.download = "/images/test.pdf";
-    // document.body.appendChild(link);
-    // link.click();
-    // document.body.removeChild(link);
+    const url = "/images/test2.pdf";
+    window.open(`/app2?url=${url}`);
   };
 
   return (
