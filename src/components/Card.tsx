@@ -135,6 +135,7 @@ export const CardTablePosition: FC<PropsTablePosition> = (props) => {
     </tr>
   );
 };
+
 interface PropsApproving {
   title: string;
   type: string;
@@ -192,6 +193,64 @@ export const CardApproving: FC<PropsApproving> = (props) => {
                   id="button-approving-approve"
                   type="submit"
                 />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+interface PropsSubmission {
+  title: string;
+  type: string;
+  from: string;
+  cc: string;
+  message: string;
+  file: string;
+  to: string;
+  action: string;
+  status: string;
+}
+export const CardSubmission: FC<PropsSubmission> = (props) => {
+  const { title, type, from, cc, message, file, to, action, status } = props;
+
+  return (
+    <div className="overflow-x-auto w-full p-6 mt-2">
+      <div className="mt-10">
+        <div className="flex justify-between">
+          <h3 className="font-bold text-3xl text-black">{title}</h3>
+          <h3 className="font-bold text-xl text-@Green">{type}</h3>
+        </div>
+        <div className="mt-2">
+          <h3 className="capitalize font-semibold text-2xl text-black">
+            {from}
+          </h3>
+          <h5 className="text-@Gray">{cc}</h5>
+          <p className="mt-5 text-xl">{message} </p>
+          <div className="mt-20 ">
+            <a className="text-9xl text-@Red">
+              <BsFileEarmarkPdfFill />
+            </a>
+            <h3 className="capitalize font-semibold text-2xl text-black">
+              {file} lampiran
+            </h3>
+            <h4 className="text-@Gray font-semibold">{to}</h4>
+          </div>
+          <div className="flex flex-row gap-2 items-center">
+            <h3 className="capitalize font-semibold text-2xl text-black">
+              {action}
+            </h3>
+            <div>
+              <h3 className="capitalize font-bold text-xl text-@Orange">
+                {status}
+              </h3>
+            </div>
+          </div>
+          <div className="flex justify-end">
+            <div className="flex flex-col md:flex-row gap-2">
+              <div className="w-40">
+                <RedButton label="Edit" id="button-sub-edit" type="submit" />
               </div>
             </div>
           </div>

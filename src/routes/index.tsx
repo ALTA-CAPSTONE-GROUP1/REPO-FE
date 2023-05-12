@@ -4,6 +4,7 @@ import { FC } from "react";
 import { ThemeContext } from "@/utils/context";
 
 import Home from "@/pages";
+import SubDetail from "@/pages/SubDetail";
 import HomeAdmin from "@/pages/admin/Home";
 import { Login } from "@/pages/auth/Login";
 import { SignID } from "@/pages/auth/SignID";
@@ -53,6 +54,10 @@ const Router: FC = () => {
     {
       path: "/cc",
       element: <CC />,
+    },
+    {
+      path: "/sub-detail",
+      element: <SubDetail />,
     },
   ]);
 
