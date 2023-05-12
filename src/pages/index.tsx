@@ -1,6 +1,6 @@
 import { Layout } from "@/components/Layout";
 import { FC } from "react";
-import UserHome from "./UserHome";
+import UserHome from "./user/UserHome";
 
 const Home: FC = () => {
   return (

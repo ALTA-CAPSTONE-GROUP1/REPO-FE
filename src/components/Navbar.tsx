@@ -1,9 +1,8 @@
 import { FC } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { BsBell, BsFillFileEarmarkTextFill } from "react-icons/bs";
+import { Link } from "react-router-dom";
+import { BsFillFileEarmarkTextFill } from "react-icons/bs";
 import { RiAdminFill, RiLogoutBoxLine } from "react-icons/ri";
 export const NavbarAdmin: FC = () => {
-  const navigate = useNavigate();
   return (
     <header className="relative flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full bg-@Red text-xl py-2 ">
       <div
@@ -55,8 +54,6 @@ export const NavbarAdmin: FC = () => {
   );
 };
 export const NavbarUser: FC = () => {
-  const navigate = useNavigate();
-
   return (
     <header className="relative flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full bg-@Red text-xl md:px-10 h-[10%]">
       <div

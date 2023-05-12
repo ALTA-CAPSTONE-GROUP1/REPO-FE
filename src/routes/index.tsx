@@ -1,10 +1,8 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { useState, useMemo } from "react";
 import { FC } from "react";
-import { ThemeContext } from "@/utils/context";
 
-import Home from "@/pages";
-import SubDetail from "@/pages/SubDetail";
+import Start from "@/pages";
+import SubDetail from "@/pages/user/SubDetail";
 import HomeAdmin from "@/pages/admin/Home";
 import { Login } from "@/pages/auth/Login";
 import { SignID } from "@/pages/auth/SignID";
@@ -12,7 +10,9 @@ import { Position } from "@/pages/admin/Position";
 import { SubmissionType } from "@/pages/admin/SubmissionType";
 import { Office } from "@/pages/admin/Office";
 import { Approving } from "@/pages/admin/Approving";
-import CC from "@/pages/CC";
+import CC from "@/pages/user/CC";
+import UserIndex from "@/pages/user";
+import Approve from "@/pages/user/Approve";
 
 const Router: FC = () => {
   // const [theme, setTheme] = useState<string>("light");
@@ -21,7 +21,7 @@ const Router: FC = () => {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Home />,
+      element: <Start />,
     },
     {
       path: "/login",
@@ -52,12 +52,20 @@ const Router: FC = () => {
       element: <Approving />,
     },
     {
-      path: "/cc",
+      path: "/user/cc",
       element: <CC />,
     },
     {
       path: "/sub-detail",
       element: <SubDetail />,
+    },
+    {
+      path: "/user",
+      element: <UserIndex />,
+    },
+    {
+      path: "/user/approve",
+      element: <Approve />,
     },
   ]);
 
