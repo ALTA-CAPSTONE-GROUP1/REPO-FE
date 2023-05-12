@@ -24,7 +24,7 @@ const SideBar: FC<Props> = (props) => {
   } = props;
 
   return (
-    <div className="drawer drawer-mobile h-full ">
+    <div className="drawer drawer-mobile h-full max-w-[1700px] mx-auto max-h-[90%]">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
       {children}
       <div className="drawer-side ">

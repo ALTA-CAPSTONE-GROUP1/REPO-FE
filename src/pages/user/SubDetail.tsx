@@ -48,7 +48,7 @@ const SubDetail: FC = () => {
         onClickCC={handleMenu2}
         onClickApprove={handleMenu3}
       >
-        <div className="drawer-content flex flex-col">
+        <div className="drawer-content flex flex-col h-[90%]">
           <div className="h-full overflow-auto  min-w-[50rem]">
             {loading ? (
               <Loading />
