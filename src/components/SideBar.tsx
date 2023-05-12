@@ -1,44 +1,32 @@
-import { ReactNode, FC, useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { ReactNode, FC, useState } from "react";
+import { useNavigate } from "react-router-dom";
 interface Props {
   children: ReactNode;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  onClickUserHome: React.MouseEventHandler<HTMLButtonElement>;
+  onClickCC: React.MouseEventHandler<HTMLButtonElement>;
+  onClickApprove: React.MouseEventHandler<HTMLButtonElement>;
+  bg1: boolean;
+  bg2: boolean;
+  bg3: boolean;
 }
 const SideBar: FC<Props> = (props) => {
-  const [bg1, setBg1] = useState<boolean>(true);
-  const [bg2, setBg2] = useState<boolean>(false);
-  const [bg3, setBg3] = useState<boolean>(false);
   const navigate = useNavigate();
-  const { children, onClick } = props;
-
-  function handleMenu1() {
-    setBg1(true);
-    setBg2(false);
-    setBg3(false);
-
-    navigate("/");
-  }
-
-  function handleMenu2() {
-    setBg1(false);
-    setBg2(true);
-    setBg3(false);
-
-    navigate("/cc");
-  }
-
-  function handleMenu3() {
-    setBg1(false);
-    setBg2(false);
-    setBg3(true);
-
-    navigate("/approve");
-  }
+  const {
+    children,
+    onClick,
+    onClickUserHome,
+    onClickCC,
+    onClickApprove,
+    bg1,
+    bg2,
+    bg3,
+  } = props;
 
   return (
     <div className="drawer drawer-mobile h-full ">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content flex flex-col">{children}</div>
+      {children}
       <div className="drawer-side ">
         <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
         <ul className="menu p-4 w-80 text-base-content bg-@Red4  font-semibold ">
@@ -65,13 +53,13 @@ const SideBar: FC<Props> = (props) => {
             </button>
           </li>
           <li className={`${bg1 ? "bg-@Red3" : ""}  rounded-full mt-3 `}>
-            <button onClick={handleMenu1}>Submission</button>
+            <button onClick={onClickUserHome}>Submission</button>
           </li>
           <li className={`${bg2 ? "bg-@Red3" : ""}  rounded-full mt-3 `}>
-            <button onClick={handleMenu2}>CC</button>
+            <button onClick={onClickCC}>CC</button>
           </li>
           <li className={`${bg3 ? "bg-@Red3" : ""}  rounded-full mt-3 `}>
-            <button onClick={handleMenu3}>Approve</button>
+            <button onClick={onClickApprove}>Approve</button>
           </li>
           <li>
             <div className="divider"></div>

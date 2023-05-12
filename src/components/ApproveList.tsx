@@ -6,10 +6,11 @@ interface Props {
   opened: boolean;
 }
 
-const List: FC<Props> = (props) => {
+const ApproveList: FC<Props> = (props) => {
   const [colorStatus, setColorStatus] = useState<string>("");
   const [colorBg, setColorBg] = useState<string>("");
   const { status, time, opened } = props;
+
   useEffect(() => {
     if (status == "Approved") {
       setColorStatus("text-@Green");
@@ -27,40 +28,27 @@ const List: FC<Props> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const downloadFile = () => {
-    const link = document.createElement("a");
-    link.href = "/images/test.pdf";
-    // link.download = "/images/test.pdf";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   return (
     <div
-      className={`${colorBg} flex justify-around border-b-2 p-2 hover:border-slate-500 hover:border-t-2 hover:border-t-gray-200 font-bold text-sm`}
+      className={`${colorBg} flex justify-around border-b-2 p-2 items-center hover:border-slate-500 hover:border-t-2 hover:border-t-gray-200 font-bold text-sm`}
     >
-      <div>
-        <p>To: Regional Manager (Zakaria), National Manager (Kristain)</p>
+      <div className=" w-4/12">
+        <p>From: Regional Manager (Zakaria)</p>
       </div>
-      <div className="flex flex-col">
+      <div className=" w-2/12">
         <p>Courier Recruiitment</p>
-        <button
-          onClick={downloadFile}
-          className=" font-bold py-2 px-4 rounded flex justify-start items-center"
-        >
-          <img src="/images/pdf.png" alt="" className="w-6 h-6 object-cover" />
-          <p>File.pdf</p>
-        </button>
+      </div>
+      <div className=" w-1/12">
+        <p>Program</p>
       </div>
       <div className={`${colorStatus} max-w-[3rem]`}>
         <p>{status}</p>
       </div>
-      <div className=" min-w-[5rem] text-right">
+      <div className=" min-w-[5rem] text-right  w-1/12">
         <p>{time}</p>
       </div>
     </div>
   );
 };
 
-export default List;
+export default ApproveList;
