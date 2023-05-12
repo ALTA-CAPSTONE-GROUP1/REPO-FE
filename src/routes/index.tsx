@@ -5,7 +5,9 @@ import { ThemeContext } from "@/utils/context";
 
 import Home from "@/pages";
 import SubDetail from "@/pages/SubDetail";
-import HomeAdmin from "@/pages/admin/Home";
+import UserHome from "@/pages/UserHome";
+import Admin from "@/pages/admin/Home";
+import ApproveDetail from "@/pages/ApproveDetail";
 import { Login } from "@/pages/auth/Login";
 import { SignID } from "@/pages/auth/SignID";
 import { Position } from "@/pages/admin/Position";
@@ -32,7 +34,7 @@ const Router: FC = () => {
     },
     {
       path: "/admin",
-      element: <HomeAdmin />,
+      element: <Admin />,
     },
     {
       path: "/position",
@@ -51,8 +53,16 @@ const Router: FC = () => {
       element: <Approving />,
     },
     {
+      path: "/user",
+      element: <UserHome />,
+    },
+    {
       path: "/sub-detail",
       element: <SubDetail />,
+    },
+    {
+      path: "/approve-detail",
+      element: <ApproveDetail />,
     },
   ]);
 
