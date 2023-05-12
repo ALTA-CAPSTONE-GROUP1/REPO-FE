@@ -11,6 +11,7 @@ import { Position } from "@/pages/admin/Position";
 import { SubmissionType } from "@/pages/admin/SubmissionType";
 import { Office } from "@/pages/admin/Office";
 import { Approving } from "@/pages/admin/Approving";
+import CC from "@/pages/CC";
 
 const Router: FC = () => {
   // const [theme, setTheme] = useState<string>("light");
@@ -48,6 +49,10 @@ const Router: FC = () => {
     {
       path: "/approving",
       element: <Approving />,
+    },
+    {
+      path: "/cc",
+      element: <CC />,
     },
   ]);
 

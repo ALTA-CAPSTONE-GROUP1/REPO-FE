@@ -1,10 +1,39 @@
-import { ReactNode, FC } from "react";
+import { ReactNode, FC, useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 interface Props {
   children: ReactNode;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 const SideBar: FC<Props> = (props) => {
+  const [bg1, setBg1] = useState<boolean>(true);
+  const [bg2, setBg2] = useState<boolean>(false);
+  const [bg3, setBg3] = useState<boolean>(false);
+  const navigate = useNavigate();
   const { children, onClick } = props;
+
+  function handleMenu1() {
+    setBg1(true);
+    setBg2(false);
+    setBg3(false);
+
+    navigate("/");
+  }
+
+  function handleMenu2() {
+    setBg1(false);
+    setBg2(true);
+    setBg3(false);
+
+    navigate("/cc");
+  }
+
+  function handleMenu3() {
+    setBg1(false);
+    setBg2(false);
+    setBg3(true);
+
+    navigate("/approve");
+  }
 
   return (
     <div className="drawer drawer-mobile h-full ">
@@ -35,14 +64,14 @@ const SideBar: FC<Props> = (props) => {
               New Submission{" "}
             </button>
           </li>
-          <li className=" bg-@Red3 rounded-full mt-3 ">
-            <a>Submission</a>
+          <li className={`${bg1 ? "bg-@Red3" : ""}  rounded-full mt-3 `}>
+            <button onClick={handleMenu1}>Submission</button>
           </li>
-          <li className="mt-3">
-            <a>CC</a>
+          <li className={`${bg2 ? "bg-@Red3" : ""}  rounded-full mt-3 `}>
+            <button onClick={handleMenu2}>CC</button>
           </li>
-          <li className="mt-3">
-            <a>Approve</a>
+          <li className={`${bg3 ? "bg-@Red3" : ""}  rounded-full mt-3 `}>
+            <button onClick={handleMenu3}>Approve</button>
           </li>
           <li>
             <div className="divider"></div>
