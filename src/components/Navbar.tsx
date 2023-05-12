@@ -41,7 +41,6 @@ export const NavbarAdmin: FC = () => {
                 </li>
                 <li>
                   <a className="flex items-center gap-2 hover:bg-@Red3 hover:text-black">
-                    {" "}
                     <RiLogoutBoxLine />
                     Log Out
                   </a>
@@ -58,14 +57,16 @@ export const NavbarUser: FC = () => {
   const navigate = useNavigate();
 
   return (
-    <header className="relative flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full bg-@Red text-xl md:px-10 h-[10%]">
+    <header className="flex sticky top-0 flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full bg-@Red text-xl md:px-10 h-[10%]">
       <div
         className="navbar max-w-[85rem] flex w-full mx-auto px-4"
         aria-label="Global"
       >
         <div className="flex-1">
-          <img src="/images/Logo.png" alt="" className=" w-40" />
-        </div>{" "}
+          <Link to="/admin">
+            <img src="/images/Logo.png" alt="" className=" w-40" />
+          </Link>
+        </div>
         <div
           data-theme="light"
           className="flex-none text-white hover:bg-@Red text-base  bg-@Red"

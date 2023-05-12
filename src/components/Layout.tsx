@@ -18,7 +18,7 @@ export const LayoutAdmin: FC<Props> = (props) => {
 export const Layout: FC<Props> = (props) => {
   const { children } = props;
   return (
-    <div data-theme="cupcake" className="h-screen">
+    <div data-theme="cupcake" className="h-[43rem]">
       <NavbarUser />
       {children}
     </div>

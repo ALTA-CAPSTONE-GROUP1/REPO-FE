@@ -1,8 +1,6 @@
-import List from "@/components/List";
 import SideBar from "@/components/SideBar";
 import { FC, useState } from "react";
-import { Link } from "react-router-dom";
-import { BsSearch } from "react-icons/bs";
+
 import { CardSubmission } from "@/components/Card";
 import { Input } from "@/components/Input";
 import { RiCloseCircleFill } from "react-icons/ri";
