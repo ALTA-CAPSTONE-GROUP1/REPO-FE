@@ -10,6 +10,7 @@ import { Position } from "@/pages/admin/Position";
 import { SubmissionType } from "@/pages/admin/SubmissionType";
 import { Office } from "@/pages/admin/Office";
 import { Approving } from "@/pages/admin/Approving";
+import ApproveDetail from "@/pages/user/ApproveDetail";
 import CC from "@/pages/user/CC";
 import UserIndex from "@/pages/user";
 import Approve from "@/pages/user/Approve";
@@ -51,6 +52,18 @@ const Router: FC = () => {
       path: "/approving",
       element: <Approving />,
     },
+    {
+      path: "/home",
+      element: <UserIndex />,
+    },
+    {
+      path: "/approve",
+      element: <Approve />,
+    },
+    {
+      path: "/cc",
+      element: <CC />,
+    },
 
     {
       path: "/sub-detail",
@@ -59,6 +72,10 @@ const Router: FC = () => {
     {
       path: "/user",
       element: <UserIndex />,
+    },
+    {
+      path: "/approve-detail",
+      element: <ApproveDetail />,
     },
   ]);
 

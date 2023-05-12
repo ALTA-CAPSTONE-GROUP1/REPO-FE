@@ -259,3 +259,53 @@ export const CardSubmission: FC<PropsSubmission> = (props) => {
     </div>
   );
 };
+
+interface PropsApprove {
+  title: string;
+  type: string;
+  from: string;
+  cc: string;
+  message: string;
+  file: string;
+  to: string;
+}
+export const CardApprove: FC<PropsApprove> = (props) => {
+  const { title, type, from, cc, message, file, to } = props;
+
+  return (
+    <div className="overflow-x-auto w-full p-6 mt-2">
+      <div className="mt-10">
+        <div className="flex justify-between">
+          <h3 className="font-bold text-3xl text-black">{title}</h3>
+          <h3 className="font-bold text-xl text-@Green">{type}</h3>
+        </div>
+        <div className="mt-2">
+          <h3 className="capitalize font-semibold text-2xl text-black">
+            {from}
+          </h3>
+          <h5 className="text-@Gray">{cc}</h5>
+          <p className="mt-5 text-xl">{message} </p>
+          <div className="mt-20 ">
+            <a className="text-9xl text-@Red">
+              <BsFileEarmarkPdfFill />
+            </a>
+            <h3 className="capitalize font-semibold text-2xl text-black">
+              {file} lampiran
+            </h3>
+            <h4 className="text-@Gray font-semibold">{to}</h4>
+          </div>
+          {/* <div className="flex justify-end mb-5">
+            <div className="flex flex-col md:flex-row gap-2">
+              <label
+                htmlFor="my-modal-3"
+                className="button py-2 px-4 w-full bg-@Red justify-center items-center gap-2 rounded-full border text-lg  disabled:bg-@Red2 text-white font-bold shadow-sm align-middle hover:scale-105 focus:outline-none   transition-all text-md"
+              >
+                Response
+              </label>
+            </div>
+          </div> */}
+        </div>
+      </div>
+    </div>
+  );
+};
