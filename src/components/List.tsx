@@ -1,24 +1,17 @@
-import DrawCanvasExample from "@/pages/DrawCanvasExample";
+import SubmissionType from "@/utils/types/submission";
 import { FC, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
-interface Props {
-  status: string;
-  time: string;
-  opened: boolean;
-}
-
-const List: FC<Props> = (props) => {
+const List: FC<SubmissionType> = (props) => {
   const [colorStatus, setColorStatus] = useState<string>("");
   const [colorBg, setColorBg] = useState<string>("");
-  const { status, time, opened } = props;
-  const navigate = useNavigate();
+  const { status, receive_date, opened, title, attachment, to } = props;
+  const [toString, setTo] = useState<string>("");
   useEffect(() => {
-    if (status == "Approved") {
+    if (status == "approved") {
       setColorStatus("text-@Green");
-    } else if (status == "Reject") {
+    } else if (status == "rejected") {
       setColorStatus("text-@Red");
-    } else if (status == "Revise") {
+    } else if (status == "revise") {
       setColorStatus("text-@Orange");
     }
 
@@ -27,8 +20,19 @@ const List: FC<Props> = (props) => {
     } else {
       setColorBg("");
     }
+
+    fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  function fetchData() {
+    let stringJoin = "";
+    to.map((data) => {
+      return (stringJoin +=
+        data.approver_position + " " + data.approver_name + ",");
+    });
+    setTo(stringJoin);
+  }
 
   const downloadFile = () => {
     // const link = document.createElement("a");
@@ -46,23 +50,23 @@ const List: FC<Props> = (props) => {
       className={`${colorBg} flex justify-around border-b-2 p-2 hover:border-slate-500 hover:border-t-2 hover:border-t-gray-200 font-bold text-sm`}
     >
       <div>
-        <p>To: Regional Manager (Zakaria), National Manager (Kristain)</p>
+        <p>{toString}</p>
       </div>
       <div className="flex flex-col">
-        <p>Courier Recruiitment</p>
+        <p>{title}</p>
         <button
           onClick={downloadFile}
           className=" font-bold py-2 px-4 rounded flex justify-start items-center"
         >
           <img src="/images/pdf2.png" alt="" className="w-6 h-6 object-cover" />
-          <p>File.pdf</p>
+          <p>{attachment}</p>
         </button>
       </div>
       <div className={`${colorStatus} max-w-[3rem]`}>
         <p>{status}</p>
       </div>
       <div className=" min-w-[5rem] text-right">
-        <p>{time}</p>
+        <p>{receive_date}</p>
       </div>
     </div>
   );
