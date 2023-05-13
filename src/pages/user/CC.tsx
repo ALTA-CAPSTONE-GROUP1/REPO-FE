@@ -4,8 +4,13 @@ import SideBar from "@/components/SideBar";
 import { FC } from "react";
 import { BsSearch } from "react-icons/bs";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { FC, , useEffect, useState } from "react";
+
 
 const CC: FC = () => {
+
+  
   return (
     <div className="drawer-content flex flex-col h-[90%]">
       <div className="p-7 w-full">
@@ -31,33 +36,6 @@ const CC: FC = () => {
       <div className="h-full overflow-auto  min-w-[50rem]">
         <Link to={""}>
           <CCList status="Approved" time="09:00" opened={true} />
-        </Link>
-        <Link to={""}>
-          <CCList status="Reject" time="02 May 2023" opened={false} />
-        </Link>
-        <Link to={""}>
-          <CCList status="Revise" time="18 April 2023" opened={true} />
-        </Link>
-        <Link to={""}>
-          <CCList status="Approved" time="09:00" opened={true} />
-        </Link>
-        <Link to={""}>
-          <CCList status="Reject" time="02 May 2023" opened={false} />
-        </Link>
-        <Link to={""}>
-          <CCList status="Revise" time="18 April 2023" opened={true} />
-        </Link>
-        <Link to={""}>
-          <CCList status="Revise" time="18 April 2023" opened={true} />
-        </Link>
-        <Link to={""}>
-          <CCList status="Revise" time="18 April 2023" opened={true} />
-        </Link>
-        <Link to={""}>
-          <CCList status="Revise" time="18 April 2023" opened={true} />
-        </Link>
-        <Link to={""}>
-          <CCList status="Revise" time="18 April 2023" opened={true} />
         </Link>
       </div>
     </div>
