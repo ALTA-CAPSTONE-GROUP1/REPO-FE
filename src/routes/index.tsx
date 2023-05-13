@@ -20,10 +20,6 @@ import App from "@/pages/App";
 import DrawCanvasExample from "@/pages/DrawCanvasExample";
 import WaterMarkExample from "@/pages/WaterMarkExample";
 import ModalExample from "@/pages/ModalExample";
-import axios from "axios";
-
-axios.defaults.baseURL =
-  "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0/";
 
 axios.defaults.baseURL =
   "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
