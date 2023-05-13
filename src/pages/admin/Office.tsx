@@ -1,13 +1,64 @@
-import { TabOffice } from "@/components/Tab";
-import { BsSearch } from "react-icons/bs";
 import { RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
-import { Input } from "@/components/Input";
-import { RedButton } from "@/components/Button";
-import { FC } from "react";
+import { FC, useState } from "react";
+import { BsSearch } from "react-icons/bs";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Swal from "sweetalert2";
+import axios from "axios";
+import * as z from "zod";
+
 import { LayoutAdmin } from "@/components/Layout";
 import { CardTableOffice } from "@/components/Card";
+import { RedButton } from "@/components/Button";
+import { TabOffice } from "@/components/Tab";
+import { Input } from "@/components/Input";
+
+const schema = z.object({
+  office: z.string(),
+});
+
+type Schema = z.infer<typeof schema>;
 
 export const Office: FC = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Schema>({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit: SubmitHandler<Schema> = (data) => {
+    setLoading(true);
+    axios
+      .post("office", data)
+      .then((res) => {
+        const { message, data } = res.data;
+        if (data) {
+          Swal.fire({
+            title: "Success",
+            text: message,
+            showCancelButton: false,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload();
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        Swal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      })
+      .finally(() => setLoading(false));
+  };
+
   return (
     <LayoutAdmin>
       <div
@@ -15,7 +66,10 @@ export const Office: FC = () => {
         aria-label="Global"
       >
         <TabOffice />
-        <form className="flex flex-col p-4 bg-white rounded-md ">
+        <form
+          className="flex flex-col p-4 bg-white rounded-md "
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <div className="mt-3">
             <h3 className="font-bold text-2xl text-black">Add Office</h3>
             <h3 className="text-sm">
@@ -27,6 +81,8 @@ export const Office: FC = () => {
                   Office
                 </label>
                 <Input
+                  register={register}
+                  name="office"
                   placeholder="Enter Office Location"
                   id="input-office-location"
                 />
@@ -36,6 +92,7 @@ export const Office: FC = () => {
                   label="+ Add"
                   id="button-add-office-location"
                   type="submit"
+                  disabled={loading}
                 />
               </div>
             </div>
