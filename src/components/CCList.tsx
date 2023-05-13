@@ -1,53 +1,41 @@
+import ccTypes from "@/utils/types/cc";
 import { FC, useEffect, useState } from "react";
 import { BsDownload } from "react-icons/bs";
 
-interface Props {
-  status: string;
-  time: string;
-  opened: boolean;
-}
-
-const CCList: FC<Props> = (props) => {
+const CCList: FC<ccTypes> = (props) => {
   const [colorBg, setColorBg] = useState<string>("");
-  const { time, opened } = props;
+  const { submission_id, from, to, title, submission_type, attachment } = props;
 
   useEffect(() => {
-    if (opened) {
-      setColorBg("bg-@Red4");
-    } else {
-      setColorBg("");
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const downloadFile = () => {
     const url = "/images/test2.pdf";
+    // const url = { attachment };
     window.open(`/app2?url=${url}`);
   };
 
   return (
     <div
-      className={`${colorBg} flex justify-around border-b-2 p-2 items-center hover:border-slate-500 hover:border-t-2 hover:border-t-gray-200 font-bold text-sm`}
+      className={`bg-@Red4 flex justify-around border-b-2 p-2 items-center hover:border-slate-500 hover:border-t-2 hover:border-t-gray-200 font-bold text-sm`}
     >
       <div className=" w-4/12">
-        <p>From: Regional Manager (Zakaria)</p>
+        <p>From: {from.position + " " + from.name}</p>
       </div>
       <div className=" w-4/12">
-        <p>To: Regional Manager (Zakaria), National Manager (Kristain)</p>
+        <p>To: {from.position + " " + from.name}</p>
       </div>
       <div className=" w-2/12">
-        <p>Courier Recruiitment</p>
+        <p>{title}</p>
       </div>
       <div className=" w-1/12">
-        <p>Program</p>
+        <p>{submission_type}</p>
       </div>
       <div className=" w-1/12">
         <button onClick={downloadFile} className=" text-@Blu font-bold">
           <BsDownload />
         </button>
-      </div>
-      <div className=" min-w-[5rem] text-right  w-1/12">
-        <p>{time}</p>
       </div>
     </div>
   );
