@@ -5,7 +5,7 @@ import Start from "@/pages";
 import SubDetail from "@/pages/user/SubDetail";
 import HomeAdmin from "@/pages/admin/Home";
 import Profile from "@/pages/user/Profile";
-import { Login } from "@/pages/auth/Login";
+import Login from "@/pages/auth/Login";
 import { SignID } from "@/pages/auth/SignID";
 import { Position } from "@/pages/admin/Position";
 import { SubmissionType } from "@/pages/admin/SubmissionType";
@@ -19,6 +19,10 @@ import App from "@/pages/App";
 import DrawCanvasExample from "@/pages/DrawCanvasExample";
 import WaterMarkExample from "@/pages/WaterMarkExample";
 import ModalExample from "@/pages/ModalExample";
+import axios from "axios";
+
+axios.defaults.baseURL =
+  "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0/";
 
 const Router: FC = () => {
   // const [theme, setTheme] = useState<string>("light");
