@@ -1,18 +1,71 @@
-import { FC } from "react";
 import { BsQuestionCircle, BsSearch } from "react-icons/bs";
-import {
-  RiDeleteBin6Line,
-  RiPencilLine,
-  RiArrowLeftLine,
-  RiArrowRightLine,
-} from "react-icons/ri";
+import { RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Link, useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import { FC, useState } from "react";
+import Swal from "sweetalert2";
+import axios from "axios";
+import * as z from "zod";
+
 import { RedButton } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { LayoutAdmin } from "@/components/Layout";
 import { TabUser } from "@/components/Tab";
 import { CardTableUser } from "@/components/Card";
+import { Office } from "./Office";
 
-const HomeAdmin: FC = () => {
+const schema = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
+  email: z.string().min(1, { message: "Email is required" }),
+  hp: z.string().min(1, { message: "No HP is required" }),
+  position: z.string(),
+  office: z.string(),
+});
+
+type Schema = z.infer<typeof schema>;
+
+export function HomeAdmin() {
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Schema>({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit: SubmitHandler<Schema> = (data) => {
+    setLoading(true);
+    axios
+      .post("users", data)
+      .then((res) => {
+        const { message, data } = res.data;
+        if (data) {
+          Swal.fire({
+            title: "Success",
+            text: message,
+            showCancelButton: false,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload();
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        Swal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      })
+      .finally(() => setLoading(false));
+  };
+
   return (
     <LayoutAdmin>
       <div
@@ -20,27 +73,50 @@ const HomeAdmin: FC = () => {
         aria-label="Global"
       >
         <TabUser />
-        <form className="flex flex-col p-4 bg-white rounded-md ">
+        <form
+          className="flex flex-col p-4 bg-white rounded-md "
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <div className="mt-3">
             <h3 className="font-bold text-2xl text-black">Add User</h3>
             <h3 className="text-sm">Create new user </h3>
             <div className="mt-5 w-full">
               <label className="font-semibold text-md text-black">Name</label>
-              <Input placeholder="Enter Name" id="input-name" />
+              <Input
+                register={register}
+                name="name"
+                placeholder="Enter Name"
+                id="input-name"
+                error={errors.name?.message}
+              />
             </div>
             <div className="mt-5 w-full">
               <label className="font-semibold text-md text-black">Email</label>
-              <Input placeholder="Enter Email" id="input-email" type="email" />
+              <Input
+                register={register}
+                name="email"
+                placeholder="Enter Email"
+                id="input-email"
+                type="email"
+                error={errors.email?.message}
+              />
             </div>
             <div className="mt-5 w-full">
               <label className="font-semibold text-md text-black">No Hp</label>
-              <Input placeholder="Enten Phone Number" id="input-no-hp" />
+              <Input
+                register={register}
+                name="hp"
+                placeholder="Enten Phone Number"
+                id="input-no-hp"
+                error={errors.name?.message}
+              />
             </div>
             <div className="mt-5 w-full">
               <label className="font-semibold text-md text-black">
                 Position
               </label>
               <select
+                {...register("position")}
                 className="border rounded-md bg-white border-@Gray text-black p-2 focus:outline-none w-full"
                 placeholder="Select Position"
                 id="select-position"
@@ -56,6 +132,7 @@ const HomeAdmin: FC = () => {
             <div className="mt-5 w-full">
               <label className="font-semibold text-md text-black">Office</label>
               <select
+                {...register("office")}
                 className="border rounded-md bg-white border-@Gray text-black p-2 focus:outline-none w-full"
                 placeholder="Select Office"
                 id="select-Office"
@@ -69,7 +146,12 @@ const HomeAdmin: FC = () => {
               </select>
             </div>
             <div className="mt-5">
-              <RedButton label="Add User" id="button-add-user" type="submit" />
+              <RedButton
+                label="Add User"
+                id="button-add-user"
+                type="submit"
+                disabled={loading}
+              />
             </div>
           </div>
         </form>
@@ -277,6 +359,6 @@ const HomeAdmin: FC = () => {
       </div>
     </LayoutAdmin>
   );
-};
+}
 
 export default HomeAdmin;
