@@ -6,8 +6,8 @@ import { RiMenu2Fill } from "react-icons/ri";
 import { z } from "zod";
 import withReactContent from "sweetalert2-react-content";
 
-import SubmissionType from "@/utils/types/submission";
 import Swal from "@/utils/Swal";
+import SubmissionType from "@/utils/types/submission";
 import axios from "axios";
 interface Props {
   children: ReactNode;

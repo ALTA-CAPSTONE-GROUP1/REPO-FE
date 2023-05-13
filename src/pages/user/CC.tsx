@@ -1,16 +1,40 @@
 import { Layout } from "@/components/Layout";
 import CCList from "@/components/CCList";
 import SideBar from "@/components/SideBar";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { FC, , useEffect, useState } from "react";
+import withReactContent from "sweetalert2-react-content";
 
-
+import Swal from "@/utils/Swal";
+import ccTypes from "@/utils/types/cc";
 const CC: FC = () => {
+  const [datas, setDatas] = useState<ccTypes[]>([]);
+  const MySwal = withReactContent(Swal);
 
-  
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function fetchData() {
+    axios
+      .get(`cc`)
+      .then((res) => {
+        const { data } = res.data;
+        setDatas(data);
+      })
+      .catch((err) => {
+        const { message } = err.response;
+        MySwal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      });
+  }
+
   return (
     <div className="drawer-content flex flex-col h-[90%]">
       <div className="p-7 w-full">
@@ -34,9 +58,20 @@ const CC: FC = () => {
         </div>
       </div>
       <div className="h-full overflow-auto  min-w-[50rem]">
-        <Link to={""}>
-          <CCList status="Approved" time="09:00" opened={true} />
-        </Link>
+        {datas.map((data) => {
+          return (
+            <Link to={""}>
+              <CCList
+                submission_id={data.submission_id}
+                from={data.from}
+                to={data.to}
+                title={data.title}
+                submission_type={data.submission_type}
+                attachment={data.attachment}
+              />
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
