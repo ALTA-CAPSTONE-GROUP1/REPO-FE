@@ -22,7 +22,7 @@ const ModalExample: React.FC<ModalExampleProps> = ({ fileUrl }) => {
         /* Fixed position */
         left: "center",
         position: "fixed",
-        top: "center",
+        top: "center ",
 
         /* Take full size */
         height: "100%",
