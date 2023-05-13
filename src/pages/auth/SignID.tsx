@@ -46,6 +46,10 @@ export function SignID() {
             title: "Success",
             text: message,
             showCancelButton: false,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload();
+            }
           });
         }
       })
