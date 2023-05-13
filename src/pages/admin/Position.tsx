@@ -1,13 +1,65 @@
-import { FC } from "react";
-import { BsSearch } from "react-icons/bs";
 import { RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
+import { FC, useState } from "react";
+import { BsSearch } from "react-icons/bs";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Swal from "sweetalert2";
+import axios from "axios";
+import * as z from "zod";
+
+import { CardTablePosition } from "@/components/Card";
 import { LayoutAdmin } from "@/components/Layout";
 import { TabPosition } from "@/components/Tab";
 import { RedButton } from "@/components/Button";
 import { Input } from "@/components/Input";
-import { CardTablePosition } from "@/components/Card";
+
+const schema = z.object({
+  position: z.string(),
+  tag: z.string(),
+});
+
+type Schema = z.infer<typeof schema>;
 
 export const Position: FC = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Schema>({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit: SubmitHandler<Schema> = (data) => {
+    setLoading(true);
+    axios
+      .post("position", data)
+      .then((res) => {
+        const { message, data } = res.data;
+        if (data) {
+          Swal.fire({
+            title: "Success",
+            text: message,
+            showCancelButton: false,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload();
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        Swal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      })
+      .finally(() => setLoading(false));
+  };
+
   return (
     <LayoutAdmin>
       <div
@@ -15,7 +67,10 @@ export const Position: FC = () => {
         aria-label="Global"
       >
         <TabPosition />
-        <form className="flex flex-col p-4 bg-white rounded-md ">
+        <form
+          className="flex flex-col p-4 bg-white rounded-md "
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <div className="mt-3">
             <h3 className="font-bold text-2xl text-black">Add Position</h3>
             <h3 className="text-sm">
@@ -27,17 +82,30 @@ export const Position: FC = () => {
                 <label className="font-semibold text-md text-black">
                   Position
                 </label>
-                <Input placeholder="Enter Position" id="input-position" />
+                <Input
+                  register={register}
+                  name="position"
+                  placeholder="Enter Position"
+                  id="input-position"
+                  error={errors.position?.message}
+                />
               </div>
               <div className="mt-5 w-full">
                 <label className="font-semibold text-md text-black">Tag</label>
-                <Input placeholder="Enter Tag" id="input-tag" type="email" />
+                <Input
+                  register={register}
+                  name="tag"
+                  placeholder="Enter Tag"
+                  id="input-tag"
+                  error={errors.tag?.message}
+                />
               </div>
-              <div className="mt-5 md:mt-10 w-80">
+              <div className="flex items-center justify-center mt-5 md:mt-10 w-full md:w-80">
                 <RedButton
                   label="+ Add"
                   id="button-add-position"
                   type="submit"
+                  disabled={loading}
                 />
               </div>
             </div>
