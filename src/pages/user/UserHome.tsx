@@ -1,15 +1,46 @@
 import List from "@/components/List";
-import { FC, ReactNode, useState } from "react";
+import { FC, ReactNode, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { BsSearch } from "react-icons/bs";
 import { RiMenu2Fill } from "react-icons/ri";
+import { z } from "zod";
+import withReactContent from "sweetalert2-react-content";
 
+import SubmissionType from "@/utils/types/submission";
+import Swal from "@/utils/Swal";
+import axios from "axios";
 interface Props {
   children: ReactNode;
 }
+
 const UserHome: FC<Props> = (props) => {
   const { children } = props;
   const [createSubmission, setCreateSubmission] = useState<boolean>(false);
+  const [datas, setDatas] = useState<SubmissionType[]>([]);
+  const MySwal = withReactContent(Swal);
+
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function fetchData() {
+    axios
+      .get(`submission`)
+      .then((res) => {
+        const { data } = res.data;
+        setDatas(data);
+      })
+      .catch((err) => {
+        const { message } = err.response;
+        MySwal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      });
+  }
+
   return (
     <div className="drawer-content flex flex-col">
       <div className="p-7 w-full">
@@ -39,36 +70,23 @@ const UserHome: FC<Props> = (props) => {
         </div>
       </div>
       <div className="h-full overflow-auto  min-w-[50rem]">
-        <Link to={""}>
-          <List status="Approved" time="09:00" opened={true} />
-        </Link>
-        <Link to={""}>
-          <List status="Reject" time="02 May 2023" opened={false} />
-        </Link>
-        <Link to={""}>
-          <List status="Revise" time="18 April 2023" opened={true} />
-        </Link>
-        <Link to={""}>
-          <List status="Approved" time="09:00" opened={true} />
-        </Link>
-        <Link to={""}>
-          <List status="Reject" time="02 May 2023" opened={false} />
-        </Link>
-        <Link to={""}>
-          <List status="Revise" time="18 April 2023" opened={true} />
-        </Link>
-        <Link to={""}>
-          <List status="Revise" time="18 April 2023" opened={true} />
-        </Link>
-        <Link to={""}>
-          <List status="Revise" time="18 April 2023" opened={true} />
-        </Link>
-        <Link to={""}>
-          <List status="Revise" time="18 April 2023" opened={true} />
-        </Link>
-        <Link to={""}>
-          <List status="Revise" time="18 April 2023" opened={true} />
-        </Link>
+        {datas.map((data) => {
+          return (
+            <Link to={""}>
+              <List
+                to={data.to}
+                status={data.status}
+                receive_date={data.receive_date.split(" ")[1]}
+                opened={data.opened}
+                id={data.id}
+                cc={data.cc}
+                title={data.title}
+                attachment={data.attachment}
+                submission_type={data.submission_type}
+              />
+            </Link>
+          );
+        })}
       </div>
       {children}
     </div>

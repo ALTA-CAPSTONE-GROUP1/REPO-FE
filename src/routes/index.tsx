@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { FC } from "react";
+import axios from "axios";
 
 import Start from "@/pages";
 import SubDetail from "@/pages/user/SubDetail";
@@ -23,6 +24,9 @@ import axios from "axios";
 
 axios.defaults.baseURL =
   "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0/";
+
+axios.defaults.baseURL =
+  "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
 
 const Router: FC = () => {
   // const [theme, setTheme] = useState<string>("light");
