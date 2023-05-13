@@ -1,22 +1,17 @@
+import approveTypes from "@/utils/types/approve";
 import { FC, useEffect, useState } from "react";
 
-interface Props {
-  status: string;
-  time: string;
-  opened: boolean;
-}
-
-const ApproveList: FC<Props> = (props) => {
+const ApproveList: FC<approveTypes> = (props) => {
   const [colorStatus, setColorStatus] = useState<string>("");
   const [colorBg, setColorBg] = useState<string>("");
-  const { status, time, opened } = props;
+  const { from, title, submission_type, status, receive_date, opened } = props;
 
   useEffect(() => {
-    if (status == "Approved") {
+    if (status == "approved") {
       setColorStatus("text-@Green");
-    } else if (status == "Reject") {
+    } else if (status == "rejected") {
       setColorStatus("text-@Red");
-    } else if (status == "Revise") {
+    } else if (status == "revise") {
       setColorStatus("text-@Orange");
     }
 
@@ -33,19 +28,19 @@ const ApproveList: FC<Props> = (props) => {
       className={`${colorBg} flex justify-around border-b-2 p-2 items-center hover:border-slate-500 hover:border-t-2 hover:border-t-gray-200 font-bold text-sm`}
     >
       <div className=" w-4/12">
-        <p>From: Regional Manager (Zakaria)</p>
+        <p>From: {from}</p>
       </div>
       <div className=" w-2/12">
-        <p>Courier Recruiitment</p>
+        <p>{title}</p>
       </div>
       <div className=" w-1/12">
-        <p>Program</p>
+        <p>{submission_type}</p>
       </div>
       <div className={`${colorStatus} max-w-[3rem]`}>
         <p>{status}</p>
       </div>
       <div className=" min-w-[5rem] text-right  w-1/12">
-        <p>{time}</p>
+        <p>{receive_date.split(" ")[1]}</p>
       </div>
     </div>
   );

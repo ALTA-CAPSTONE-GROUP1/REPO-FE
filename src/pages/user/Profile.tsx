@@ -22,11 +22,19 @@ const Profile: FC = () => {
             <h3 className="text-sm">User just update no HP and password </h3>
             <div className="mt-5 w-full">
               <label className="font-semibold text-md text-black">Name</label>
-              <Input placeholder="Enter Name" id="input-name" disabled />
+              <Input
+                register={""}
+                name="title"
+                placeholder="Enter Name"
+                id="input-name"
+                disabled
+              />
             </div>
             <div className="mt-5 w-full">
               <label className="font-semibold text-md text-black">Email</label>
               <Input
+                register={""}
+                name="title"
                 placeholder="Enter Email"
                 id="input-email"
                 type="email"
@@ -35,7 +43,12 @@ const Profile: FC = () => {
             </div>
             <div className="mt-5 w-full">
               <label className="font-semibold text-md text-black">No Hp</label>
-              <Input placeholder="Enter Phone Number" id="input-no-hp" />
+              <Input
+                register={""}
+                name="title"
+                placeholder="Enter Phone Number"
+                id="input-no-hp"
+              />
             </div>
             <div className="mt-5 w-full">
               <label className="font-semibold text-md text-black">
@@ -76,6 +89,8 @@ const Profile: FC = () => {
                 Password
               </label>
               <Input
+                register={""}
+                name="title"
                 placeholder="Enter Password"
                 id="input-no-hp"
                 type="password"

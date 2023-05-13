@@ -1,11 +1,38 @@
 import { Layout } from "@/components/Layout";
 import ApproveList from "@/components/ApproveList";
 import SideBar from "@/components/SideBar";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "@/utils/Swal";
+import approveTypes from "@/utils/types/approve";
 
 const Approve: FC = () => {
+  const [datas, setDatas] = useState<approveTypes[]>([]);
+  const MySwal = withReactContent(Swal);
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  function fetchData() {
+    axios
+      .get(`approver`)
+      .then((res) => {
+        const { data } = res.data;
+        setDatas(data);
+      })
+      .catch((err) => {
+        const { message } = err.response;
+        MySwal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      });
+  }
+
   return (
     <div className="drawer-content flex flex-col">
       <div className="p-7 w-full">
@@ -29,36 +56,21 @@ const Approve: FC = () => {
         </div>
       </div>
       <div className="h-full overflow-auto  min-w-[50rem]">
-        <Link to={""}>
-          <ApproveList status="Approved" time="09:00" opened={true} />
-        </Link>
-        <Link to={""}>
-          <ApproveList status="Reject" time="02 May 2023" opened={false} />
-        </Link>
-        <Link to={""}>
-          <ApproveList status="Revise" time="18 April 2023" opened={true} />
-        </Link>
-        <Link to={""}>
-          <ApproveList status="Approved" time="09:00" opened={true} />
-        </Link>
-        <Link to={""}>
-          <ApproveList status="Reject" time="02 May 2023" opened={false} />
-        </Link>
-        <Link to={""}>
-          <ApproveList status="Revise" time="18 April 2023" opened={true} />
-        </Link>
-        <Link to={""}>
-          <ApproveList status="Revise" time="18 April 2023" opened={true} />
-        </Link>
-        <Link to={""}>
-          <ApproveList status="Revise" time="18 April 2023" opened={true} />
-        </Link>
-        <Link to={""}>
-          <ApproveList status="Revise" time="18 April 2023" opened={true} />
-        </Link>
-        <Link to={""}>
-          <ApproveList status="Revise" time="18 April 2023" opened={true} />
-        </Link>
+        {datas.map((data) => {
+          return (
+            <Link to={""}>
+              <ApproveList
+                submission_id={data.submission_id}
+                from={data.from}
+                title={data.title}
+                submission_type={data.submission_type}
+                status={data.status}
+                receive_date={data.receive_date}
+                opened={data.opened}
+              />
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
