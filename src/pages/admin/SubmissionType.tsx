@@ -1,13 +1,80 @@
-import { FC } from "react";
-import { BsSearch } from "react-icons/bs";
 import { RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
-import { LayoutAdmin } from "@/components/Layout";
-import { TabSubmisionType } from "@/components/Tab";
-import { Input } from "@/components/Input";
-import { RedButton } from "@/components/Button";
-import { CardTableSubmissionType } from "@/components/Card";
+import { FC, useState } from "react";
+import { BsSearch } from "react-icons/bs";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Swal from "sweetalert2";
+import axios from "axios";
+import * as z from "zod";
 
-export const SubmissionType: FC = () => {
+import { CardTableSubmissionType } from "@/components/Card";
+import { TabSubmisionType } from "@/components/Tab";
+import { LayoutAdmin } from "@/components/Layout";
+import { RedButton } from "@/components/Button";
+import { Input } from "@/components/Input";
+
+const schema = z.object({
+  name: z
+    .string()
+    .min(5, { message: "Submission name is 5 minimum character" }),
+  value: z.string().min(5, { message: "Submission value is required" }),
+  position_to: z.string(),
+  position_cc: z.string(),
+  requirement: z
+    .string()
+    .max(50, { message: "Submission requirement is max 50 character" }),
+});
+
+type Schema = z.infer<typeof schema>;
+
+interface ticketCategoriesType {
+  ticket_category: string;
+  ticket_price: number;
+  ticket_quantity: number;
+}
+
+export function SubmissionType() {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [position, setPosition] = useState<string[]>([]);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Schema>({
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit: SubmitHandler<Schema> = (data) => {
+    setLoading(true);
+    axios
+      .post("submission-type", data)
+      .then((res) => {
+        const { message, data } = res.data;
+        if (data) {
+          Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: message,
+            showCancelButton: false,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload();
+            }
+          });
+        }
+        console.log(data);
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        Swal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      });
+  };
+
   return (
     <LayoutAdmin>
       <div
@@ -16,7 +83,10 @@ export const SubmissionType: FC = () => {
       >
         <TabSubmisionType />
 
-        <form className="flex flex-col p-4 bg-white rounded-md ">
+        <form
+          className="flex flex-col p-4 bg-white rounded-md "
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <div className="mt-3">
             <h3 className="font-bold text-2xl text-black">
               Add Submission Type
@@ -27,14 +97,24 @@ export const SubmissionType: FC = () => {
                 Submission Name
               </label>
               <Input
+                register={register}
+                name="name"
                 placeholder="Enter Submission Name"
                 id="input-submission-type-name"
+                error={errors.name?.message}
               />
             </div>
             <div className="mt-5 w-full">
               <label className="font-semibold text-md text-black">Value</label>
-              <Input placeholder="Enter Value" id="input-submission-value" />
+              <Input
+                register={register}
+                name="value"
+                placeholder="Enter Value"
+                id="input-submission-value"
+                error={errors.value?.message}
+              />
             </div>
+
             <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
               <div className="mt-5 w-full">
                 <span className="label-text font-bold">Position To</span>
@@ -44,6 +124,7 @@ export const SubmissionType: FC = () => {
                   </span>
                 </button>
                 <select
+                  {...register("position_to")}
                   className="border rounded-md bg-white border-@Gray text-black p-2 focus:outline-none w-full"
                   placeholder="Select Position"
                   id="select-position-to"
@@ -64,6 +145,7 @@ export const SubmissionType: FC = () => {
                   </span>
                 </button>
                 <select
+                  {...register("position_cc")}
                   className="border rounded-md bg-white border-@Gray text-black p-2 focus:outline-none w-full "
                   placeholder="Select Position"
                   id="select-position-cc"
@@ -77,11 +159,18 @@ export const SubmissionType: FC = () => {
                 </select>
               </div>
             </div>
+
             <div className="mt-5 w-full">
               <label className="font-semibold text-md text-black">
                 Requirement
               </label>
-              <Input placeholder="Enter Requirement" id="input-requirement" />
+              <Input
+                register={register}
+                name="requirement"
+                placeholder="Enter Requirement"
+                id="input-requirement"
+                error={errors.requirement?.message}
+              />
             </div>
             <div className="mt-5 w-full">
               <RedButton
@@ -175,4 +264,4 @@ export const SubmissionType: FC = () => {
       </div>
     </LayoutAdmin>
   );
-};
+}
