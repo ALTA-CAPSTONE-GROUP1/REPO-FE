@@ -6,7 +6,7 @@ import Start from "@/pages";
 import SubDetail from "@/pages/user/SubDetail";
 import HomeAdmin from "@/pages/admin/Home";
 import Profile from "@/pages/user/Profile";
-import { Login } from "@/pages/auth/Login";
+import Login from "@/pages/auth/Login";
 import { SignID } from "@/pages/auth/SignID";
 import { Position } from "@/pages/admin/Position";
 import { SubmissionType } from "@/pages/admin/SubmissionType";

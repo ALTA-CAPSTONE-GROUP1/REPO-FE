@@ -50,15 +50,15 @@ const List: FC<SubmissionType> = (props) => {
       className={`${colorBg} flex justify-around border-b-2 p-2 hover:border-slate-500 hover:border-t-2 hover:border-t-gray-200 font-bold text-sm`}
     >
       <div>
-        <p>{toString}</p>
+        <p>To: {toString}</p>
       </div>
       <div className="flex flex-col">
         <p>{title}</p>
         <button
           onClick={downloadFile}
-          className=" font-bold py-2 px-4 rounded flex justify-start items-center"
+          className=" font-bold py-2 rounded flex justify-start items-center"
         >
-          <img src="/images/pdf2.png" alt="" className="w-6 h-6 object-cover" />
+          <img src="/images/pdf.png" alt="" className="w-6 h-6 object-cover" />
           <p>{attachment}</p>
         </button>
       </div>

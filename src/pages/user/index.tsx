@@ -8,6 +8,8 @@ import { RiCloseCircleFill } from "react-icons/ri";
 import { Input } from "@/components/Input";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const UserIndex: FC = () => {
   const [createSubmission, setCreateSubmission] = useState<boolean>(false);
@@ -87,16 +89,22 @@ const UserIndex: FC = () => {
                           </select>
                         </div>
                         <Input
+                          register={""}
+                          name="title"
                           type="text"
                           placeholder="Title"
                           className=" border-b-2 focus:outline-none focus:border-b-@Red w-full mt-3"
                         />
                         <Input
+                          register={""}
+                          name="title"
                           type="text"
                           placeholder="To:"
                           className=" border-b-2 focus:outline-none focus:border-b-@Red w-full mt-3"
                         />
                         <Input
+                          register={""}
+                          name="title"
                           type="text"
                           placeholder="CC:"
                           className=" border-b-2 focus:outline-none focus:border-b-@Red w-full mt-3"
@@ -106,7 +114,13 @@ const UserIndex: FC = () => {
                           placeholder="Messages"
                         ></textarea>
                         <div className="flex justify-between items-end mt-5 h-20 max-h-20">
-                          <Input type="file" className="w-full " multiple />
+                          <Input
+                            register={""}
+                            name="title"
+                            type="file"
+                            className="w-full "
+                            multiple
+                          />
                           <button>Send</button>
                         </div>
                       </div>
