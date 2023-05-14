@@ -1,12 +1,17 @@
 import SideBar from "@/components/SideBar";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { RedButton, Red2Button, BlueButton } from "@/components/Button";
-import { CardApprove } from "@/components/Card";
+import { CardApprove, CardApproving } from "@/components/Card";
 import { Input } from "@/components/Input";
 import { RiCloseCircleFill } from "react-icons/ri";
 import { Layout } from "@/components/Layout";
 import Loading from "@/components/Loading";
+import withReactContent from "sweetalert2-react-content";
 
+import Swal from "@/utils/Swal";
+import ApproveDetailType from "@/utils/types/ApproveDetail";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 const ApproveDetail: FC = () => {
   const [createSubmission, setCreateSubmission] = useState<boolean>(false);
   const [page, setPage] = useState<string>("user-home");
@@ -14,12 +19,38 @@ const ApproveDetail: FC = () => {
   const [bg2, setBg2] = useState<boolean>(false);
   const [bg3, setBg3] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [data, setData] = useState<ApproveDetailType>();
+  const MySwal = withReactContent(Swal);
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetch();
+  }, []);
+
+  function fetch() {
+    axios
+      .get(`/approver/${id}`)
+      .then((res) => {
+        const { data } = res.data;
+        setData(data);
+      })
+      .catch((err) => {
+        const { message } = err.response;
+        MySwal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      });
+  }
+
   function handleMenu1() {
     setBg1(true);
     setBg2(false);
     setBg3(false);
-
     setPage("user-home");
+    navigate("/user");
   }
 
   function handleMenu2() {
@@ -27,6 +58,7 @@ const ApproveDetail: FC = () => {
     setBg2(true);
     setBg3(false);
     setPage("cc");
+    navigate("/user");
   }
 
   function handleMenu3() {
@@ -34,6 +66,7 @@ const ApproveDetail: FC = () => {
     setBg2(false);
     setBg3(true);
     setPage("approve");
+    navigate("/user");
   }
   return (
     <Layout>
@@ -52,14 +85,15 @@ const ApproveDetail: FC = () => {
               <Loading />
             ) : (
               <CardApprove
-                title="Courier Recruitment"
-                type="Recruitment"
-                from="Product Design : Azhari Aziz"
-                cc="Regional Manager Olivia, Product Design Baker, Product Manager Andi, UI Design Natali, Frontend Developer Lana, Backend Developer Demi"
-                message="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-                file="1"
-                to="Approve by : Regional Zakaria"
+                title={data?.title}
+                from={data?.from}
+                to={data?.to}
+                submission_id={data?.submission_id}
+                cc={data?.cc}
+                submission_type={data?.submission_type}
+                status_by={data?.status_by}
+                message_body={data?.message_body}
+                attacment={data?.attacment}
               />
             )}
             <div className="flex justify-end mb-5 pr-4 ">
@@ -131,17 +165,23 @@ const ApproveDetail: FC = () => {
                         </select>
                       </div>
                       <Input
+                        register={""}
+                        name="title"
                         type="text"
                         placeholder="Title"
                         className=" border-b-2 focus:outline-none focus:border-b-@Red w-full mt-3"
                       />
                       <Input
+                        register={""}
+                        name="title"
                         type="text"
                         placeholder="To:"
                         className=" border-b-2 focus:outline-none focus:border-b-@Red w-full mt-3"
                       />
                       <Input
                         type="text"
+                        register={""}
+                        name="title"
                         placeholder="CC:"
                         className=" border-b-2 focus:outline-none focus:border-b-@Red w-full mt-3"
                       />
@@ -150,7 +190,13 @@ const ApproveDetail: FC = () => {
                         placeholder="Messages"
                       ></textarea>
                       <div className="flex justify-between items-end mt-5 h-20 max-h-20">
-                        <Input type="file" className="w-full " multiple />
+                        <Input
+                          register={""}
+                          name="title"
+                          type="file"
+                          className="w-full "
+                          multiple
+                        />
                         <button>Send</button>
                       </div>
                     </div>

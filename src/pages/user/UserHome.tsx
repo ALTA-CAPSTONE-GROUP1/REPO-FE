@@ -66,7 +66,7 @@ const UserHome: FC<Props> = (props) => {
               <List
                 to={data.to}
                 status={data.status}
-                receive_date={data.receive_date.split(" ")[1]}
+                receive_date={data.receive_date.split("T")[1].slice(0, 8)}
                 opened={data.opened}
                 id={data.id}
                 cc={data.cc}
