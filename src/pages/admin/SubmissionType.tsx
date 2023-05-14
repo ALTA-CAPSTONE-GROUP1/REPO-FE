@@ -1,5 +1,10 @@
-import { RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
-import { FC, useState } from "react";
+import {
+  RiArrowLeftLine,
+  RiArrowRightLine,
+  RiDeleteBin6Line,
+} from "react-icons/ri";
+import { BsFillPlusCircleFill, BsPatchMinusFill } from "react-icons/bs";
+import { FC, useEffect, useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,14 +15,15 @@ import * as z from "zod";
 import { CardTableSubmissionType } from "@/components/Card";
 import { TabSubmisionType } from "@/components/Tab";
 import { LayoutAdmin } from "@/components/Layout";
-import { RedButton } from "@/components/Button";
+import { Red2Button, RedButton } from "@/components/Button";
 import { Input } from "@/components/Input";
 
 const schema = z.object({
-  name: z
+  submission_type_name: z
     .string()
-    .min(5, { message: "Submission name is 5 minimum character" }),
-  value: z.string().min(5, { message: "Submission value is required" }),
+    .min(1, { message: "Submission Name is required" }),
+  position: z.string(),
+  value: z.string().min(1, { message: "Submission value is required" }),
   position_to: z.string(),
   position_cc: z.string(),
   requirement: z
@@ -27,15 +33,68 @@ const schema = z.object({
 
 type Schema = z.infer<typeof schema>;
 
-interface ticketCategoriesType {
-  ticket_category: string;
-  ticket_price: number;
-  ticket_quantity: number;
+// batsan bawah
+
+interface submissionValue {
+  value: number;
+  position_to: {
+    to: string;
+  };
+  position_cc: {
+    cc: string;
+  };
+}
+
+interface valueType {
+  submission_position: {
+    position: string;
+  };
+  submission_value: {
+    value: number;
+    position_to: {
+      to: string;
+    };
+    position_cc: {
+      cc: string;
+    };
+  }[];
+}
+// Batasan bawah
+
+interface submissionPosition {
+  position: string;
+}
+
+interface PositionType {
+  positions: {
+    position: string;
+  }[];
+}
+
+// Batas bawah 2
+
+interface PosisionTo {
+  to: string;
+}
+
+interface PositionsToType {
+  positions_to: {
+    to: string;
+  }[];
+}
+// Batas Bawah 3
+
+interface PositionCC {
+  cc: string;
+}
+interface PositionsCCType {
+  positions_cc: {
+    cc: string;
+  }[];
 }
 
 export function SubmissionType() {
   const [loading, setLoading] = useState<boolean>(false);
-  const [position, setPosition] = useState<string[]>([]);
 
   const {
     register,
@@ -48,7 +107,7 @@ export function SubmissionType() {
   const onSubmit: SubmitHandler<Schema> = (data) => {
     setLoading(true);
     axios
-      .post("submission-type", data)
+      .post("/submission-type", data)
       .then((res) => {
         const { message, data } = res.data;
         if (data) {
@@ -74,7 +133,147 @@ export function SubmissionType() {
         });
       });
   };
+  // Batassan
 
+  const [objValue, setObjValue] = useState<valueType>({
+    submission_position: {
+      position: "",
+    },
+    submission_value: [
+      {
+        position_to: { to: "" },
+        position_cc: { cc: "" },
+        value: 0,
+      },
+    ],
+  });
+
+  const [submissionValue, setSubmissionValue] = useState<submissionValue[]>([
+    {
+      position_to: { to: "" },
+      position_cc: { cc: "" },
+      value: 0,
+    },
+  ]);
+
+  useEffect(() => {
+    ("");
+  }, [submissionValue, objValue]);
+
+  function addSubmissionValue() {
+    const temp = [...objValue.submission_value];
+    temp.push({
+      position_to: { to: "" },
+      position_cc: { cc: "" },
+      value: 0,
+    });
+    setObjValue({ ...objValue, submission_value: temp });
+  }
+
+  function deteleValue(index: number) {
+    const indexToRemove = index;
+    const temp = [...objValue.submission_value];
+    const newValue = temp.filter((_, index) => index !== indexToRemove);
+    setObjValue({ ...objValue, submission_value: newValue });
+  }
+
+  // batasan bawah
+
+  const [objPosition, setObjPosition] = useState<PositionType>({
+    positions: [
+      {
+        position: "",
+      },
+    ],
+  });
+  const [dataPositions, setDataPositions] = useState<submissionPosition[]>([
+    {
+      position: "",
+    },
+  ]);
+
+  useEffect(() => {
+    ("");
+  }, [dataPositions, objPosition]);
+
+  function addDataPositions() {
+    const temp = [...objPosition.positions];
+    temp.push({
+      position: "",
+    });
+    setObjPosition({ ...objPosition, positions: temp });
+  }
+
+  function deletePositions(index: number) {
+    const indexToRemove = index;
+    const temp = [...objPosition.positions];
+    const newPosition = temp.filter((_, index) => index !== indexToRemove);
+    setObjPosition({ ...objPosition, positions: newPosition });
+  }
+  // Batas bawah 2
+  const [objPositionTo, setObjPositionTo] = useState<PositionsToType>({
+    positions_to: [
+      {
+        to: "",
+      },
+    ],
+  });
+  const [dataPositionTo, setDataPositionTo] = useState<PosisionTo[]>([
+    {
+      to: "",
+    },
+  ]);
+
+  useEffect(() => {
+    ("");
+  }, [dataPositionTo, objPositionTo]);
+
+  function addPositionTo() {
+    const temp = [...objPositionTo.positions_to];
+    temp.push({
+      to: "",
+    });
+    setObjPositionTo({ ...objPositionTo, positions_to: temp });
+  }
+
+  function deletePositionTo(index: number) {
+    const indexToRemove = index;
+    const temp = [...objPositionTo.positions_to];
+    const newPositionTo = temp.filter((_, index) => index !== indexToRemove);
+    setObjPositionTo({ ...objPositionTo, positions_to: newPositionTo });
+  }
+  // batas bawah 3
+  const [objPositionCC, setObjPositionCC] = useState<PositionsCCType>({
+    positions_cc: [
+      {
+        cc: "",
+      },
+    ],
+  });
+  const [dataPositioonCC, setDataPositioonCC] = useState<PositionCC[]>([
+    {
+      cc: "",
+    },
+  ]);
+
+  useEffect(() => {
+    ("");
+  }, [dataPositioonCC, objPositionCC]);
+
+  function addPositionCC() {
+    const temp = [...objPositionCC.positions_cc];
+    temp.push({
+      cc: "",
+    });
+    setObjPositionCC({ ...objPositionCC, positions_cc: temp });
+  }
+
+  function deletePositionCC(index: number) {
+    const indexToRemove = index;
+    const temp = [...objPositionCC.positions_cc];
+    const newPositionCc = temp.filter((_, index) => index !== indexToRemove);
+    setObjPositionCC({ ...objPositionCC, positions_cc: newPositionCc });
+  }
   return (
     <LayoutAdmin>
       <div
@@ -98,65 +297,205 @@ export function SubmissionType() {
               </label>
               <Input
                 register={register}
-                name="name"
+                name="submission_type_name"
                 placeholder="Enter Submission Name"
                 id="input-submission-type-name"
-                error={errors.name?.message}
+                error={errors.submission_type_name?.message}
               />
             </div>
-            <div className="mt-5 w-full">
-              <label className="font-semibold text-md text-black">Value</label>
-              <Input
-                register={register}
-                name="value"
-                placeholder="Enter Value"
-                id="input-submission-value"
-                error={errors.value?.message}
-              />
-            </div>
+            {objPosition.positions.map((data, index) => {
+              return (
+                <div className="flex flex-row gap-3">
+                  <div className="mt-5 w-full">
+                    <span className="label-text font-bold">Position</span>
+                    <select
+                      {...register("position")}
+                      className="border rounded-md bg-white border-@Gray text-black p-2 focus:outline-none w-full"
+                      placeholder="Select Position"
+                      id="select-position"
+                    >
+                      <option disabled selected>
+                        Select Position
+                      </option>
+                      <option>Regional Manager</option>
+                      <option>UI Design</option>
+                      <option>Backend Developer</option>
+                    </select>
+                  </div>{" "}
+                  <div className="btn-group mt-5">
+                    <button
+                      className="mt-5  p-3 text-lg rounded-l-lg text-white bg-@Green"
+                      onClick={(event) => {
+                        addDataPositions();
+                      }}
+                    >
+                      <BsFillPlusCircleFill />
+                    </button>
+                    <button
+                      className="mt-5  p-3 text-lg rounded-r-lg text-white bg-@Red"
+                      onClick={(e) => {
+                        deletePositions(index);
+                      }}
+                    >
+                      <BsPatchMinusFill />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+            <div className="sub-form">
+              <div className="mt-5 w-full">
+                {/* <button
+                  onClick={(event) => {
+                    addSubmissionValue();
+                  }}
+                >
+                  <span className="label-text font-bold text-button  ml-5">
+                    + Add Submission Value
+                  </span>
+                </button> */}
+                {objValue.submission_value.map((data, index) => {
+                  return (
+                    <div className="mt-5">
+                      <div className="flex flex-row gap-3">
+                        <div className="w-full">
+                          <label className="font-semibold text-md text-black">
+                            Value
+                          </label>
 
-            <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
-              <div className="mt-5 w-full">
-                <span className="label-text font-bold">Position To</span>
-                <button>
-                  <span className="label-text font-bold text-button  ml-5">
-                    + Add Position
-                  </span>
-                </button>
-                <select
-                  {...register("position_to")}
-                  className="border rounded-md bg-white border-@Gray text-black p-2 focus:outline-none w-full"
-                  placeholder="Select Position"
-                  id="select-position-to"
-                >
-                  <option disabled selected>
-                    Select Position
-                  </option>
-                  <option>Regional Manager</option>
-                  <option>UI Design</option>
-                  <option>Backend Developer</option>
-                </select>
-              </div>
-              <div className="mt-5 w-full">
-                <span className="label-text font-bold">Position CC</span>
-                <button>
-                  <span className="label-text font-bold text-button  ml-5">
-                    + Add Position
-                  </span>
-                </button>
-                <select
-                  {...register("position_cc")}
-                  className="border rounded-md bg-white border-@Gray text-black p-2 focus:outline-none w-full "
-                  placeholder="Select Position"
-                  id="select-position-cc"
-                >
-                  <option disabled selected>
-                    Select Position
-                  </option>
-                  <option>Regional Manager</option>
-                  <option>UI Design</option>
-                  <option>Backend Developer</option>
-                </select>
+                          <Input
+                            register={register}
+                            name="value"
+                            placeholder="Enter Value"
+                            id="input-submission-value"
+                            error={errors.value?.message}
+                          />
+                        </div>
+                        <div className="btn-group flex justify-center items-center">
+                          <button
+                            className="mt-5  p-3 text-lg rounded-l-lg text-white bg-@Green"
+                            onClick={(event) => {
+                              addSubmissionValue();
+                            }}
+                          >
+                            <BsFillPlusCircleFill />
+                          </button>
+                          <button
+                            className="mt-5  p-3 text-lg rounded-r-lg text-white bg-@Red"
+                            onClick={(e) => {
+                              deteleValue(index);
+                            }}
+                          >
+                            <BsPatchMinusFill />
+                          </button>
+                        </div>
+                      </div>
+                      <h3 className="md:px-2 mt-5 font-bold text-@Red">
+                        NOTE: Sort the positions from the lowest to the highest{" "}
+                      </h3>
+                      <div className="flex flex-col md:flex-row gap-4 ">
+                        <div className="flex flex-col w-full">
+                          {objPositionTo.positions_to.map((data, index) => {
+                            return (
+                              <div className="flex flex-row mt-5  w-full gap-2">
+                                <div className="w-full">
+                                  <span className="label-text font-bold">
+                                    Position To
+                                  </span>
+                                  <button>
+                                    <span className="label-text font-bold text-button  ml-5">
+                                      + Add Position
+                                    </span>
+                                  </button>
+                                  <select
+                                    {...register("position_to")}
+                                    className="border rounded-md bg-white border-@Gray text-black p-2 focus:outline-none w-full"
+                                    placeholder="Select Position"
+                                    id="select-position-to"
+                                  >
+                                    <option disabled selected>
+                                      Select Position
+                                    </option>
+                                    <option>Regional Manager</option>
+                                    <option>UI Design</option>
+                                    <option>Backend Developer</option>
+                                  </select>
+                                </div>
+                                <div className="btn-group flex justify-center items-center">
+                                  <button
+                                    className="mt-5  p-3 text-lg rounded-l-lg text-white bg-@Green"
+                                    onClick={(event) => {
+                                      addPositionTo();
+                                    }}
+                                  >
+                                    <BsFillPlusCircleFill />
+                                  </button>
+                                  <button
+                                    className="mt-5  p-3 text-lg rounded-r-lg text-white bg-@Red"
+                                    onClick={(e) => {
+                                      deletePositionTo(index);
+                                    }}
+                                  >
+                                    <BsPatchMinusFill />
+                                  </button>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <div className="flex flex-col w-full">
+                          {objPositionCC.positions_cc.map((data, index) => {
+                            return (
+                              <div className="flex flex-row mt-5  w-full gap-2">
+                                <div className="w-full">
+                                  <span className="label-text font-bold">
+                                    Position CC
+                                  </span>
+                                  <button>
+                                    <span className="label-text font-bold text-button  ml-5">
+                                      + Add Position
+                                    </span>
+                                  </button>
+                                  <select
+                                    {...register("position_cc")}
+                                    className="border rounded-md bg-white border-@Gray text-black p-2 focus:outline-none w-full "
+                                    placeholder="Select Position"
+                                    id="select-position-cc"
+                                  >
+                                    <option disabled selected>
+                                      Select Position
+                                    </option>
+                                    <option>Regional Manager</option>
+                                    <option>UI Design</option>
+                                    <option>Backend Developer</option>
+                                  </select>
+                                </div>
+                                <div className="btn-group flex justify-center items-center">
+                                  <button
+                                    className="mt-5  p-3 text-lg rounded-l-lg text-white bg-@Green"
+                                    onClick={(event) => {
+                                      addPositionCC();
+                                    }}
+                                  >
+                                    <BsFillPlusCircleFill />
+                                  </button>
+                                  <button
+                                    className="mt-5  p-3 text-lg rounded-r-lg text-white bg-@Red"
+                                    onClick={(e) => {
+                                      deletePositionCC(index);
+                                    }}
+                                  >
+                                    <BsPatchMinusFill />
+                                  </button>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
@@ -172,6 +511,8 @@ export function SubmissionType() {
                 error={errors.requirement?.message}
               />
             </div>
+            {/* batsan */}
+
             <div className="mt-5 w-full">
               <RedButton
                 label="Submit"

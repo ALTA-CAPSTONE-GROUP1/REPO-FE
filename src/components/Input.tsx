@@ -12,7 +12,7 @@ export const Input: FC<Props> = (props) => {
   return (
     <div className="w-full">
       <input
-        className="border rounded-lg bg-slate-100 border-slate-400 text-black p-2 focus:outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 w-full"
+        className="border rounded-md bg-white border-@Gray text-black p-2 focus:outline-none w-full"
         {...(register ? register(name) : {})}
         {...props}
       />
