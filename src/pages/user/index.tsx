@@ -12,11 +12,39 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import SubmissionType from "@/utils/types/submission";
 import withReactContent from "sweetalert2-react-content";
+import * as z from "zod";
 
 import Swal from "@/utils/Swal";
 import axios from "axios";
 import ccTypes from "@/utils/types/cc";
 import approveTypes from "@/utils/types/approve";
+
+const schema = z.object({
+  title: z.string().min(1, { message: "Title is required" }),
+  message: z.string().min(5, { message: "Message is required" }),
+});
+
+type Schema = z.infer<typeof schema>;
+
+interface submission_type {
+  name: string;
+  values: number[];
+}
+
+interface to_cc_type {
+  to: {
+    approver_position: string;
+    approver_id: string;
+    approver_name: string;
+  }[];
+  cc: {
+    cc_position: string;
+    cc_name: string;
+    cc_id: string;
+  }[];
+  requirement: string;
+}
+
 const UserIndex: FC = () => {
   const [createSubmission, setCreateSubmission] = useState<boolean>(false);
   const [page, setPage] = useState<string>("user-home");
@@ -28,6 +56,19 @@ const UserIndex: FC = () => {
   const [datascc, setDatascc] = useState<ccTypes[]>([]);
   const [datasApprove, setDatasApprove] = useState<approveTypes[]>([]);
   const MySwal = withReactContent(Swal);
+  const [subTypes, setSubTypes] = useState<submission_type[]>([]);
+  const [indexSubtypes, setIndexSub] = useState<number>();
+  const [selectSubType, setSelectSubType] = useState<string>();
+  const [selectValue, setSelectValue] = useState<number>();
+  const [to_cc, setTo_Cc] = useState<to_cc_type>();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Schema>({
+    resolver: zodResolver(schema),
+  });
 
   useEffect(() => {
     if (page == "user-home") {
@@ -36,6 +77,7 @@ const UserIndex: FC = () => {
         .then((res) => {
           const { data } = res.data;
           setDatasSubmission(data.submissions);
+          setSubTypes(data.submission_type_choices);
         })
         .catch((err) => {
           const { message } = err.response;
@@ -106,6 +148,43 @@ const UserIndex: FC = () => {
     setDatascc([]);
   }
 
+  function handleTypeSelect(event: React.ChangeEvent<HTMLSelectElement>) {
+    console.log(event.target.value);
+    setIndexSub(parseInt(event.target.value));
+    setSelectSubType(subTypes[parseInt(event.target.value)].name);
+  }
+
+  function handleGetToCC(event: React.ChangeEvent<HTMLSelectElement>) {
+    let type = "";
+    if (indexSubtypes) {
+      type = subTypes[indexSubtypes].name;
+    }
+    const value = event.target.value;
+    setSelectValue(parseInt(value));
+
+    axios
+      .get(
+        `submission/requirements?submissiont_type=${type}&submission_value=${value}`
+      )
+      .then((res) => {
+        const { data } = res.data;
+        setTo_Cc(data);
+      })
+      .catch((err) => {
+        const { message } = err.response;
+        MySwal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      });
+  }
+
+  const onSubmit: SubmitHandler<Schema> = (data) => {
+    const newData = { ...data, To: "aasdad" };
+    alert(JSON.stringify(newData));
+  };
+
   return (
     <Layout>
       <SideBar
@@ -123,7 +202,7 @@ const UserIndex: FC = () => {
               {createSubmission ? (
                 <div
                   data-theme="cupcake"
-                  className="absolute right-2 bottom-2 h-[30rem] w-[50rem] shadow-2xl -translate-x-2 translate-y-2 transition-all"
+                  className="absolute min-[400px]:right-0 md:right-2 bottom-2 h-[30rem] min-[400px]:w-[30rem] min-[600px]:w[40rem] min-[1100px]:w-[50rem] shadow-2xl -translate-x-2 translate-y-2 transition-all"
                 >
                   <div className="flex justify-between px-5 py-2 bg-@Red4 items-center">
                     <p className=" text-sm font-bold">New Submission</p>
@@ -135,49 +214,99 @@ const UserIndex: FC = () => {
                     </button>
                   </div>
                   <div data-theme="light" className=" p-5 h-[90%]">
-                    <form action="">
+                    <form onSubmit={handleSubmit(onSubmit)}>
                       <div className="form-control">
                         <div className="input-group rounded-md justify-between w-[40%]">
-                          <select className="select select-bordered">
+                          <select
+                            className="select select-bordered"
+                            onChange={(e) => handleTypeSelect(e)}
+                            value={selectSubType}
+                          >
                             <option disabled selected>
-                              Submission Type
+                              Select Submission Type
                             </option>
-                            <option>Program</option>
-                            <option>Finance</option>
+                            {subTypes.map((data, index) => {
+                              return <option value={index}>{data.name}</option>;
+                            })}
                           </select>
-                          <select className="select select-bordered">
+                          <select
+                            className="select select-bordered"
+                            onChange={(e) => handleGetToCC(e)}
+                            value={selectValue}
+                          >
                             <option disabled selected>
-                              Value
+                              Select Value
                             </option>
-                            <option>{">60 Juta"}</option>
-                            <option>{"<30 Juta"}</option>
+                            {indexSubtypes !== undefined
+                              ? subTypes[indexSubtypes].values.map((data) => {
+                                  return <option value={data}>{data}</option>;
+                                })
+                              : ""}
                           </select>
                         </div>
                         <Input
-                          register={""}
+                          error={errors.title?.message}
+                          register={register}
                           name="title"
                           type="text"
                           placeholder="Title"
                           className=" border-b-2 focus:outline-none focus:border-b-@Red w-full mt-3"
                         />
                         <Input
-                          register={""}
-                          name="title"
+                          disabled
+                          name="to"
                           type="text"
+                          defaultValue={
+                            to_cc
+                              ? "To: " +
+                                to_cc?.to.map((data) => {
+                                  return (
+                                    data.approver_position +
+                                    " " +
+                                    data.approver_name
+                                  );
+                                })
+                              : ""
+                          }
                           placeholder="To:"
                           className=" border-b-2 focus:outline-none focus:border-b-@Red w-full mt-3"
                         />
                         <Input
-                          register={""}
-                          name="title"
+                          disabled
+                          name="cc"
                           type="text"
+                          defaultValue={
+                            to_cc
+                              ? "Cc: " +
+                                to_cc?.cc.map((data) => {
+                                  return data.cc_position + " " + data.cc_name;
+                                })
+                              : ""
+                          }
                           placeholder="CC:"
                           className=" border-b-2 focus:outline-none focus:border-b-@Red w-full mt-3"
                         />
-                        <textarea
-                          className="textarea pb-20"
-                          placeholder="Messages"
-                        ></textarea>
+                        {errors.message?.message ? (
+                          <div
+                            className="tooltip tooltip-open"
+                            data-tip={errors.message?.message}
+                          >
+                            <textarea
+                              {...register("message")}
+                              name="message"
+                              className="textarea pb-20 w-full"
+                              placeholder="Messages"
+                            ></textarea>
+                          </div>
+                        ) : (
+                          <textarea
+                            {...register("message")}
+                            name="message"
+                            className="textarea pb-20 w-full"
+                            placeholder="Messages"
+                          ></textarea>
+                        )}
+
                         <div className="flex justify-between items-end mt-5 h-20 max-h-20">
                           <Input
                             register={""}
@@ -186,7 +315,10 @@ const UserIndex: FC = () => {
                             className="w-full "
                             multiple
                           />
-                          <button>Send</button>
+                          <input
+                            type="submit"
+                            className=" bg-@Red rounded-full text-white py-3 px-5"
+                          />
                         </div>
                       </div>
                     </form>

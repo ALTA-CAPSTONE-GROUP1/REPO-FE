@@ -1,4 +1,3 @@
-import { z } from "zod";
 
 interface SubmissionType {
   id: number;
