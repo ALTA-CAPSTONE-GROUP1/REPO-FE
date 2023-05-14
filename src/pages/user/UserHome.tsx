@@ -2,44 +2,34 @@ import List from "@/components/List";
 import { FC, ReactNode, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { BsSearch } from "react-icons/bs";
-import { RiMenu2Fill } from "react-icons/ri";
+import { RiCloseCircleFill, RiMenu2Fill } from "react-icons/ri";
 import { z } from "zod";
 import withReactContent from "sweetalert2-react-content";
 
 import Swal from "@/utils/Swal";
 import SubmissionType from "@/utils/types/submission";
 import axios from "axios";
+import { Input } from "@/components/Input";
 interface Props {
+  datas: SubmissionType[];
   children: ReactNode;
 }
 
 const UserHome: FC<Props> = (props) => {
-  const { children } = props;
+  // const { addSubmission } = props;
+  const { datas, children } = props;
   const [createSubmission, setCreateSubmission] = useState<boolean>(false);
-  const [datas, setDatas] = useState<SubmissionType[]>([]);
+  // const [datas, setDatas] = useState<SubmissionType[]>(data);
   const MySwal = withReactContent(Swal);
 
   useEffect(() => {
-    fetchData();
+    // fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function fetchData() {
-    axios
-      .get(`submission`)
-      .then((res) => {
-        const { data } = res.data;
-        setDatas(data);
-      })
-      .catch((err) => {
-        const { message } = err.response;
-        MySwal.fire({
-          title: "Failed",
-          text: message,
-          showCancelButton: false,
-        });
-      });
-  }
+  // function fetchData() {
+
+  // }
 
   return (
     <div className="drawer-content flex flex-col">
@@ -72,7 +62,7 @@ const UserHome: FC<Props> = (props) => {
       <div className="h-full overflow-auto  min-w-[50rem]">
         {datas.map((data) => {
           return (
-            <Link to={""}>
+            <Link to={`/sub-detail/${data.id}`}>
               <List
                 to={data.to}
                 status={data.status}

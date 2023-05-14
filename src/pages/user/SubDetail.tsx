@@ -1,7 +1,7 @@
 import List from "@/components/List";
 import SideBar from "@/components/SideBar";
-import { FC, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { FC, useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { BsSearch } from "react-icons/bs";
 import { CardSubmission } from "@/components/Card";
 import { Input } from "@/components/Input";
@@ -10,7 +10,11 @@ import { Layout } from "@/components/Layout";
 import Loading from "@/components/Loading";
 import { useCookies } from "react-cookie";
 import { RedButton } from "@/components/Button";
+import axios from "axios";
+import SubDetailType from "@/utils/types/SubDetail";
+import withReactContent from "sweetalert2-react-content";
 
+import Swal from "@/utils/Swal";
 const SubDetail: FC = () => {
   const [createSubmission, setCreateSubmission] = useState<boolean>(false);
   const [page, setPage] = useState<string>("user-home");
@@ -18,9 +22,33 @@ const SubDetail: FC = () => {
   const [bg2, setBg2] = useState<boolean>(false);
   const [bg3, setBg3] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [cookie, setCookie, removeCookie] = useCookies(["page"]);
   const navigate = useNavigate();
   const [editMode, setEditMode] = useState<boolean>(false);
+  const [data, setData] = useState<Partial<SubDetailType>>();
+  const MySwal = withReactContent(Swal);
+  const { id } = useParams();
+
+  useEffect(() => {
+    fetch();
+  }, []);
+
+  function fetch() {
+    axios
+      .get(`/submission/${id}`)
+      .then((res) => {
+        const { data } = res.data;
+        setData(data);
+      })
+      .catch((err) => {
+        const { message } = err.response;
+        MySwal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      });
+  }
+
   function handleMenu1() {
     setBg1(true);
     setBg2(false);
@@ -28,7 +56,6 @@ const SubDetail: FC = () => {
 
     setPage("user-home");
     navigate("/user");
-    setCookie("page", "home");
   }
 
   function handleMenu2() {
@@ -37,7 +64,6 @@ const SubDetail: FC = () => {
     setBg3(false);
     setPage("cc");
     navigate("/user");
-    setCookie("page", "cc");
   }
 
   function handleMenu3() {
@@ -46,7 +72,6 @@ const SubDetail: FC = () => {
     setBg3(true);
     setPage("approve");
     navigate("/user");
-    setCookie("page", "approve");
   }
   return (
     <Layout>
@@ -65,17 +90,13 @@ const SubDetail: FC = () => {
               <Loading />
             ) : (
               <CardSubmission
-                title="Courier Recruitment"
-                type="Recruitment"
-                from="Product Design : Azhari Aziz"
-                cc="Regional Manager Olivia, Product Design Baker, Product Manager Andi, UI Design Natali, Frontend Developer Lana, Backend Developer Demi"
-                message="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-
-              Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-                file="1"
-                to="Approve by : Regional Zakaria"
-                action=" Regional Manager : Ayunda"
-                status="Revise"
+                title={data?.title}
+                submission_type={data?.submission_type}
+                cc={data?.cc}
+                message={data?.message}
+                attachment={data?.attachment}
+                to={data?.to}
+                approver_action={data?.approver_action}
                 onClick={() => setEditMode(true)}
               />
             )}

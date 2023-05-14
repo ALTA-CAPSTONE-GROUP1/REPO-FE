@@ -9,31 +9,22 @@ import withReactContent from "sweetalert2-react-content";
 
 import Swal from "@/utils/Swal";
 import ccTypes from "@/utils/types/cc";
-const CC: FC = () => {
-  const [datas, setDatas] = useState<ccTypes[]>([]);
+interface Props {
+  datas: ccTypes[];
+}
+const CC: FC<Props> = (props) => {
+  // const [datas, setDatas] = useState<ccTypes[]>([]);
   const MySwal = withReactContent(Swal);
+  const { datas } = props;
 
-  useEffect(() => {
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   fetchData();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
-  function fetchData() {
-    axios
-      .get(`cc`)
-      .then((res) => {
-        const { data } = res.data;
-        setDatas(data);
-      })
-      .catch((err) => {
-        const { message } = err.response;
-        MySwal.fire({
-          title: "Failed",
-          text: message,
-          showCancelButton: false,
-        });
-      });
-  }
+  // function fetchData() {
+
+  // }
 
   return (
     <div className="drawer-content flex flex-col h-[90%]">

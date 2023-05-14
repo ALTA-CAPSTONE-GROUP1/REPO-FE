@@ -65,17 +65,9 @@ const Router: FC = () => {
       path: "/home",
       element: <UserIndex />,
     },
-    {
-      path: "/approve",
-      element: <Approve />,
-    },
-    {
-      path: "/cc",
-      element: <CC />,
-    },
 
     {
-      path: "/sub-detail",
+      path: "/sub-detail/:id",
       element: <SubDetail />,
     },
     {
