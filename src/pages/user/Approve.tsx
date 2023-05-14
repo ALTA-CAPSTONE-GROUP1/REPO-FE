@@ -9,29 +9,22 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "@/utils/Swal";
 import approveTypes from "@/utils/types/approve";
 
-const Approve: FC = () => {
-  const [datas, setDatas] = useState<approveTypes[]>([]);
-  const MySwal = withReactContent(Swal);
-  useEffect(() => {
-    fetchData();
-  }, []);
+interface Props {
+  datas: approveTypes[];
+}
 
-  function fetchData() {
-    axios
-      .get(`approver`)
-      .then((res) => {
-        const { data } = res.data;
-        setDatas(data);
-      })
-      .catch((err) => {
-        const { message } = err.response;
-        MySwal.fire({
-          title: "Failed",
-          text: message,
-          showCancelButton: false,
-        });
-      });
-  }
+const Approve: FC<Props> = (props) => {
+  const { datas } = props;
+
+  // const [datas, setDatas] = useState<approveTypes[]>([]);
+  const MySwal = withReactContent(Swal);
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
+
+  // function fetchData() {
+
+  // }
 
   return (
     <div className="drawer-content flex flex-col">

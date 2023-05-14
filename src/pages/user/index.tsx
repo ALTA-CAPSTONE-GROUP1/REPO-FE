@@ -10,7 +10,13 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import SubmissionType from "@/utils/types/submission";
+import withReactContent from "sweetalert2-react-content";
 
+import Swal from "@/utils/Swal";
+import axios from "axios";
+import ccTypes from "@/utils/types/cc";
+import approveTypes from "@/utils/types/approve";
 const UserIndex: FC = () => {
   const [createSubmission, setCreateSubmission] = useState<boolean>(false);
   const [page, setPage] = useState<string>("user-home");
@@ -18,6 +24,59 @@ const UserIndex: FC = () => {
   const [bg2, setBg2] = useState<boolean>(false);
   const [bg3, setBg3] = useState<boolean>(false);
   const navigate = useNavigate();
+  const [datasSubmission, setDatasSubmission] = useState<SubmissionType[]>([]);
+  const [datascc, setDatascc] = useState<ccTypes[]>([]);
+  const [datasApprove, setDatasApprove] = useState<approveTypes[]>([]);
+  const MySwal = withReactContent(Swal);
+
+  useEffect(() => {
+    if (page == "user-home") {
+      axios
+        .get(`submission`)
+        .then((res) => {
+          const { data } = res.data;
+          setDatasSubmission(data);
+        })
+        .catch((err) => {
+          const { message } = err.response;
+          MySwal.fire({
+            title: "Failed",
+            text: message,
+            showCancelButton: false,
+          });
+        });
+    } else if (page == "cc") {
+      axios
+        .get(`cc`)
+        .then((res) => {
+          const { data } = res.data;
+          setDatascc(data);
+        })
+        .catch((err) => {
+          const { message } = err.response;
+          MySwal.fire({
+            title: "Failed",
+            text: message,
+            showCancelButton: false,
+          });
+        });
+    } else {
+      axios
+        .get(`approver`)
+        .then((res) => {
+          const { data } = res.data;
+          setDatasApprove(data);
+        })
+        .catch((err) => {
+          const { message } = err.response;
+          MySwal.fire({
+            title: "Failed",
+            text: message,
+            showCancelButton: false,
+          });
+        });
+    }
+  }, [page]);
 
   function handleMenu1() {
     setBg1(true);
@@ -25,6 +84,8 @@ const UserIndex: FC = () => {
     setBg3(false);
 
     setPage("user-home");
+    setDatasApprove([]);
+    setDatascc([]);
   }
 
   function handleMenu2() {
@@ -32,6 +93,8 @@ const UserIndex: FC = () => {
     setBg2(true);
     setBg3(false);
     setPage("cc");
+    setDatasSubmission([]);
+    setDatasApprove([]);
   }
 
   function handleMenu3() {
@@ -39,6 +102,8 @@ const UserIndex: FC = () => {
     setBg2(false);
     setBg3(true);
     setPage("approve");
+    setDatasApprove([]);
+    setDatascc([]);
   }
 
   return (
@@ -53,7 +118,7 @@ const UserIndex: FC = () => {
         onClickApprove={handleMenu3}
       >
         {page === "user-home" || createSubmission ? (
-          <UserHome>
+          <UserHome datas={datasSubmission}>
             <div className="h-10 w-full bg-@Red4 relative transition-all">
               {createSubmission ? (
                 <div
@@ -133,9 +198,9 @@ const UserIndex: FC = () => {
             </div>
           </UserHome>
         ) : page === "cc" ? (
-          <CC />
+          <CC datas={datascc} />
         ) : (
-          <Approve />
+          <Approve datas={datasApprove} />
         )}
       </SideBar>
     </Layout>

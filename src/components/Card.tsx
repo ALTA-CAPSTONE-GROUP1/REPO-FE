@@ -1,8 +1,9 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { BsFileEarmarkPdfFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { BlueButton, Red2Button, RedButton } from "@/components/Button";
 import { RiDeleteBin6Line, RiPencilLine } from "react-icons/ri";
+import SubDetailType from "@/utils/types/SubDetail";
 
 interface PropsTableUsers {
   name: string;
@@ -201,45 +202,64 @@ export const CardApproving: FC<PropsApproving> = (props) => {
     </div>
   );
 };
-interface PropsSubmission {
-  title: string;
-  type: string;
-  from: string;
-  cc: string;
-  message: string;
-  file: string;
-  to: string;
-  action: string;
-  status: string;
+interface PropsSubmission extends SubDetailType {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 export const CardSubmission: FC<PropsSubmission> = (props) => {
-  const { title, type, from, cc, message, file, to, action, status, onClick } =
-    props;
+  const {
+    to,
+    cc,
+    submission_type,
+    title,
+    message,
+    approver_action,
+    action_message,
+    attachment,
+    onClick,
+  } = props;
 
   return (
     <div className="overflow-x-auto w-full px-6">
       <div className="mt-10">
         <div className="flex justify-between">
           <h3 className="font-bold text-3xl text-black">{title}</h3>
-          <h3 className="font-bold text-xl text-@Green">{type}</h3>
+          <h3 className="font-bold text-xl text-@Green">{submission_type}</h3>
         </div>
         <div className="mt-2">
           <h3 className="capitalize font-semibold text-2xl text-black">
-            {from}
+            TO:{" "}
+            {to?.map((data) => {
+              return data.approver_position + " " + data.approver_name + ",";
+            })}
           </h3>
-          <h5 className="text-@Gray">{cc}</h5>
+          <h5 className="text-@Gray">
+            Cc:{" "}
+            {cc?.map((data) => {
+              return data.cc_position + " " + data.cc_name + ",";
+            })}
+          </h5>
           <p className="mt-5 text-base">{message} </p>
           <div className="mt-20 ">
             <a className="text-9xl text-@Red">
               <BsFileEarmarkPdfFill />
             </a>
             <h3 className="capitalize font-semibold text-2xl text-black">
-              {file} lampiran
+              {attachment}
             </h3>
-            <h4 className="text-@Gray font-semibold">{to}</h4>
+            <h4 className="text-@Gray font-semibold">
+              {approver_action?.map((data) => {
+                return (
+                  data.action +
+                  " by " +
+                  data.approver_position +
+                  " " +
+                  data.approver_name +
+                  ","
+                );
+              })}
+            </h4>
           </div>
-          <div className="flex flex-row gap-2 items-center">
+          {/* <div className="flex flex-row gap-2 items-center">
             <h3 className="capitalize font-semibold text-2xl text-black">
               {action}
             </h3>
@@ -248,7 +268,7 @@ export const CardSubmission: FC<PropsSubmission> = (props) => {
                 {status}
               </h3>
             </div>
-          </div>
+          </div> */}
           <div className="flex justify-end">
             <div className="flex flex-col md:flex-row gap-2">
               <div className="w-40">
