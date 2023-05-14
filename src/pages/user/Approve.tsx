@@ -15,7 +15,6 @@ interface Props {
 
 const Approve: FC<Props> = (props) => {
   const { datas } = props;
-
   // const [datas, setDatas] = useState<approveTypes[]>([]);
   const MySwal = withReactContent(Swal);
   // useEffect(() => {
@@ -51,7 +50,7 @@ const Approve: FC<Props> = (props) => {
       <div className="h-full overflow-auto  min-w-[50rem]">
         {datas.map((data) => {
           return (
-            <Link to={""}>
+            <Link to={`/approve-detail/${data.submission_id}`}>
               <ApproveList
                 submission_id={data.submission_id}
                 from={data.from}

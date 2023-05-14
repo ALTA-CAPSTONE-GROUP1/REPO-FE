@@ -35,7 +35,7 @@ const UserIndex: FC = () => {
         .get(`submission`)
         .then((res) => {
           const { data } = res.data;
-          setDatasSubmission(data);
+          setDatasSubmission(data.submissions);
         })
         .catch((err) => {
           const { message } = err.response;

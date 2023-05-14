@@ -71,12 +71,12 @@ const Router: FC = () => {
       element: <SubDetail />,
     },
     {
-      path: "/user",
-      element: <UserIndex />,
+      path: "/approve-detail/:id",
+      element: <ApproveDetail />,
     },
     {
-      path: "/approve-detail",
-      element: <ApproveDetail />,
+      path: "/user",
+      element: <UserIndex />,
     },
     {
       path: "/profile-users",

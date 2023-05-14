@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { BlueButton, Red2Button, RedButton } from "@/components/Button";
 import { RiDeleteBin6Line, RiPencilLine } from "react-icons/ri";
 import SubDetailType from "@/utils/types/SubDetail";
+import ApproveDetailType from "@/utils/types/ApproveDetail";
 
 interface PropsTableUsers {
   name: string;
@@ -137,17 +138,17 @@ export const CardTablePosition: FC<PropsTablePosition> = (props) => {
   );
 };
 
-interface PropsApproving {
-  title: string;
-  type: string;
-  from: string;
-  cc: string;
-  message: string;
-  file: string;
-  to: string;
-}
-export const CardApproving: FC<PropsApproving> = (props) => {
-  const { title, type, from, cc, message, file, to } = props;
+export const CardApproving: FC<ApproveDetailType> = (props) => {
+  const {
+    title,
+    from,
+    cc,
+    to,
+    submission_type,
+    status_by,
+    message_body,
+    attacment,
+  } = props;
 
   return (
     <div className="overflow-x-auto w-full p-6 mt-2">
@@ -155,22 +156,37 @@ export const CardApproving: FC<PropsApproving> = (props) => {
       <div className="mt-5">
         <div className="flex justify-between">
           <h3 className="font-bold text-3xl text-black">{title}</h3>
-          <h3 className="font-bold text-xl text-@Green">{type}</h3>
+          <h3 className="font-bold text-xl text-@Green">{submission_type}</h3>
         </div>
         <div className="mt-2">
           <h3 className="capitalize font-semibold text-2xl text-black">
-            {from}
+            From: {from?.position + " " + from?.name}
           </h3>
-          <h5 className="text-@Gray">{cc}</h5>
-          <p className="mt-5 text-xl">{message} </p>
+          <h4 className="capitalize font-semibold text-2xl text-black">
+            To:{" "}
+            {to?.map((data) => {
+              return data.position + " " + data.name + ",";
+            })}
+          </h4>
+          <h5 className="text-@Gray">
+            Cc:{" "}
+            {cc?.map((data) => {
+              return data.position + " " + data.name + ",";
+            })}
+          </h5>
+          <p className="mt-5 text-xl">{message_body} </p>
           <div className="mt-20 ">
-            <a className="text-9xl text-@Red">
+            <a className="text-5xl text-@Red">
               <BsFileEarmarkPdfFill />
             </a>
             <h3 className="capitalize font-semibold text-2xl text-black">
-              {file} lampiran
+              {attacment}
             </h3>
-            <h4 className="text-@Gray font-semibold">{to}</h4>
+            <h4 className="text-@Gray font-semibold">
+              {status_by?.map((data) => {
+                return data.status + " " + data.by + ",";
+              })}
+            </h4>
           </div>
           <div className="flex justify-end">
             <div className="flex flex-col md:flex-row gap-2">
@@ -296,41 +312,55 @@ interface PropsApprove {
   file: string;
   to: string;
 }
-export const CardApprove: FC<PropsApprove> = (props) => {
-  const { title, type, from, cc, message, file, to } = props;
+export const CardApprove: FC<ApproveDetailType> = (props) => {
+  const {
+    title,
+    from,
+    cc,
+    to,
+    submission_type,
+    status_by,
+    message_body,
+    attacment,
+  } = props;
 
   return (
     <div className="overflow-x-auto w-full p-6 mt-2">
-      <div className="mt-10">
+      <div className="mt-5">
         <div className="flex justify-between">
           <h3 className="font-bold text-3xl text-black">{title}</h3>
-          <h3 className="font-bold text-xl text-@Green">{type}</h3>
+          <h3 className="font-bold text-xl text-@Green">{submission_type}</h3>
         </div>
         <div className="mt-2">
           <h3 className="capitalize font-semibold text-2xl text-black">
-            {from}
+            From: {from?.position + " " + from?.name}
           </h3>
-          <h5 className="text-@Gray">{cc}</h5>
-          <p className="mt-5 text-xl">{message} </p>
-          <div className="mt-20 ">
-            <a className="text-9xl text-@Red">
+          <h4 className="capitalize font-semibold text-2xl text-black">
+            To:{" "}
+            {to?.map((data) => {
+              return data.position + " " + data.name + ",";
+            })}
+          </h4>
+          <h5 className="text-@Gray">
+            Cc:{" "}
+            {cc?.map((data) => {
+              return data.position + " " + data.name + ",";
+            })}
+          </h5>
+          <p className="mt-5 text-lg">{message_body} </p>
+          <div className="mt-20 flex flex-col h-full justify-end ">
+            <a className="text-5xl text-@Red">
               <BsFileEarmarkPdfFill />
             </a>
             <h3 className="capitalize font-semibold text-2xl text-black">
-              {file} lampiran
+              {attacment}
             </h3>
-            <h4 className="text-@Gray font-semibold">{to}</h4>
+            <h4 className="text-@Gray font-semibold">
+              {status_by?.map((data) => {
+                return data.status + " " + data.by + ",";
+              })}
+            </h4>
           </div>
-          {/* <div className="flex justify-end mb-5">
-            <div className="flex flex-col md:flex-row gap-2">
-              <label
-                htmlFor="my-modal-3"
-                className="button py-2 px-4 w-full bg-@Red justify-center items-center gap-2 rounded-full border text-lg  disabled:bg-@Red2 text-white font-bold shadow-sm align-middle hover:scale-105 focus:outline-none   transition-all text-md"
-              >
-                Response
-              </label>
-            </div>
-          </div> */}
         </div>
       </div>
     </div>
