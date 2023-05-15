@@ -1,4 +1,5 @@
 export interface PositionData {
-  Position: string;
-  Tag: string;
+  position: string;
+  tag: string;
+  action: string;
 }

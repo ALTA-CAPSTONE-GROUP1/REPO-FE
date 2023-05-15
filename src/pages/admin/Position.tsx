@@ -19,6 +19,7 @@ import { TabPosition } from "@/components/Tab";
 import { RedButton } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { PositionData } from "@/utils/types/Admin";
+import { TablePosition } from "@/components/Table";
 
 const schema = z.object({
   position: z.string().min(1, { message: "Position is required" }),
@@ -29,9 +30,10 @@ type Schema = z.infer<typeof schema>;
 
 export const Position: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [datas, setDatas] = useState<PositionData[]>([]);
   const { position_id } = useParams();
   const {
+    watch,
+    setValue,
     register,
     handleSubmit,
     formState: { errors },
@@ -70,24 +72,28 @@ export const Position: FC = () => {
   };
 
   //get data in table
-  const data = React.useMemo(() => "position", []);
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: "Position",
-        accessor: "position",
-      },
-      {
-        Header: "Tag",
-        accessor: "tag",
-      },
-      {
-        Header: "Action",
-        accessor: "tag",
-      },
-    ],
-    []
-  );
+  const [data, setData] = useState<PositionData[]>([]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    axios
+      .get("position")
+      .then((response) => {
+        const { data } = response.data;
+        setData(data);
+      })
+      .catch((error) => {
+        alert(error.toString());
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+    console.log(data);
+  };
+  // const data = React.useMemo(() => "position", []);
 
   // useEffect(() => {
   //   fetch();
@@ -112,43 +118,6 @@ export const Position: FC = () => {
   //       setLoading(false);
   //     });
   // }
-  const handleDeleteAccount = () => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You will not be able to recover your data!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "Cancel",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .delete(`position/${position_id}`, {
-            headers: {
-              Authorization: "",
-            },
-          })
-          .then((response) => {
-            const { message } = response.data;
-
-            Swal.fire({
-              title: "Success",
-              text: message,
-              showCancelButton: false,
-            });
-          })
-          .catch((error) => {
-            const { data } = error.response;
-            Swal.fire({
-              icon: "error",
-              title: "Failed",
-              text: data.message,
-              showCancelButton: false,
-            });
-          });
-      }
-    });
-  };
 
   return (
     <LayoutAdmin>
@@ -219,20 +188,7 @@ export const Position: FC = () => {
               </span>
             </label>
           </div>
-          <table className="table w-full border border-@Gray2">
-            {/* head */}
-            <thead>
-              <th className="capitalize bg-@Gray2 text-black">Position</th>
-              <th className="bg-@Gray2 text-black">Tag</th>
-
-              <th className="capitalize  bg-@Gray2 text-black ">
-                <div className="flex pr-6 justify-end">Action</div>
-              </th>
-            </thead>
-            <tbody></tbody>
-            {/* foot */}
-            <tfoot></tfoot>
-          </table>
+          <TablePosition data={data} />
           <div className="flex flex-row p-2 bg-white text-black border rounded-es-md rounded-ee-md justify-between items-center">
             <button className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md">
               <RiArrowLeftLine /> Previous
