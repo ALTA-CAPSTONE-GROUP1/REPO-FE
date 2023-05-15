@@ -1,20 +1,27 @@
-import { RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
-import { FC, useState } from "react";
+import {
+  RiArrowLeftLine,
+  RiArrowRightLine,
+  RiDeleteBin6Line,
+} from "react-icons/ri";
+import { useNavigate, useParams } from "react-router-dom";
+import React, { FC, useState, useEffect } from "react";
 import { BsSearch } from "react-icons/bs";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Swal from "sweetalert2";
 import axios from "axios";
 import * as z from "zod";
+import { useTable } from "react-table";
 
 import { CardTablePosition } from "@/components/Card";
 import { LayoutAdmin } from "@/components/Layout";
 import { TabPosition } from "@/components/Tab";
 import { RedButton } from "@/components/Button";
 import { Input } from "@/components/Input";
+import { PositionData } from "@/utils/types/Admin";
 
 const schema = z.object({
-  position: z.string(),
+  position: z.string().min(1, { message: "Position is required" }),
   tag: z.string(),
 });
 
@@ -22,7 +29,8 @@ type Schema = z.infer<typeof schema>;
 
 export const Position: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
-
+  const [datas, setDatas] = useState<PositionData[]>([]);
+  const { position_id } = useParams();
   const {
     register,
     handleSubmit,
@@ -46,6 +54,7 @@ export const Position: FC = () => {
             if (result.isConfirmed) {
               window.location.reload();
             }
+            console.log(result);
           });
         }
       })
@@ -58,6 +67,87 @@ export const Position: FC = () => {
         });
       })
       .finally(() => setLoading(false));
+  };
+
+  //get data in table
+  const data = React.useMemo(() => "position", []);
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: "Position",
+        accessor: "position",
+      },
+      {
+        Header: "Tag",
+        accessor: "tag",
+      },
+      {
+        Header: "Action",
+        accessor: "tag",
+      },
+    ],
+    []
+  );
+
+  // useEffect(() => {
+  //   fetch();
+  // }, []);
+
+  // function fetch() {
+  //   axios
+  //     .get("position")
+  //     .then((res) => {
+  //       const { data } = res.data;
+  //       setDatas(data);
+  //     })
+  //     .catch((err) => {
+  //       const { message } = err.response;
+  //       Swal.fire({
+  //         title: "Failed",
+  //         text: message,
+  //         showCancelButton: false,
+  //       });
+  //     })
+  //     .finally(() => {
+  //       setLoading(false);
+  //     });
+  // }
+  const handleDeleteAccount = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will not be able to recover your data!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`position/${position_id}`, {
+            headers: {
+              Authorization: "",
+            },
+          })
+          .then((response) => {
+            const { message } = response.data;
+
+            Swal.fire({
+              title: "Success",
+              text: message,
+              showCancelButton: false,
+            });
+          })
+          .catch((error) => {
+            const { data } = error.response;
+            Swal.fire({
+              icon: "error",
+              title: "Failed",
+              text: data.message,
+              showCancelButton: false,
+            });
+          });
+      }
+    });
   };
 
   return (
@@ -133,39 +223,13 @@ export const Position: FC = () => {
             {/* head */}
             <thead>
               <th className="capitalize bg-@Gray2 text-black">Position</th>
-              <th className="bg-@Gray2 text-black">ID</th>
+              <th className="bg-@Gray2 text-black">Tag</th>
 
               <th className="capitalize  bg-@Gray2 text-black ">
                 <div className="flex pr-6 justify-end">Action</div>
               </th>
             </thead>
-            <tbody>
-              <CardTablePosition
-                position="Product Manager"
-                tag="pm"
-                link_del=""
-              />
-              <CardTablePosition
-                position="Product Manager"
-                tag="pm"
-                link_del=""
-              />
-              <CardTablePosition
-                position="Product Manager"
-                tag="pm"
-                link_del=""
-              />
-              <CardTablePosition
-                position="Product Manager"
-                tag="pm"
-                link_del=""
-              />
-              <CardTablePosition
-                position="Product Manager"
-                tag="pm"
-                link_del=""
-              />
-            </tbody>
+            <tbody></tbody>
             {/* foot */}
             <tfoot></tfoot>
           </table>

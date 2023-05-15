@@ -51,7 +51,7 @@ export function SignID() {
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
     axios
-      .post(`sign-validation/${sign_id}`, data)
+      .post(`sign-validation`, data)
       .then((res) => {
         const { message, data } = res.data;
         if (data) {
