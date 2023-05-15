@@ -31,6 +31,11 @@ const UserHome: FC<Props> = (props) => {
 
   // }
 
+  function isCurrentDate(dateString: string) {
+    const currentDate = new Date().toISOString().slice(0, 10);
+    return dateString === currentDate;
+  }
+
   return (
     <div className="drawer-content flex flex-col">
       <div className="p-7 w-full">
@@ -66,7 +71,11 @@ const UserHome: FC<Props> = (props) => {
               <List
                 to={data.to}
                 status={data.status}
-                receive_date={data.receive_date.split("T")[1].slice(0, 8)}
+                receive_date={
+                  isCurrentDate(data.receive_date.split("T")[0])
+                    ? data.receive_date.split("T")[1].slice(0, 8)
+                    : data.receive_date.split("T")[0]
+                }
                 opened={data.opened}
                 id={data.id}
                 cc={data.cc}
