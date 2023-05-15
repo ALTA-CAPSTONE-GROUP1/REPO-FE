@@ -36,7 +36,6 @@ function Login() {
       .post("login", data)
       .then((res) => {
         const { data, message } = res.data;
-        const isAdmin = data.id;
         Swal.fire({
           icon: "success",
           title: "Success",
@@ -55,7 +54,6 @@ function Login() {
               navigate("/user"); // jika user bukan admin, arahkan ke halaman user
             }
           }
-          console.log(data);
         });
       })
       .catch((error) => {
