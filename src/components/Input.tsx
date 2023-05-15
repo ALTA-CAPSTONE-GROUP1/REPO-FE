@@ -1,4 +1,4 @@
-import { FC, InputHTMLAttributes } from "react";
+import { FC, InputHTMLAttributes, useEffect, useState } from "react";
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
@@ -8,24 +8,20 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
 
 export const Input: FC<Props> = (props) => {
   const { placeholder, register, name, error } = props;
+  const [toolTip, setTooltip] = useState<string>("");
 
   return (
     <div className="w-full">
-      {error ? (
-        <div className="tooltip tooltip-open" data-tip={error}>
-          <input
-            className="border rounded-lg bg-slate-100 border-slate-400 text-black p-2 focus:outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 w-full"
-            {...(register ? register(name) : {})}
-            {...props}
-          />
-        </div>
-      ) : (
+      <div
+        className={`${error ? "tooltip tooltip-open w-full" : ""}`}
+        data-tip={error}
+      >
         <input
           className="border rounded-lg bg-slate-100 border-slate-400 text-black p-2 focus:outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 w-full"
           {...(register ? register(name) : {})}
           {...props}
         />
-      )}
+      </div>
 
       {/* {error && (
         <label className="label">

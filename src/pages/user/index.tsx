@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import { Layout } from "@/components/Layout";
 import UserHome from "./UserHome";
 import { FC, useEffect, useState } from "react";
@@ -22,6 +23,8 @@ import approveTypes from "@/utils/types/approve";
 const schema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
   message: z.string().min(5, { message: "Message is required" }),
+  sub_type: z.string(),
+  value: z.string(),
 });
 
 type Schema = z.infer<typeof schema>;
@@ -61,6 +64,7 @@ const UserIndex: FC = () => {
   const [selectSubType, setSelectSubType] = useState<string>();
   const [selectValue, setSelectValue] = useState<number>();
   const [to_cc, setTo_Cc] = useState<to_cc_type>();
+  const [file, setFile] = useState<any>();
 
   const {
     register,
@@ -149,12 +153,16 @@ const UserIndex: FC = () => {
   }
 
   function handleTypeSelect(event: React.ChangeEvent<HTMLSelectElement>) {
-    console.log(event.target.value);
-    setIndexSub(parseInt(event.target.value));
-    setSelectSubType(subTypes[parseInt(event.target.value)].name);
+    alert(event.target.value);
+    setIndexSub(subTypes.findIndex((item) => item.name === event.target.value));
+    setSelectSubType(
+      subTypes[subTypes.findIndex((item) => item.name === event.target.value)]
+        .name
+    );
   }
 
   function handleGetToCC(event: React.ChangeEvent<HTMLSelectElement>) {
+    alert(selectSubType);
     let type = "";
     if (indexSubtypes) {
       type = subTypes[indexSubtypes].name;
@@ -181,8 +189,39 @@ const UserIndex: FC = () => {
   }
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
-    const newData = { ...data, To: "aasdad" };
+    let to: string[] = [];
+    let cc: string[] = [];
+    to_cc?.to.map((data) => {
+      return to.push(data.approver_id);
+    });
+    to_cc?.cc.map((data) => {
+      return cc.push(data.cc_id);
+    });
+    const newData = { ...data, To: to, CC: cc, attachment: file };
     alert(JSON.stringify(newData));
+    const formData = new FormData();
+    let key: keyof typeof newData;
+    for (key in newData) {
+      formData.append(key, newData[key]);
+    }
+    axios
+      .post("submission", formData)
+      .then((res) => {
+        const { message } = res.data;
+        MySwal.fire({
+          title: "Success",
+          text: message,
+          showCancelButton: false,
+        });
+      })
+      .catch((err) => {
+        const { message } = err.response;
+        MySwal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      });
   };
 
   return (
@@ -218,6 +257,7 @@ const UserIndex: FC = () => {
                       <div className="form-control">
                         <div className="input-group rounded-md justify-between w-[40%]">
                           <select
+                            {...register("sub_type")}
                             className="select select-bordered"
                             onChange={(e) => handleTypeSelect(e)}
                             value={selectSubType}
@@ -226,16 +266,19 @@ const UserIndex: FC = () => {
                               Select Submission Type
                             </option>
                             {subTypes.map((data, index) => {
-                              return <option value={index}>{data.name}</option>;
+                              return (
+                                <option value={data.name}>{data.name}</option>
+                              );
                             })}
                           </select>
                           <select
+                            {...register("value")}
                             className="select select-bordered"
                             onChange={(e) => handleGetToCC(e)}
                             value={selectValue}
                           >
                             <option disabled selected>
-                              Select Value
+                              {selectValue}
                             </option>
                             {indexSubtypes !== undefined
                               ? subTypes[indexSubtypes].values.map((data) => {
@@ -286,26 +329,22 @@ const UserIndex: FC = () => {
                           placeholder="CC:"
                           className=" border-b-2 focus:outline-none focus:border-b-@Red w-full mt-3"
                         />
-                        {errors.message?.message ? (
-                          <div
-                            className="tooltip tooltip-open"
-                            data-tip={errors.message?.message}
-                          >
-                            <textarea
-                              {...register("message")}
-                              name="message"
-                              className="textarea pb-20 w-full"
-                              placeholder="Messages"
-                            ></textarea>
-                          </div>
-                        ) : (
+
+                        <div
+                          className={`${
+                            errors.message?.message
+                              ? "tooltip tooltip-open w-full"
+                              : ""
+                          }`}
+                          data-tip={errors.message?.message}
+                        >
                           <textarea
                             {...register("message")}
                             name="message"
-                            className="textarea pb-20 w-full"
+                            className="textarea pb-20 w-full focus:border-@Red focus:outline-none"
                             placeholder="Messages"
                           ></textarea>
-                        )}
+                        </div>
 
                         <div className="flex justify-between items-end mt-5 h-20 max-h-20">
                           <Input
@@ -314,11 +353,16 @@ const UserIndex: FC = () => {
                             type="file"
                             className="w-full "
                             multiple
+                            onChange={(event) => {
+                              if (!event.currentTarget.files) {
+                                return;
+                              }
+                              setFile(event.currentTarget.files[0]);
+                            }}
                           />
-                          <input
-                            type="submit"
-                            className=" bg-@Red rounded-full text-white py-3 px-5"
-                          />
+                          <button className=" bg-@Red rounded-full text-white py-3 px-5">
+                            Send
+                          </button>
                         </div>
                       </div>
                     </form>
