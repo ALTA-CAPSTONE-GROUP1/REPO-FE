@@ -19,7 +19,7 @@ export const Input: FC<Props> = (props) => {
         data-tip={error}
       >
         <input
-          className="border rounded-lg bg-slate-100 border-slate-400 text-black p-2 focus:outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 w-full"
+          className="border rounded-lg bg-white border-slate-400 text-black p-2 focus:outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 w-full"
           {...(register ? register(name) : {})}
           {...props}
         />
