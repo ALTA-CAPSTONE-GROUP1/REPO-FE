@@ -13,7 +13,9 @@ export const Input: FC<Props> = (props) => {
   return (
     <div className="w-full">
       <div
-        className={`${error ? "tooltip tooltip-open w-full" : ""}`}
+        className={`${
+          error ? "tooltip tooltip-open w-full tooltip-bottom" : ""
+        }`}
         data-tip={error}
       >
         <input

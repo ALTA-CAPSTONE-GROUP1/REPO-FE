@@ -278,7 +278,7 @@ const UserIndex: FC = () => {
                             value={selectValue}
                           >
                             <option disabled selected>
-                              {selectValue}
+                              Select Value
                             </option>
                             {indexSubtypes !== undefined
                               ? subTypes[indexSubtypes].values.map((data) => {

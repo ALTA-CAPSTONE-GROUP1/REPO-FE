@@ -15,11 +15,12 @@ interface DrawCanvasExampleProps {
 }
 
 const DrawCanvasExample: FC = (props) => {
-  const message = ["Approved By Reginal Manager", "test 2"];
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
   const location = useLocation();
 
   const urlnya = new URLSearchParams(location.search).get("url");
+  const approver = new URLSearchParams(location.search).get("approver");
+  const message = approver;
 
   const customCanvasPlugin = (): Plugin => {
     const onCanvasLayerRender = (e: PluginOnCanvasLayerRender) => {
@@ -32,8 +33,8 @@ const DrawCanvasExample: FC = (props) => {
       const canvas = e.ele;
 
       const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-      const centerX = canvas.width / 2;
-      const centerY = canvas.height / 3;
+      const centerX = e.scale * canvas.width * 0.1;
+      const centerY = e.scale * canvas.height * 0.03;
 
       const fonts = ctx.font.split(" ");
       const fontSize = parseInt(fonts[0], 5);
@@ -46,7 +47,9 @@ const DrawCanvasExample: FC = (props) => {
       // let count = 1;
       // message.map((data, index) => {
       // count++;
-      return ctx.fillText(message[0], centerX, 100);
+      if (message) {
+        return ctx.fillText(message, centerX, centerY, 500);
+      }
       // });
     };
 

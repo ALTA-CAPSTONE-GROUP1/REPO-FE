@@ -324,6 +324,13 @@ export const CardApprove: FC<ApproveDetailType> = (props) => {
     attacment,
   } = props;
 
+  function handlePdf() {
+    const url = "/images/test2.pdf";
+    const approver = status_by?.map((data) => {
+      return data.status + " by " + data.by + ",";
+    });
+    window.open(`/app2?url=${url}&approver=${approver}`);
+  }
   return (
     <div className="overflow-x-auto w-full p-6 mt-2">
       <div className="mt-5">
@@ -349,9 +356,9 @@ export const CardApprove: FC<ApproveDetailType> = (props) => {
           </h5>
           <p className="mt-5 text-lg">{message_body} </p>
           <div className="mt-20 flex flex-col h-full justify-end ">
-            <a className="text-5xl text-@Red">
+            <button onClick={handlePdf} className="text-5xl text-@Red">
               <BsFileEarmarkPdfFill />
-            </a>
+            </button>
             <h3 className="capitalize font-semibold text-2xl text-black">
               {attacment}
             </h3>
