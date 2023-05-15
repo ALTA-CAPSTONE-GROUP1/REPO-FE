@@ -19,7 +19,7 @@ type Schema = z.infer<typeof schema>;
 
 function Login() {
   const [loading, setLoading] = useState<boolean>(false);
-  const [, setCookie] = useCookies(["token", "id"]);
+  const [, setCookie] = useCookies(["token", "user_position"]);
   const navigate = useNavigate();
 
   const {
@@ -45,8 +45,11 @@ function Login() {
         }).then((result) => {
           if (result.isConfirmed) {
             setCookie("token", data.token, { path: "/" });
-            setCookie("id", data.id, { path: "/" });
-            if (isAdmin) {
+            setCookie("user_position", data.user_position, { path: "/" });
+            if (
+              data.user_position === "Amdin" ||
+              data.user_position === "admin"
+            ) {
               navigate("/admin"); // jika user adalah admin, arahkan ke halaman admin
             } else {
               navigate("/user"); // jika user bukan admin, arahkan ke halaman user
