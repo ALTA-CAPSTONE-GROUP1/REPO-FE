@@ -3,11 +3,17 @@ import { RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FC, useState, useEffect } from "react";
+import { useParams } from "react-router";
 import Swal from "sweetalert2";
 import axios from "axios";
 import * as z from "zod";
 
-import { OfficeData, PositionData, UserData } from "@/utils/types/Admin";
+import {
+  OfficeData,
+  PositionData,
+  UserData,
+  UserDataUpdate,
+} from "@/utils/types/Admin";
 import { LayoutAdmin } from "@/components/Layout";
 import { RedButton } from "@/components/Button";
 import { TabUser } from "@/components/Tab";
@@ -28,7 +34,11 @@ export function HomeAdmin() {
   const [positionData, setPositionData] = useState<PositionData[]>([]);
   const [officeData, setOfficeData] = useState<OfficeData[]>([]);
   const [data, setData] = useState<UserData[]>([]);
+  const [dataUpdate, setDataUpdate] = useState<Partial<UserDataUpdate>>({});
   const [loading, setLoading] = useState<boolean>(false);
+
+  const params = useParams();
+  const { user_id } = params;
 
   const {
     watch,
@@ -90,6 +100,22 @@ export function HomeAdmin() {
         setLoading(false);
       });
   };
+
+  useEffect(() => {
+    const fetchDataUpdate = async () => {
+      try {
+        const response = await axios.get(`users/${user_id}`);
+        const { data } = response.data;
+        setDataUpdate(data);
+      } catch (error: any) {
+        alert(error.toString());
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDataUpdate();
+  }, [user_id]);
 
   const fetchDataPositions = async () => {
     axios
@@ -215,16 +241,13 @@ export function HomeAdmin() {
 
         <div>
           {/* Put this part before </body> tag */}
-          <input
-            type="checkbox"
-            // id={`edit-modal-${userData.user_id}`}
+          <input type="checkbox" id="my-modal-3" className="modal-toggle" />
 
-            className="modal-toggle"
-          />
           <div className="modal">
             <div className="modal-box relative">
               <label
-                htmlFor="my-modal-3"
+                htmlFor={`my-modal-3`}
+                // htmlFor={`my-modal-update-${user_id}`}
                 className="btn btn-sm btn-circle absolute right-2 top-2"
               >
                 ✕
@@ -238,13 +261,21 @@ export function HomeAdmin() {
                     <label className="font-semibold text-md text-black">
                       Name
                     </label>
-                    <Input placeholder="Enter Name" id="input-name" />
+                    <Input
+                      register={register}
+                      name="name"
+                      placeholder="Enter Name"
+                      id="input-name"
+                      defaultValue={dataUpdate.name}
+                    />
                   </div>
                   <div className="mt-5 w-full">
                     <label className="font-semibold text-md text-black">
                       Email
                     </label>
                     <Input
+                      register={register}
+                      name="email"
                       placeholder="Enter Email"
                       id="input-email"
                       type="email"
@@ -254,7 +285,12 @@ export function HomeAdmin() {
                     <label className="font-semibold text-md text-black">
                       No Hp
                     </label>
-                    <Input placeholder="Enten Phone Number" id="input-no-hp" />
+                    <Input
+                      register={register}
+                      name="hp"
+                      placeholder="Enten Phone Number"
+                      id="input-no-hp"
+                    />
                   </div>
                   <div className="mt-5 w-full">
                     <label className="font-semibold text-md text-black">
@@ -268,9 +304,9 @@ export function HomeAdmin() {
                       <option disabled selected>
                         Select Position
                       </option>
-                      <option>Regional Manager</option>
-                      <option>UI Design</option>
-                      <option>Backend Developer</option>
+                      {positionData.map((pos) => (
+                        <option>{pos.position}</option>
+                      ))}{" "}
                     </select>
                   </div>
                   <div className="mt-5 w-full">
@@ -285,10 +321,21 @@ export function HomeAdmin() {
                       <option disabled selected>
                         Select Office
                       </option>
-                      <option>Medan</option>
-                      <option>Surabaya</option>
-                      <option>Solo</option>
+                      {officeData.map((office) => (
+                        <option>{office.office_name}</option>
+                      ))}
                     </select>
+                  </div>
+                  <div className="mt-5 w-full">
+                    <label className="font-semibold text-md text-black">
+                      Password
+                    </label>
+                    <Input
+                      register={register}
+                      name="password"
+                      placeholder="Enten Password"
+                      id="input-password"
+                    />
                   </div>
                   <div className="mt-5">
                     <RedButton
@@ -302,6 +349,7 @@ export function HomeAdmin() {
             </div>
           </div>
         </div>
+
         <div className="overflow-x-auto w-full p-6 mt-20 hidden md:block">
           <div className="flex flex-row p-2 bg-@Red2 text-black rounded-ss-md rounded-se-md justify-between items-center">
             <p className="font-bold">Team Members</p>

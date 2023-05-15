@@ -1,5 +1,5 @@
 import { RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { BsSearch } from "react-icons/bs";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,10 +8,11 @@ import axios from "axios";
 import * as z from "zod";
 
 import { LayoutAdmin } from "@/components/Layout";
-import { CardTableOffice } from "@/components/Card";
+import { OfficeData } from "@/utils/types/Admin";
 import { RedButton } from "@/components/Button";
 import { TabOffice } from "@/components/Tab";
 import { Input } from "@/components/Input";
+import { TableOffice } from "@/components/Table";
 
 const schema = z.object({
   office: z.string(),
@@ -21,6 +22,7 @@ type Schema = z.infer<typeof schema>;
 
 export const Office: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [officeData, setOfficeData] = useState<OfficeData[]>([]);
 
   const {
     register,
@@ -57,6 +59,23 @@ export const Office: FC = () => {
         });
       })
       .finally(() => setLoading(false));
+  };
+  useEffect(() => {
+    fetchDataOffices();
+  }, []);
+  const fetchDataOffices = async () => {
+    axios
+      .get("office")
+      .then((response) => {
+        const { data } = response.data;
+        setOfficeData(data);
+      })
+      .catch((error) => {
+        alert(error.toString());
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -116,24 +135,7 @@ export const Office: FC = () => {
               </span>
             </label>
           </div>
-          <table className="table w-full border border-@Gray2">
-            {/* head */}
-            <thead>
-              <th className="capitalize bg-@Gray2 text-black">Office</th>
-              <th className="capitalize  bg-@Gray2 text-black ">
-                <div className="flex pr-6 justify-end">Action</div>
-              </th>
-            </thead>
-            <tbody>
-              <CardTableOffice office="Jakarta" link_del="" />
-              <CardTableOffice office="bandung" link_del="" />
-              <CardTableOffice office="medan" link_del="" />
-              <CardTableOffice office="semarang" link_del="" />
-              <CardTableOffice office="bali" link_del="" />
-            </tbody>
-            {/* foot */}
-            <tfoot></tfoot>
-          </table>
+          <TableOffice data={officeData} />
           <div className="flex flex-row p-2 bg-white text-black border rounded-es-md rounded-ee-md justify-between items-center">
             <button className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md">
               <RiArrowLeftLine /> Previous
