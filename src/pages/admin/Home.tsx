@@ -2,19 +2,17 @@ import { BsQuestionCircle, BsSearch } from "react-icons/bs";
 import { RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
 import * as z from "zod";
 
-import { RedButton } from "@/components/Button";
-import { Input } from "@/components/Input";
+import { OfficeData, PositionData, UserData } from "@/utils/types/Admin";
 import { LayoutAdmin } from "@/components/Layout";
+import { RedButton } from "@/components/Button";
 import { TabUser } from "@/components/Tab";
-import { CardTableUser } from "@/components/Card";
-import { Office } from "./Office";
+import { Input } from "@/components/Input";
+import { TableUsers } from "@/components/Table";
 
 const schema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
@@ -27,9 +25,14 @@ const schema = z.object({
 type Schema = z.infer<typeof schema>;
 
 export function HomeAdmin() {
+  const [positionData, setPositionData] = useState<PositionData[]>([]);
+  const [officeData, setOfficeData] = useState<OfficeData[]>([]);
+  const [data, setData] = useState<UserData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   const {
+    watch,
+    setValue,
     register,
     handleSubmit,
     formState: { errors },
@@ -41,10 +44,11 @@ export function HomeAdmin() {
     setLoading(true);
     axios
       .post("users", data)
-      .then((res) => {
-        const { message, data } = res.data;
+      .then((response) => {
+        const { message, data } = response.data;
         if (data) {
           Swal.fire({
+            icon: "success",
             title: "Success",
             text: message,
             showCancelButton: false,
@@ -64,6 +68,57 @@ export function HomeAdmin() {
         });
       })
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchDataPositions();
+    fetchDataOffices();
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    axios
+      .get("users")
+      .then((response) => {
+        const { data } = response.data;
+        setData(data);
+      })
+      .catch((error) => {
+        alert(error.toString());
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const fetchDataPositions = async () => {
+    axios
+      .get("position")
+      .then((response) => {
+        const { data } = response.data;
+        setPositionData(data);
+      })
+      .catch((error) => {
+        alert(error.toString());
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const fetchDataOffices = async () => {
+    axios
+      .get("office")
+      .then((response) => {
+        const { data } = response.data;
+        setOfficeData(data);
+      })
+      .catch((error) => {
+        alert(error.toString());
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -115,6 +170,7 @@ export function HomeAdmin() {
               <label className="font-semibold text-md text-black">
                 Position
               </label>
+
               <select
                 {...register("position")}
                 className="border rounded-md bg-white border-@Gray text-black p-2 focus:outline-none w-full"
@@ -124,11 +180,12 @@ export function HomeAdmin() {
                 <option disabled selected>
                   Select Position
                 </option>
-                <option>Regional Manager</option>
-                <option>UI Design</option>
-                <option>Backend Developer</option>
+                {positionData.map((pos) => (
+                  <option>{pos.position}</option>
+                ))}
               </select>
             </div>
+
             <div className="mt-5 w-full">
               <label className="font-semibold text-md text-black">Office</label>
               <select
@@ -140,9 +197,9 @@ export function HomeAdmin() {
                 <option disabled selected>
                   Select Office
                 </option>
-                <option>Medan</option>
-                <option>Surabaya</option>
-                <option>Solo</option>
+                {officeData.map((office) => (
+                  <option>{office.office_name}</option>
+                ))}
               </select>
             </div>
             <div className="mt-5">
@@ -158,7 +215,12 @@ export function HomeAdmin() {
 
         <div>
           {/* Put this part before </body> tag */}
-          <input type="checkbox" id="my-modal-3" className="modal-toggle" />
+          <input
+            type="checkbox"
+            // id={`edit-modal-${userData.user_id}`}
+
+            className="modal-toggle"
+          />
           <div className="modal">
             <div className="modal-box relative">
               <label
@@ -257,89 +319,7 @@ export function HomeAdmin() {
               </span>
             </label>
           </div>
-          <table className="table w-full border border-@Gray2">
-            {/* head */}
-            <thead>
-              <th className="capitalize bg-@Gray2 text-black">Name</th>
-              <th className=" bg-@Gray2 text-black">ID</th>
-              <th className="capitalize  bg-@Gray2 text-black">
-                Email Address
-              </th>
-              <th className="capitalize  bg-@Gray2 text-black">
-                <div className="flex flex-row gap-2 text-black">
-                  <p>Position</p>
-                  <p>
-                    <BsQuestionCircle />
-                  </p>
-                </div>
-              </th>
-              <th className="capitalize  bg-@Gray2 text-black">
-                <div className="flex flex-row gap-2 text-black">
-                  <p>Office</p>
-                  <p>
-                    <BsQuestionCircle />
-                  </p>
-                </div>
-              </th>
-              <th className="capitalize  bg-@Gray2 text-black ">
-                <div className="flex justify-center">Action</div>
-              </th>
-            </thead>
-            <tbody>
-              <CardTableUser
-                name="Olivia Rhye"
-                id_user="PD01"
-                email_address="olivia@untiledui.com
-              "
-                position="Product Manager"
-                office="Jakarta"
-                link_del="Delete"
-                link_update=""
-              />{" "}
-              <CardTableUser
-                name="Olivia Rhye"
-                id_user="PD01"
-                email_address="olivia@untiledui.com
-              "
-                position="Product Manager"
-                office="Jakarta"
-                link_del="Delete"
-                link_update=""
-              />{" "}
-              <CardTableUser
-                name="Olivia Rhye"
-                id_user="PD01"
-                email_address="olivia@untiledui.com
-              "
-                position="Product Manager"
-                office="Jakarta"
-                link_del="Delete"
-                link_update=""
-              />{" "}
-              <CardTableUser
-                name="Olivia Rhye"
-                id_user="PD01"
-                email_address="olivia@untiledui.com
-              "
-                position="Product Manager"
-                office="Jakarta"
-                link_del="Delete"
-                link_update=""
-              />{" "}
-              <CardTableUser
-                name="Olivia Rhye"
-                id_user="PD01"
-                email_address="olivia@untiledui.com
-              "
-                position="Product Manager"
-                office="Jakarta"
-                link_del="Delete"
-                link_update=""
-              />
-            </tbody>
-            {/* foot */}
-            <tfoot></tfoot>
-          </table>
+          <TableUsers dataUsers={data} />
           <div className="flex flex-row p-2 bg-white text-black border rounded-es-md rounded-ee-md justify-between items-center">
             <button className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md">
               <RiArrowLeftLine /> Previous
