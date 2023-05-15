@@ -1,20 +1,28 @@
-import { RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
-import { FC, useState } from "react";
+import {
+  RiArrowLeftLine,
+  RiArrowRightLine,
+  RiDeleteBin6Line,
+} from "react-icons/ri";
+import { useNavigate, useParams } from "react-router-dom";
+import React, { FC, useState, useEffect } from "react";
 import { BsSearch } from "react-icons/bs";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Swal from "sweetalert2";
 import axios from "axios";
 import * as z from "zod";
+import { useTable } from "react-table";
 
 import { CardTablePosition } from "@/components/Card";
 import { LayoutAdmin } from "@/components/Layout";
 import { TabPosition } from "@/components/Tab";
 import { RedButton } from "@/components/Button";
 import { Input } from "@/components/Input";
+import { PositionData } from "@/utils/types/Admin";
+import { TablePosition } from "@/components/Table";
 
 const schema = z.object({
-  position: z.string(),
+  position: z.string().min(1, { message: "Position is required" }),
   tag: z.string(),
 });
 
@@ -22,8 +30,10 @@ type Schema = z.infer<typeof schema>;
 
 export const Position: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
-
+  const { position_id } = useParams();
   const {
+    watch,
+    setValue,
     register,
     handleSubmit,
     formState: { errors },
@@ -46,6 +56,7 @@ export const Position: FC = () => {
             if (result.isConfirmed) {
               window.location.reload();
             }
+            console.log(result);
           });
         }
       })
@@ -59,6 +70,54 @@ export const Position: FC = () => {
       })
       .finally(() => setLoading(false));
   };
+
+  //get data in table
+  const [data, setData] = useState<PositionData[]>([]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    axios
+      .get("position")
+      .then((response) => {
+        const { data } = response.data;
+        setData(data);
+      })
+      .catch((error) => {
+        alert(error.toString());
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+    console.log(data);
+  };
+  // const data = React.useMemo(() => "position", []);
+
+  // useEffect(() => {
+  //   fetch();
+  // }, []);
+
+  // function fetch() {
+  //   axios
+  //     .get("position")
+  //     .then((res) => {
+  //       const { data } = res.data;
+  //       setDatas(data);
+  //     })
+  //     .catch((err) => {
+  //       const { message } = err.response;
+  //       Swal.fire({
+  //         title: "Failed",
+  //         text: message,
+  //         showCancelButton: false,
+  //       });
+  //     })
+  //     .finally(() => {
+  //       setLoading(false);
+  //     });
+  // }
 
   return (
     <LayoutAdmin>
@@ -129,46 +188,7 @@ export const Position: FC = () => {
               </span>
             </label>
           </div>
-          <table className="table w-full border border-@Gray2">
-            {/* head */}
-            <thead>
-              <th className="capitalize bg-@Gray2 text-black">Position</th>
-              <th className="bg-@Gray2 text-black">ID</th>
-
-              <th className="capitalize  bg-@Gray2 text-black ">
-                <div className="flex pr-6 justify-end">Action</div>
-              </th>
-            </thead>
-            <tbody>
-              <CardTablePosition
-                position="Product Manager"
-                tag="pm"
-                link_del=""
-              />
-              <CardTablePosition
-                position="Product Manager"
-                tag="pm"
-                link_del=""
-              />
-              <CardTablePosition
-                position="Product Manager"
-                tag="pm"
-                link_del=""
-              />
-              <CardTablePosition
-                position="Product Manager"
-                tag="pm"
-                link_del=""
-              />
-              <CardTablePosition
-                position="Product Manager"
-                tag="pm"
-                link_del=""
-              />
-            </tbody>
-            {/* foot */}
-            <tfoot></tfoot>
-          </table>
+          <TablePosition data={data} />
           <div className="flex flex-row p-2 bg-white text-black border rounded-es-md rounded-ee-md justify-between items-center">
             <button className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md">
               <RiArrowLeftLine /> Previous
