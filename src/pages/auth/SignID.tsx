@@ -1,5 +1,6 @@
 import { FC, useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useCookies } from "react-cookie";
 import { Input } from "@/components/Input";
 import { RedButton } from "@/components/Button";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -12,17 +13,30 @@ const schema = z.object({
   sign_id: z.string().min(5, { message: "Sign ID is Failed" }),
 });
 
-interface DataSignID {
-  nama: string;
-  titile: string;
-  position: string;
-  date: string;
-}
+// interface DataSignID {
+//   nama: string;
+//   titile: string;
+//   position: string;
+//   date: string;
+// }
 
 type Schema = z.infer<typeof schema>;
 
 export function SignID() {
-  const [data, setData] = useState<Partial<DataSignID>>({});
+  // const [data, setData] = useState<Partial<DataSignID>>({});
+  const [clicked, setClicked] = useState(false);
+  const [, setCookie] = useCookies([
+    "submission_title",
+    "official_name",
+    "official_position",
+    "date",
+  ]);
+  const [cookies] = useCookies([
+    "submission_title",
+    "official_name",
+    "official_position",
+    "date",
+  ]);
   const { sign_id } = useParams();
 
   const {
@@ -37,7 +51,7 @@ export function SignID() {
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
     axios
-      .post("sign-validation", data)
+      .post(`sign-validation/${sign_id}`, data)
       .then((res) => {
         const { message, data } = res.data;
         if (data) {
@@ -46,6 +60,17 @@ export function SignID() {
             title: "Success",
             text: message,
             showCancelButton: false,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              setCookie("submission_title", data.submission_title, {
+                path: "/",
+              });
+              setCookie("official_name", data.official_name, { path: "/" });
+              setCookie("official_position", data.official_position, {
+                path: "/",
+              });
+              setCookie("date", data.date, { path: "/" });
+            }
           });
         }
       })
@@ -88,12 +113,23 @@ export function SignID() {
               />
             </div>
             <div className="mt-5 font-semibold text-black">
-              <p>Title : </p>
-              <p>Name :</p>
-              <p>Approve Date :</p>
+              {clicked && (
+                <>
+                  <p>Title : {cookies.submission_title}</p>
+                  <p>
+                    Name :{cookies.official_position} ({cookies.official_name})
+                  </p>
+                  <p>Approve Date : {cookies.date}</p>
+                </>
+              )}
             </div>
             <div className="mt-5">
-              <RedButton label="Check" id="button-check" type="submit" />
+              <RedButton
+                label="Check"
+                id="button-check"
+                type="submit"
+                onClick={() => setClicked(true)}
+              />
             </div>
             <div className="flex flex-col mt-5 md:justify-center md:items-center text-md text-black">
               <p>
