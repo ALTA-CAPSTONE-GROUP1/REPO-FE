@@ -51,7 +51,7 @@ export function SignID() {
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
     axios
-      .post(`sign-validation`, data)
+      .post(`sign_validation`, data)
       .then((res) => {
         const { message, data } = res.data;
         if (data) {
@@ -128,7 +128,11 @@ export function SignID() {
                 label="Check"
                 id="button-check"
                 type="submit"
-                onClick={() => setClicked(true)}
+                onClick={() => {
+                  if (watch("sign_id") && !errors?.sign_id) {
+                    setClicked(true);
+                  }
+                }}
               />
             </div>
             <div className="flex flex-col mt-5 md:justify-center md:items-center text-md text-black">
