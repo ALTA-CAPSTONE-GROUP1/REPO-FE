@@ -69,6 +69,8 @@ const UserIndex: FC = () => {
   const [selectValue, setSelectValue] = useState<number>();
   const [to_cc, setTo_Cc] = useState<to_cc_type>();
   const [file, setFile] = useState<any>();
+  const [category, setCategory] = useState<string>("to");
+  const [search, setSearch] = useState<string>("");
 
   const {
     register,
@@ -102,7 +104,7 @@ const UserIndex: FC = () => {
   useEffect(() => {
     if (page == "user-home") {
       axios
-        .get(`submission`)
+        .get(`submission?${category}=${search}`)
         .then((res) => {
           const { data } = res.data;
           setDatasSubmission(data.submissions);
@@ -152,7 +154,7 @@ const UserIndex: FC = () => {
           });
         });
     }
-  }, [page]);
+  }, [page, category, search]);
 
   function handleMenu1() {
     setBg1(true);
@@ -220,8 +222,7 @@ const UserIndex: FC = () => {
         console.log(cc);
         appendSubValTo(to);
         appendSubValCc(cc);
-        console.log(fieldsSubValTo);
-        console.log(fieldsSubValCc);
+
         setTo_Cc(data);
       })
       .catch((err) => {
@@ -261,6 +262,14 @@ const UserIndex: FC = () => {
       });
   };
 
+  function handleSearch(event: React.ChangeEvent<HTMLSelectElement>) {
+    setCategory(event.target.value);
+  }
+
+  function handleSearchInput(event: React.ChangeEvent<HTMLInputElement>) {
+    setSearch(event.target.value);
+  }
+
   return (
     <Layout>
       <SideBar
@@ -273,7 +282,11 @@ const UserIndex: FC = () => {
         onClickApprove={handleMenu3}
       >
         {page === "user-home" || createSubmission ? (
-          <UserHome datas={datasSubmission}>
+          <UserHome
+            datas={datasSubmission}
+            onchange={(e) => handleSearch(e)}
+            onchangeInput={(e) => handleSearchInput(e)}
+          >
             <div className="h-10 w-full bg-@Red4 relative transition-all">
               {createSubmission ? (
                 <div

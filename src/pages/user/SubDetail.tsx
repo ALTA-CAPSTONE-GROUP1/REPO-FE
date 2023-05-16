@@ -15,7 +15,7 @@ import axios from "axios";
 import SubDetailType from "@/utils/types/SubDetail";
 import withReactContent from "sweetalert2-react-content";
 import * as z from "zod";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 
 import Swal from "@/utils/Swal";
 import { to_cc_type } from "@/utils/types/submission";
@@ -32,6 +32,22 @@ const schema = z.object({
   sub_type: z.string(),
   value: z.string(),
   attachment: z.any(),
+  to: z
+    .string()
+    .array()
+    .refine((val) =>
+      val.every((el) => {
+        return el !== "";
+      })
+    ),
+  cc: z
+    .string()
+    .array()
+    .refine((val) =>
+      val.every((el) => {
+        return el !== "";
+      })
+    ),
 });
 
 type Schema = z.infer<typeof schema>;
@@ -54,10 +70,31 @@ const SubDetail: FC = () => {
 
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<Schema>({
     resolver: zodResolver(schema),
+  });
+
+  const {
+    fields: fieldsSubValTo,
+    append: appendSubValTo,
+    remove: removeSubValTo,
+    update: updateSubValTo,
+  } = useFieldArray({
+    control,
+    name: "to",
+  });
+
+  const {
+    fields: fieldsSubValCc,
+    append: appendSubValCc,
+    remove: removeSubValCc,
+    update: updateSubValCc,
+  } = useFieldArray({
+    control,
+    name: "cc",
   });
 
   useEffect(() => {
@@ -129,6 +166,8 @@ const SubDetail: FC = () => {
   }
 
   function handleGetToCC(event: React.ChangeEvent<HTMLSelectElement>) {
+    let to: string[] = [];
+    let cc: string[] = [];
     let type = "";
     // if (indexSubtypes) {
     type = subTypes[0].name;
@@ -142,11 +181,21 @@ const SubDetail: FC = () => {
       )
       .then((res) => {
         const { data } = res.data;
+        data.to.map((dataz: any) => {
+          return to.push(dataz.approver_id);
+        });
+        data.cc.map((dataz: any) => {
+          return cc.push(dataz.cc_id);
+        });
+        console.log(to);
+        console.log(cc);
+        appendSubValTo(to);
+        appendSubValCc(cc);
         setTo_Cc(data);
       })
       .catch((err) => {
         const { message } = err.response;
-        MySwal.fire({
+        Swal.fire({
           title: "Failed",
           text: message,
           showCancelButton: false,
@@ -155,20 +204,12 @@ const SubDetail: FC = () => {
   }
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
-    let to: string[] = [];
-    let cc: string[] = [];
-    to_cc?.to.map((data) => {
-      return to.push(data.approver_id);
-    });
-    to_cc?.cc.map((data) => {
-      return cc.push(data.cc_id);
-    });
-    const newData = { ...data, To: to, CC: cc };
-    alert(JSON.stringify(newData));
+    alert(JSON.stringify(data));
     const formData = new FormData();
-    let key: keyof typeof newData;
-    for (key in newData) {
-      formData.append(key, newData[key]);
+    let key: keyof typeof data;
+    for (key in data) {
+      if (key === "attachment") formData.append(key, data[key][0]);
+      formData.append(key, data[key]);
     }
     axios
       .put(`submission/${id}`, formData)
