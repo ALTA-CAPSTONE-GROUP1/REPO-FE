@@ -1,4 +1,3 @@
-
 interface SubmissionType {
   id: number;
   to: {
@@ -21,3 +20,21 @@ interface SubmissionType {
 }
 
 export default SubmissionType;
+
+export interface PostSubmissionTypes {
+  to: [];
+}
+
+export interface to_cc_type {
+  to: {
+    approver_position: string;
+    approver_id: string;
+    approver_name: string;
+  }[];
+  cc: {
+    cc_position: string;
+    cc_name: string;
+    cc_id: string;
+  }[];
+  requirement: string;
+}

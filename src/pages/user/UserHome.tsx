@@ -13,11 +13,13 @@ import { Input } from "@/components/Input";
 interface Props {
   datas: SubmissionType[];
   children: ReactNode;
+  onchange: React.ChangeEventHandler<HTMLSelectElement>;
+  onchangeInput: React.ChangeEventHandler<HTMLInputElement>;
 }
 
 const UserHome: FC<Props> = (props) => {
   // const { addSubmission } = props;
-  const { datas, children } = props;
+  const { datas, children, onchange, onchangeInput } = props;
   const [createSubmission, setCreateSubmission] = useState<boolean>(false);
   // const [datas, setDatas] = useState<SubmissionType[]>(data);
   const MySwal = withReactContent(Swal);
@@ -46,12 +48,25 @@ const UserHome: FC<Props> = (props) => {
           <RiMenu2Fill />
         </label>
         <div className="form-control rounded-full flex flex-row relative border-2">
-          <div className=" bg-@Red flex-initial w-[10%] rounded-l-full flex justify-center items-center">
-            <p className=" text-center">To</p>
-          </div>
+          <select
+            onChange={onchange}
+            className=" bg-@Red flex-initial w-[10%] rounded-l-full flex justify-center items-center"
+          >
+            <option
+              className=" text-center rounded-tl-full"
+              selected
+              value={"to"}
+            >
+              To
+            </option>
+            <option className=" text-center rounded-bl-full" value={"title"}>
+              Title
+            </option>
+          </select>
 
           <label className="relative block flex-initial w-full rounded-r-full ">
             <input
+              onChange={onchangeInput}
               className="rounded-r-full placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-@Red focus:ring-@Red focus:ring-1 sm:text-sm"
               placeholder="Search for anything..."
               type="text"

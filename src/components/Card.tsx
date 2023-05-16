@@ -220,6 +220,7 @@ export const CardApproving: FC<ApproveDetailType> = (props) => {
 };
 interface PropsSubmission extends SubDetailType {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  onClickPdf: React.MouseEventHandler<HTMLButtonElement>;
 }
 export const CardSubmission: FC<PropsSubmission> = (props) => {
   const {
@@ -232,6 +233,7 @@ export const CardSubmission: FC<PropsSubmission> = (props) => {
     action_message,
     attachment,
     onClick,
+    onClickPdf,
   } = props;
 
   return (
@@ -243,7 +245,7 @@ export const CardSubmission: FC<PropsSubmission> = (props) => {
         </div>
         <div className="mt-2">
           <h3 className="capitalize font-semibold text-2xl text-black">
-            TO:{" "}
+            To:{" "}
             {to?.map((data) => {
               return data.approver_position + " " + data.approver_name + ",";
             })}
@@ -254,15 +256,15 @@ export const CardSubmission: FC<PropsSubmission> = (props) => {
               return data.cc_position + " " + data.cc_name + ",";
             })}
           </h5>
-          <p className="mt-5 text-base">{message} </p>
+          <p className="mt-5 text-base min-h-[10rem]">{message} </p>
           <div className="mt-20 ">
-            <a className="text-9xl text-@Red">
+            <button onClick={onClickPdf} className="text-5xl text-@Red">
               <BsFileEarmarkPdfFill />
-            </a>
+            </button>
             <h3 className="capitalize font-semibold text-2xl text-black">
               {attachment}
             </h3>
-            <h4 className="text-@Gray font-semibold">
+            <h4 className="text-@Gray font-semibold max-w-[60%]">
               {approver_action?.map((data) => {
                 return (
                   data.action +

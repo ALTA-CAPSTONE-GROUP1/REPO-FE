@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { BsQuestionCircle, BsSearch } from "react-icons/bs";
 import {
   RiDeleteBin6Line,
@@ -11,8 +11,38 @@ import { Input } from "@/components/Input";
 import { Layout } from "@/components/Layout";
 import { TabUser } from "@/components/Tab";
 import { CardTableUser } from "@/components/Card";
+import axios from "axios";
+import Swal from "@/utils/Swal";
 
 const Profile: FC = () => {
+  const token =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJ1c2VySUQiOjR9.QTZxERh4CwC_UnL_eJvTi_A_qdLeBZ-IjR4nqoxjodk";
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  function fetchData() {
+    axios
+      .get(`profile`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        const { data } = res.data;
+        alert(JSON.stringify(data));
+      })
+      .catch((err) => {
+        const { message } = err.response;
+        Swal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      });
+  }
+
   return (
     <Layout>
       <div className="max-w-[85rem] w-full mx-auto" aria-label="Global">
