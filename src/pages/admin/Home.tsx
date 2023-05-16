@@ -41,7 +41,6 @@ export function HomeAdmin() {
   });
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
-    setLoading(true);
     axios
       .post("users", data)
       .then((response) => {

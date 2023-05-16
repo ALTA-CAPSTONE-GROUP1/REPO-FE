@@ -2,6 +2,8 @@ export interface PositionData {
   position: string;
   tag: string;
   action: string;
+  value: string;
+  label: string;
 }
 export interface OfficeData {
   office_name: string;
@@ -21,4 +23,12 @@ export interface UserDataUpdate extends UserData {
 export interface ApprovingData {
   submission_id: string;
   token: string;
+}
+
+export interface SubmissionData {
+  submission_type_name: string;
+  submission_detail: {
+    submission_value: number;
+    submission_requirement: string;
+  }[];
 }

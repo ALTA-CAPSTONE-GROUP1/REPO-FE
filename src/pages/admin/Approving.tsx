@@ -12,6 +12,8 @@ import { LayoutAdmin } from "@/components/Layout";
 import { CardApproving } from "@/components/Card";
 import { BlueButton, Red2Button, RedButton } from "@/components/Button";
 import { Input } from "@/components/Input";
+import Loading from "@/components/Loading";
+import { useNavigate } from "react-router-dom";
 
 const schema = z.object({
   submission_id: z.string().min(1, { message: "Submission ID is Failed" }),
@@ -23,7 +25,9 @@ const schema = z.object({
     }),
 });
 type Schema = z.infer<typeof schema>;
+
 export const Approving: FC = () => {
+  const [loading, setLoading] = useState<boolean>(true);
   const [clicked, setClicked] = useState(false);
   const [action, setAction] = useState<string>("");
   const [cookies, setCookie] = useCookies([
@@ -31,6 +35,7 @@ export const Approving: FC = () => {
     "applicantData",
     "approverData",
   ]);
+  const navigate = useNavigate();
   const submissionData = cookies.submissionData;
   const applicantData = cookies.applicantData;
   const approverData = cookies.approverData;
@@ -45,70 +50,72 @@ export const Approving: FC = () => {
   });
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
-    axios.post(`hyper-approval`, data).then((res) => {
-      const { message, data } = res.data;
-      if (data) {
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: message,
-          showCancelButton: false,
-        })
-          .then((result) => {
-            if (result.isConfirmed) {
-              setCookie(
-                "submissionData",
-                {
-                  title: data["submission-title"],
-                  attachment: data.attachment,
-                  messageBody: data.message_body,
-                },
-                { path: "/" }
-              );
-              setCookie(
-                "applicantData",
-                {
-                  name: data.applicant_name,
-                  position: data.applicant_position,
-                },
-                { path: "/" }
-              );
-              setCookie("approverData", data.approver_action, { path: "/" });
-            }
-          })
-          .catch((error) => {
-            const { message } = error.response.data;
-            Swal.fire({
-              title: "Failed",
-              text: message,
-              showCancelButton: false,
-            });
-          });
-      }
-    });
-  };
-
-  const onUpdate: SubmitHandler<Schema> = (data) => {
-    const newData = { ...data, action: action };
-    alert(JSON.stringify(newData));
     axios
-      .put(`hyper-approval`, newData)
+      .post(`hyper-approval`, data)
       .then((res) => {
-        const { message } = res.data;
-        Swal.fire({
-          title: "Success",
-          text: message + " with " + action + " this submission",
-          showCancelButton: false,
-        });
+        const { message, data } = res.data;
+        setCookie(
+          "submissionData",
+          {
+            title: data["submission-title"],
+            attachment: data.attachment,
+            messageBody: data.message_body,
+          },
+          { path: "/" }
+        );
+        setCookie(
+          "applicantData",
+          {
+            name: data.applicant_name,
+            position: data.applicant_position,
+          },
+          { path: "/" }
+        );
+        setCookie("approverData", data.approver_action, { path: "/" });
       })
-      .catch((err) => {
-        const { message } = err.response;
+      .catch((error) => {
+        const { message } = error.response.data;
         Swal.fire({
           title: "Failed",
           text: message,
           showCancelButton: false,
         });
+      })
+      .finally(() => {
+        setLoading(false);
       });
+  };
+
+  const onUpdate: SubmitHandler<Schema> = (data) => {
+    setLoading(true);
+    const newData = { ...data, action: action };
+    alert(JSON.stringify(newData));
+    axios
+      .put(`hyper-approval`, newData)
+      .then((res) => {
+        const { message, data } = res.data;
+        if (data) {
+          Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: message + " with " + action + " this submission",
+            showCancelButton: false,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              navigate("/approvong");
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        Swal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -151,7 +158,7 @@ export const Approving: FC = () => {
                   placeholder="Enter Token"
                   id="input-token"
                   error={errors.token?.message}
-                />{" "}
+                />
               </div>
               <div className="mt-5 md:mt-10 w-full md:w-80">
                 <RedButton
@@ -175,24 +182,27 @@ export const Approving: FC = () => {
             </div>
           </div>
         </form>
-
-        {clicked && (
-          <div className="overflow-x-auto w-full p-6 mt-2">
-            <h3 className="font-bold text-2xl text-black">Submission</h3>
-            <div className="mt-5">
-              <div className="flex justify-between">
-                <h3 className="font-bold text-3xl text-black">
-                  {submissionData?.title}
-                </h3>
-                <h3 className="font-bold text-xl text-@Green">
-                  {/* {cookies.submission_type} */}
-                </h3>
-              </div>
-              <div className="mt-2">
-                <h3 className="capitalize font-semibold text-2xl text-black">
-                  {applicantData?.position} {applicantData?.name}
-                </h3>
-                {/* <h4 className="capitalize font-semibold text-2xl text-black">
+        {loading ? (
+          <Loading />
+        ) : (
+          <div>
+            {clicked && (
+              <div className="overflow-x-auto w-full p-6 mt-2">
+                <h3 className="font-bold text-2xl text-black">Submission</h3>
+                <div className="mt-5">
+                  <div className="flex justify-between">
+                    <h3 className="font-bold text-3xl text-black">
+                      {submissionData?.title}
+                    </h3>
+                    <h3 className="font-bold text-xl text-@Green">
+                      {/* {cookies.submission_type} */}
+                    </h3>
+                  </div>
+                  <div className="mt-2">
+                    <h3 className="capitalize font-semibold text-2xl text-black">
+                      {applicantData?.position} {applicantData?.name}
+                    </h3>
+                    {/* <h4 className="capitalize font-semibold text-2xl text-black">
                 To: {cookies.a}
               </h4>
               <h5 className="text-@Gray">
@@ -201,63 +211,68 @@ export const Approving: FC = () => {
                   return data.position + " " + data.name + ",";
                 })}
               </h5> */}
-                <p className="mt-5 text-xl">{submissionData?.messageBody}</p>
-                <div className="mt-20 ">
-                  <a className="text-5xl text-@Red">
-                    <BsFileEarmarkPdfFill />
-                  </a>
-                  {approverData &&
-                    approverData.map((approver: any, index: number) => (
-                      <div key={index} className="flex flex-row gap-2">
-                        <h3 className="capitalize font-semibold text-xl text-black gap-2">
-                          {approver.approver_position} {approver.approver_name}
-                        </h3>
-                        <h3
-                          className={`capitalize font-semibold text-xl ${
-                            approver.action === "approve"
-                              ? "text-@Green"
-                              : approver.action === "reject"
-                              ? "text-@Red"
-                              : "text-@Orange"
-                          }`}
-                        >
-                          {approver.action}
-                        </h3>
-                      </div>
-                    ))}
-                </div>
-                <form onSubmit={handleSubmit(onUpdate)}>
-                  <div className="flex justify-end mb-5 pr-4">
-                    <div className="flex flex-col md:flex-row gap-2">
-                      <div className="w-40">
-                        <Red2Button
-                          label="Revise"
-                          id="button-approve-revise"
-                          type="submit"
-                          onClick={() => setAction("revise")}
-                        />
-                      </div>
-                      <div className="w-40">
-                        <RedButton
-                          label="Reject"
-                          id="button-approve-eject"
-                          type="submit"
-                          onClick={() => setAction("reject")}
-                        />
-                      </div>
-                      <div className="w-40">
-                        <BlueButton
-                          label="Approve"
-                          id="button-approve-approve"
-                          type="submit"
-                          onClick={(e) => setAction("approve")}
-                        />
-                      </div>
+                    <p className="mt-5 text-xl">
+                      {submissionData?.messageBody}
+                    </p>
+                    <div className="mt-20 ">
+                      <a className="text-5xl text-@Red">
+                        <BsFileEarmarkPdfFill />
+                      </a>
+                      {approverData &&
+                        approverData.map((approver: any, index: number) => (
+                          <div key={index} className="flex flex-row gap-2">
+                            <h3 className="capitalize font-semibold text-xl text-black gap-2">
+                              {approver.approver_position}{" "}
+                              {approver.approver_name}
+                            </h3>
+                            <h3
+                              className={`capitalize font-semibold text-xl ${
+                                approver.action === "approve"
+                                  ? "text-@Green"
+                                  : approver.action === "reject"
+                                  ? "text-@Red"
+                                  : "text-@Orange"
+                              }`}
+                            >
+                              {approver.action}
+                            </h3>
+                          </div>
+                        ))}
                     </div>
+                    <form onSubmit={handleSubmit(onUpdate)}>
+                      <div className="flex justify-end mb-5 pr-4">
+                        <div className="flex flex-col md:flex-row gap-2">
+                          <div className="w-40">
+                            <Red2Button
+                              label="Revise"
+                              id="button-approve-revise"
+                              type="submit"
+                              onClick={() => setAction("revise")}
+                            />
+                          </div>
+                          <div className="w-40">
+                            <RedButton
+                              label="Reject"
+                              id="button-approve-eject"
+                              type="submit"
+                              onClick={() => setAction("reject")}
+                            />
+                          </div>
+                          <div className="w-40">
+                            <BlueButton
+                              label="Approve"
+                              id="button-approve-approve"
+                              type="submit"
+                              onClick={(e) => setAction("approve")}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </form>
                   </div>
-                </form>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
       </div>
