@@ -46,9 +46,12 @@ const UserHome: FC<Props> = (props) => {
           <RiMenu2Fill />
         </label>
         <div className="form-control rounded-full flex flex-row relative border-2">
-          <div className=" bg-@Red flex-initial w-[10%] rounded-l-full flex justify-center items-center">
-            <p className=" text-center">To</p>
-          </div>
+          <select className=" bg-@Red flex-initial w-[10%] rounded-l-full flex justify-center items-center">
+            <option className=" text-center rounded-tl-full" selected>
+              To
+            </option>
+            <option className=" text-center rounded-bl-full">Title</option>
+          </select>
 
           <label className="relative block flex-initial w-full rounded-r-full ">
             <input

@@ -9,13 +9,14 @@ import { RiCloseCircleFill } from "react-icons/ri";
 import { Input } from "@/components/Input";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import SubmissionType from "@/utils/types/submission";
+import SubmissionType, { to_cc_type } from "@/utils/types/submission";
 import withReactContent from "sweetalert2-react-content";
 import * as z from "zod";
 
-import Swal from "@/utils/Swal";
+// import Swal from "@/utils/Swal";
+import Swal from "sweetalert2";
 import axios from "axios";
 import ccTypes from "@/utils/types/cc";
 import approveTypes from "@/utils/types/approve";
@@ -25,6 +26,23 @@ const schema = z.object({
   message: z.string().min(5, { message: "Message is required" }),
   sub_type: z.string(),
   value: z.string(),
+  attachment: z.any(),
+  to: z
+    .string()
+    .array()
+    .refine((val) =>
+      val.every((el) => {
+        return el !== "";
+      })
+    ),
+  cc: z
+    .string()
+    .array()
+    .refine((val) =>
+      val.every((el) => {
+        return el !== "";
+      })
+    ),
 });
 
 type Schema = z.infer<typeof schema>;
@@ -32,20 +50,6 @@ type Schema = z.infer<typeof schema>;
 interface submission_type {
   name: string;
   values: number[];
-}
-
-interface to_cc_type {
-  to: {
-    approver_position: string;
-    approver_id: string;
-    approver_name: string;
-  }[];
-  cc: {
-    cc_position: string;
-    cc_name: string;
-    cc_id: string;
-  }[];
-  requirement: string;
 }
 
 const UserIndex: FC = () => {
@@ -68,10 +72,31 @@ const UserIndex: FC = () => {
 
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<Schema>({
     resolver: zodResolver(schema),
+  });
+
+  const {
+    fields: fieldsSubValTo,
+    append: appendSubValTo,
+    remove: removeSubValTo,
+    update: updateSubValTo,
+  } = useFieldArray({
+    control,
+    name: "to",
+  });
+
+  const {
+    fields: fieldsSubValCc,
+    append: appendSubValCc,
+    remove: removeSubValCc,
+    update: updateSubValCc,
+  } = useFieldArray({
+    control,
+    name: "cc",
   });
 
   useEffect(() => {
@@ -82,6 +107,11 @@ const UserIndex: FC = () => {
           const { data } = res.data;
           setDatasSubmission(data.submissions);
           setSubTypes(data.submission_type_choices);
+          localStorage.removeItem("SubmissionType");
+          localStorage.setItem(
+            "SubmissionType",
+            JSON.stringify(data.submission_type_choices)
+          );
         })
         .catch((err) => {
           const { message } = err.response;
@@ -163,6 +193,9 @@ const UserIndex: FC = () => {
 
   function handleGetToCC(event: React.ChangeEvent<HTMLSelectElement>) {
     alert(selectSubType);
+    let to: string[] = [];
+    let cc: string[] = [];
+
     let type = "";
     if (indexSubtypes) {
       type = subTypes[indexSubtypes].name;
@@ -176,6 +209,19 @@ const UserIndex: FC = () => {
       )
       .then((res) => {
         const { data } = res.data;
+        console.log(JSON.stringify(data.to));
+        data.to.map((dataz: any) => {
+          return to.push(dataz.approver_id);
+        });
+        data.cc.map((dataz: any) => {
+          return cc.push(dataz.cc_id);
+        });
+        console.log(to);
+        console.log(cc);
+        appendSubValTo(to);
+        appendSubValCc(cc);
+        console.log(fieldsSubValTo);
+        console.log(fieldsSubValCc);
         setTo_Cc(data);
       })
       .catch((err) => {
@@ -189,26 +235,17 @@ const UserIndex: FC = () => {
   }
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
-    let to: string[] = [];
-    let cc: string[] = [];
-    to_cc?.to.map((data) => {
-      return to.push(data.approver_id);
-    });
-    to_cc?.cc.map((data) => {
-      return cc.push(data.cc_id);
-    });
-    const newData = { ...data, To: to, CC: cc, attachment: file };
-    alert(JSON.stringify(newData));
     const formData = new FormData();
-    let key: keyof typeof newData;
-    for (key in newData) {
-      formData.append(key, newData[key]);
+    let key: keyof typeof data;
+    for (key in data) {
+      if (key === "attachment") formData.append(key, data[key][0]);
+      formData.append(key, data[key]);
     }
     axios
       .post("submission", formData)
       .then((res) => {
         const { message } = res.data;
-        MySwal.fire({
+        Swal.fire({
           title: "Success",
           text: message,
           showCancelButton: false,
@@ -296,9 +333,9 @@ const UserIndex: FC = () => {
                           className=" border-b-2 focus:outline-none focus:border-b-@Red w-full mt-3"
                         />
                         <Input
+                          // register={register}
                           disabled
                           name="to"
-                          type="text"
                           defaultValue={
                             to_cc
                               ? "To: " +
@@ -333,7 +370,7 @@ const UserIndex: FC = () => {
                         <div
                           className={`${
                             errors.message?.message
-                              ? "tooltip tooltip-open w-full"
+                              ? "tooltip tooltip-open w-full tooltip-bottom"
                               : ""
                           }`}
                           data-tip={errors.message?.message}
@@ -348,8 +385,8 @@ const UserIndex: FC = () => {
 
                         <div className="flex justify-between items-end mt-5 h-20 max-h-20">
                           <Input
-                            register={""}
-                            name="title"
+                            register={register}
+                            name="attachment"
                             type="file"
                             className="w-full "
                             multiple

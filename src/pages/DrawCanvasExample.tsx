@@ -33,7 +33,7 @@ const DrawCanvasExample: FC = (props) => {
       const canvas = e.ele;
 
       const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-      const centerX = e.scale * canvas.width * 0.1;
+      const centerX = e.scale * canvas.width * 0.2;
       const centerY = e.scale * canvas.height * 0.03;
 
       const fonts = ctx.font.split(" ");
@@ -48,7 +48,7 @@ const DrawCanvasExample: FC = (props) => {
       // message.map((data, index) => {
       // count++;
       if (message) {
-        return ctx.fillText(message, centerX, centerY, 500);
+        return ctx.fillText(message, centerX, centerY, 1000);
       }
       // });
     };
