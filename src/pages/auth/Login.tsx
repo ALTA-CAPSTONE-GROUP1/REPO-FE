@@ -1,14 +1,14 @@
-import { FC, FormEvent, useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Link, useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import { useState } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
 import * as z from "zod";
 
-import { Input } from "@/components/Input";
 import { RedButton } from "@/components/Button";
+import { Input } from "@/components/Input";
 
 const schema = z.object({
   id: z.string().min(1, { message: "Users ID is required" }),
@@ -44,11 +44,8 @@ function Login() {
         }).then((result) => {
           if (result.isConfirmed) {
             setCookie("token", data.token, { path: "/" });
-            setCookie("user_position", data.user_position, { path: "/" });
-            if (
-              data.user_position === "Amdin" ||
-              data.user_position === "admin"
-            ) {
+            setCookie("user_position", data.role, { path: "/" });
+            if (data.role === "Admin" || data.role === "admin") {
               navigate("/admin"); // jika user adalah admin, arahkan ke halaman admin
             } else {
               navigate("/user"); // jika user bukan admin, arahkan ke halaman user

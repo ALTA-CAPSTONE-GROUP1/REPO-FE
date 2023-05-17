@@ -1,4 +1,8 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import { FC } from "react";
 import axios from "axios";
 
@@ -16,22 +20,32 @@ import ApproveDetail from "@/pages/user/ApproveDetail";
 import CC from "@/pages/user/CC";
 import UserIndex from "@/pages/user";
 import Approve from "@/pages/user/Approve";
-import App from "@/pages/App";
 import DrawCanvasExample from "@/pages/DrawCanvasExample";
-import WaterMarkExample from "@/pages/WaterMarkExample";
-import ModalExample from "@/pages/ModalExample";
+import { useCookies } from "react-cookie";
 
 axios.defaults.baseURL =
-  "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
+  // "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
+  "https://hobelcyatramandiri.my.id";
 
 const Router: FC = () => {
-  // const [theme, setTheme] = useState<string>("light");
-  // const background = useMemo(() => ({ theme, setTheme }), [theme]);
+  const [cookie, setCookies] = useCookies(["token", "user_position", "url"]);
+
+  const getToken = cookie.token;
+  const role = cookie.user_position;
 
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Start />,
+      element:
+        getToken && role ? (
+          role == "admin" ? (
+            <HomeAdmin />
+          ) : (
+            <UserIndex />
+          )
+        ) : (
+          <Start />
+        ),
     },
     {
       path: "/login",
@@ -43,60 +57,70 @@ const Router: FC = () => {
     },
     {
       path: "/admin",
-      element: <HomeAdmin />,
+      element: getToken ? <HomeAdmin /> : <Navigate to="/login" />,
     },
     {
       path: "/position",
-      element: <Position />,
+      element: getToken ? <Position /> : <Navigate to="/login" />,
     },
     {
       path: "/submission-type",
-      element: <SubmissionType />,
+      element: getToken ? <SubmissionType /> : <Navigate to="/login" />,
     },
     {
       path: "/office",
-      element: <Office />,
+      element: getToken ? <Office /> : <Navigate to="/login" />,
     },
     {
       path: "/approving",
-      element: <Approving />,
+      element: getToken ? <Approving /> : <Navigate to="/login" />,
     },
     {
       path: "/home",
-      element: <UserIndex />,
+      element: (
+        // getToken && role !== "admin" ? <UserIndex /> : <Navigate to="/" />,
+        <UserIndex />
+      ),
     },
 
     {
       path: "/sub-detail/:id",
-      element: <SubDetail />,
+      element: (
+        // getToken && role !== "admin" ? <SubDetail /> : <Navigate to="/" />,
+        <SubDetail />
+      ),
     },
     {
       path: "/approve-detail/:id",
-      element: <ApproveDetail />,
+      element: (
+        // getToken && role !== "admin" ? <ApproveDetail /> : <Navigate to="/" />,
+        <ApproveDetail />
+      ),
     },
     {
       path: "/user",
-      element: <UserIndex />,
+      element: (
+        // getToken && role !== "admin" ? <UserIndex /> : <Navigate to="/" />,
+        <UserIndex />
+      ),
     },
     {
       path: "/profile-users",
-      element: <Profile />,
-    },
-    {
-      path: "/app",
-      element: <App />,
+      element: (
+        // getToken && role !== "admin" ? <Profile /> : <Navigate to="/" />,
+        <Profile />
+      ),
     },
     {
       path: "/app2",
-      element: <DrawCanvasExample />,
-    },
-    {
-      path: "/app3",
-      element: <WaterMarkExample fileUrl="/images/test2.pdf" />,
-    },
-    {
-      path: "/app4",
-      element: <ModalExample fileUrl="/images/test2.pdf" />,
+      element: (
+        // getToken && role !== "admin" ? (
+        //   <DrawCanvasExample />
+        // ) : (
+        //   <Navigate to="/" />
+        // ),
+        <DrawCanvasExample />
+      ),
     },
   ]);
 

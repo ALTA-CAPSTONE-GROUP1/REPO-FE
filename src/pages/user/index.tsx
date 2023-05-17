@@ -102,9 +102,14 @@ const UserIndex: FC = () => {
   });
 
   useEffect(() => {
+    const url = "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
     if (page == "user-home") {
-      axios
-        .get(`submission?${category}=${search}`)
+      // axios
+      //   .get(`submission?${category}=${search}`)
+      axios({
+        method: "get",
+        url: `${url}/submission?${category}=${search}`,
+      })
         .then((res) => {
           const { data } = res.data;
           setDatasSubmission(data.submissions);
@@ -117,7 +122,8 @@ const UserIndex: FC = () => {
         })
         .catch((err) => {
           const { message } = err.response;
-          MySwal.fire({
+          Swal.fire({
+            icon: "error",
             title: "Failed",
             text: message,
             showCancelButton: false,
@@ -132,7 +138,8 @@ const UserIndex: FC = () => {
         })
         .catch((err) => {
           const { message } = err.response;
-          MySwal.fire({
+          Swal.fire({
+            icon: "error",
             title: "Failed",
             text: message,
             showCancelButton: false,
@@ -147,7 +154,8 @@ const UserIndex: FC = () => {
         })
         .catch((err) => {
           const { message } = err.response;
-          MySwal.fire({
+          Swal.fire({
+            icon: "error",
             title: "Failed",
             text: message,
             showCancelButton: false,
@@ -227,7 +235,8 @@ const UserIndex: FC = () => {
       })
       .catch((err) => {
         const { message } = err.response;
-        MySwal.fire({
+        Swal.fire({
+          icon: "error",
           title: "Failed",
           text: message,
           showCancelButton: false,
@@ -247,7 +256,8 @@ const UserIndex: FC = () => {
       .then((res) => {
         const { message } = res.data;
         Swal.fire({
-          title: "Success",
+          icon: "error",
+          title: "Failed",
           text: message,
           showCancelButton: false,
         });

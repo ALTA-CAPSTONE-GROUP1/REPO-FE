@@ -20,6 +20,7 @@ import { RedButton } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { PositionData } from "@/utils/types/Admin";
 import { TablePosition } from "@/components/Table";
+import { useCookies } from "react-cookie";
 
 const schema = z.object({
   position: z.string().min(1, { message: "Position is required" }),
@@ -31,6 +32,8 @@ type Schema = z.infer<typeof schema>;
 export const Position: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const { position_id } = useParams();
+  const [cookie, setCookie] = useCookies(["token", "user_position"]);
+
   const {
     watch,
     setValue,
@@ -44,7 +47,11 @@ export const Position: FC = () => {
   const onSubmit: SubmitHandler<Schema> = (data) => {
     setLoading(true);
     axios
-      .post("position", data)
+      .post("position", data, {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
       .then((res) => {
         const { message, data } = res.data;
         if (data) {
@@ -68,7 +75,8 @@ export const Position: FC = () => {
           showCancelButton: false,
         });
       })
-      .finally(() => setLoading(false));
+      .finally(() => setLoading(false))
+      .finally(fetchData);
   };
 
   //get data in table
@@ -80,7 +88,11 @@ export const Position: FC = () => {
 
   const fetchData = async () => {
     axios
-      .get("position")
+      .get("position", {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
       .then((response) => {
         const { data } = response.data;
         setData(data);
