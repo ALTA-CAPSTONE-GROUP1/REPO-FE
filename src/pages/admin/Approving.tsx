@@ -1,19 +1,16 @@
 import { BsFileEarmarkPdfFill } from "react-icons/bs";
-import { FC, useState, useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
+import { FC, useState } from "react";
 import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
 import axios from "axios";
 import * as z from "zod";
 
-import { ApprovingData } from "@/utils/types/Admin";
-import { LayoutAdmin } from "@/components/Layout";
-import { CardApproving } from "@/components/Card";
 import { BlueButton, Red2Button, RedButton } from "@/components/Button";
+import { LayoutAdmin } from "@/components/Layout";
 import { Input } from "@/components/Input";
-import Loading from "@/components/Loading";
-import { useNavigate } from "react-router-dom";
 
 const schema = z.object({
   submission_id: z.string().min(1, { message: "Submission ID is Failed" }),
@@ -50,6 +47,7 @@ export const Approving: FC = () => {
   });
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
+    setLoading(true);
     axios
       .post(`hyper-approval`, data)
       .then((res) => {
@@ -182,27 +180,23 @@ export const Approving: FC = () => {
             </div>
           </div>
         </form>
-        {loading ? (
-          <Loading />
-        ) : (
-          <div>
-            {clicked && (
-              <div className="overflow-x-auto w-full p-6 mt-2">
-                <h3 className="font-bold text-2xl text-black">Submission</h3>
-                <div className="mt-5">
-                  <div className="flex justify-between">
-                    <h3 className="font-bold text-3xl text-black">
-                      {submissionData?.title}
-                    </h3>
-                    <h3 className="font-bold text-xl text-@Green">
-                      {/* {cookies.submission_type} */}
-                    </h3>
-                  </div>
-                  <div className="mt-2">
-                    <h3 className="capitalize font-semibold text-2xl text-black">
-                      {applicantData?.position} {applicantData?.name}
-                    </h3>
-                    {/* <h4 className="capitalize font-semibold text-2xl text-black">
+        {clicked && (
+          <div className="overflow-x-auto w-full p-6 mt-2">
+            <h3 className="font-bold text-2xl text-black">Submission</h3>
+            <div className="mt-5">
+              <div className="flex justify-between">
+                <h3 className="font-bold text-3xl text-black">
+                  {submissionData?.title}
+                </h3>
+                <h3 className="font-bold text-xl text-@Green">
+                  {/* {cookies.submission_type} */}
+                </h3>
+              </div>
+              <div className="mt-2">
+                <h3 className="capitalize font-semibold text-2xl text-black">
+                  {applicantData?.position} {applicantData?.name}
+                </h3>
+                {/* <h4 className="capitalize font-semibold text-2xl text-black">
                 To: {cookies.a}
               </h4>
               <h5 className="text-@Gray">
@@ -211,68 +205,63 @@ export const Approving: FC = () => {
                   return data.position + " " + data.name + ",";
                 })}
               </h5> */}
-                    <p className="mt-5 text-xl">
-                      {submissionData?.messageBody}
-                    </p>
-                    <div className="mt-20 ">
-                      <a className="text-5xl text-@Red">
-                        <BsFileEarmarkPdfFill />
-                      </a>
-                      {approverData &&
-                        approverData.map((approver: any, index: number) => (
-                          <div key={index} className="flex flex-row gap-2">
-                            <h3 className="capitalize font-semibold text-xl text-black gap-2">
-                              {approver.approver_position}{" "}
-                              {approver.approver_name}
-                            </h3>
-                            <h3
-                              className={`capitalize font-semibold text-xl ${
-                                approver.action === "approve"
-                                  ? "text-@Green"
-                                  : approver.action === "reject"
-                                  ? "text-@Red"
-                                  : "text-@Orange"
-                              }`}
-                            >
-                              {approver.action}
-                            </h3>
-                          </div>
-                        ))}
-                    </div>
-                    <form onSubmit={handleSubmit(onUpdate)}>
-                      <div className="flex justify-end mb-5 pr-4">
-                        <div className="flex flex-col md:flex-row gap-2">
-                          <div className="w-40">
-                            <Red2Button
-                              label="Revise"
-                              id="button-approve-revise"
-                              type="submit"
-                              onClick={() => setAction("revise")}
-                            />
-                          </div>
-                          <div className="w-40">
-                            <RedButton
-                              label="Reject"
-                              id="button-approve-eject"
-                              type="submit"
-                              onClick={() => setAction("reject")}
-                            />
-                          </div>
-                          <div className="w-40">
-                            <BlueButton
-                              label="Approve"
-                              id="button-approve-approve"
-                              type="submit"
-                              onClick={(e) => setAction("approve")}
-                            />
-                          </div>
-                        </div>
+                <p className="mt-5 text-xl">{submissionData?.messageBody}</p>
+                <div className="mt-20 ">
+                  <a className="text-5xl text-@Red">
+                    <BsFileEarmarkPdfFill />
+                  </a>
+                  {approverData &&
+                    approverData.map((approver: any, index: number) => (
+                      <div key={index} className="flex flex-row gap-2">
+                        <h3 className="capitalize font-semibold text-xl text-black gap-2">
+                          {approver.approver_position} {approver.approver_name}
+                        </h3>
+                        <h3
+                          className={`capitalize font-semibold text-xl ${
+                            approver.action === "approve"
+                              ? "text-@Green"
+                              : approver.action === "reject"
+                              ? "text-@Red"
+                              : "text-@Orange"
+                          }`}
+                        >
+                          {approver.action}
+                        </h3>
                       </div>
-                    </form>
-                  </div>
+                    ))}
                 </div>
+                <form onSubmit={handleSubmit(onUpdate)}>
+                  <div className="flex justify-end mb-5 pr-4">
+                    <div className="flex flex-col md:flex-row gap-2">
+                      <div className="w-40">
+                        <Red2Button
+                          label="Revise"
+                          id="button-approve-revise"
+                          type="submit"
+                          onClick={() => setAction("revise")}
+                        />
+                      </div>
+                      <div className="w-40">
+                        <RedButton
+                          label="Reject"
+                          id="button-approve-eject"
+                          type="submit"
+                          onClick={() => setAction("reject")}
+                        />
+                      </div>
+                      <div className="w-40">
+                        <BlueButton
+                          label="Approve"
+                          id="button-approve-approve"
+                          type="submit"
+                          onClick={(e) => setAction("approve")}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </form>
               </div>
-            )}
+            </div>
           </div>
         )}
       </div>

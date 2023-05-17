@@ -1,20 +1,21 @@
-import { RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
+import { useNavigate, useParams } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
-import { BsSearch } from "react-icons/bs";
+import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
 import axios from "axios";
 import * as z from "zod";
 
-import { OfficeData, PositionData, UserData } from "@/utils/types/Admin";
+import { OfficeData, PositionData } from "@/utils/types/Admin";
+import { UserDataUpdate } from "@/utils/types/Admin";
 import { LayoutAdmin } from "@/components/Layout";
-import { TableUsers } from "@/components/Table";
 import { RedButton } from "@/components/Button";
 import { TabUser } from "@/components/Tab";
 import { Input } from "@/components/Input";
 
 const schema = z.object({
+  password: z.string().min(6, { message: "Password is mininum 6 character" }),
   email: z.string().min(1, { message: "Email is required" }),
   name: z.string().min(1, { message: "Name is required" }),
   hp: z.string().min(1, { message: "No HP is required" }),
@@ -24,48 +25,24 @@ const schema = z.object({
 
 type Schema = z.infer<typeof schema>;
 
-export function HomeAdmin() {
+export function UpdateUsers() {
   const [positionData, setPositionData] = useState<PositionData[]>([]);
   const [officeData, setOfficeData] = useState<OfficeData[]>([]);
-  const [data, setData] = useState<UserData[]>([]);
+  const [data, setData] = useState<UserDataUpdate | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [cookie] = useCookies(["token"]);
+  const { user_id } = useParams();
+  const getToken = cookie.token;
+  const navigate = useNavigate();
 
   const {
+    setValue,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Schema>({
     resolver: zodResolver(schema),
   });
-
-  const onSubmit: SubmitHandler<Schema> = (data) => {
-    axios
-      .post("users", data)
-      .then((response) => {
-        const { message, data } = response.data;
-        if (data) {
-          Swal.fire({
-            icon: "success",
-            title: "Success",
-            text: message,
-            showCancelButton: false,
-          }).then((result) => {
-            if (result.isConfirmed) {
-              window.location.reload();
-            }
-          });
-        }
-      })
-      .catch((error) => {
-        const { message } = error.response.data;
-        Swal.fire({
-          title: "Failed",
-          text: message,
-          showCancelButton: false,
-        });
-      })
-      .finally(() => setLoading(false));
-  };
 
   useEffect(() => {
     fetchDataPositions();
@@ -75,17 +52,25 @@ export function HomeAdmin() {
 
   const fetchData = async () => {
     axios
-      .get("users")
-      .then((response) => {
-        const { data } = response.data;
-        setData(data);
+      .get(`users/${user_id}`)
+      .then((res) => {
+        const { name, email, hp, position, office, password } = res.data.data;
+        setValue("name", name);
+        setValue("email", email);
+        setValue("hp", hp);
+        setValue("position", position);
+        setValue("office", office);
+        setValue("password", password);
       })
-      .catch((error) => {
-        alert(error.toString());
+      .catch((err) => {
+        const { data } = err.response;
+        Swal.fire({
+          title: "Failed",
+          text: data.message,
+          showCancelButton: false,
+        });
       })
-      .finally(() => {
-        setLoading(false);
-      });
+      .finally(() => setLoading(false));
   };
 
   const fetchDataPositions = async () => {
@@ -118,6 +103,42 @@ export function HomeAdmin() {
       });
   };
 
+  const onSubmit: SubmitHandler<Schema> = (data) => {
+    setLoading(true);
+    const formData = new FormData();
+    let key: keyof typeof data;
+    for (key in data) {
+      formData.append(key, data[key]);
+    }
+    axios
+      .put(`users/${user_id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${getToken}`,
+        },
+      })
+      .then((res) => {
+        const { message } = res.data;
+        Swal.fire({
+          title: "Success",
+          text: message,
+          showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/admin");
+          }
+        });
+      })
+      .catch((error) => {
+        const { data } = error.response;
+        Swal.fire({
+          title: "Failed",
+          text: data.message,
+          showCancelButton: false,
+        });
+      })
+      .finally(() => fetchData());
+  };
   return (
     <LayoutAdmin>
       <div
@@ -130,8 +151,8 @@ export function HomeAdmin() {
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="mt-3">
-            <h3 className="font-bold text-2xl text-black">Add User</h3>
-            <h3 className="text-sm">Create new user </h3>
+            <h3 className="font-bold text-2xl text-black">Update User</h3>
+            <h3 className="text-sm">Update detail user </h3>
             <div className="mt-5 w-full">
               <label className="font-semibold text-md text-black">Name</label>
               <Input
@@ -160,102 +181,65 @@ export function HomeAdmin() {
                 name="hp"
                 placeholder="Enten Phone Number"
                 id="input-no-hp"
-                error={errors.name?.message}
+                error={errors.hp?.message}
               />
             </div>
             <div className="mt-5 w-full">
               <label className="font-semibold text-md text-black">
                 Position
               </label>
-
               <select
                 {...register("position")}
+                value={"position"}
                 className="border rounded-md bg-white border-@Gray text-black p-2 focus:outline-none w-full"
                 placeholder="Select Position"
                 id="select-position"
               >
-                <option disabled selected>
-                  Select Position
-                </option>
                 {positionData.map((pos) => (
                   <option>{pos.position}</option>
                 ))}
               </select>
             </div>
-
             <div className="mt-5 w-full">
               <label className="font-semibold text-md text-black">Office</label>
+
               <select
                 {...register("office")}
+                value={data?.office}
                 className="border rounded-md bg-white border-@Gray text-black p-2 focus:outline-none w-full"
                 placeholder="Select Office"
                 id="select-Office"
               >
-                <option disabled selected>
-                  Select Office
-                </option>
+                <option disabled>{data?.office}</option>
                 {officeData.map((office) => (
-                  <option>{office.office_name}</option>
+                  <option key={office.office_name}>{office.office_name}</option>
                 ))}
               </select>
             </div>
+            <div className="mt-5 w-full">
+              <label className="font-semibold text-md text-black">
+                Password
+              </label>
+              <Input
+                register={register}
+                name="password"
+                placeholder="Enten Password"
+                id="input-password"
+                error={errors.password?.message}
+              />
+            </div>
             <div className="mt-5">
               <RedButton
-                label="Add User"
-                id="button-add-user"
+                label="Update User"
+                id="button-update-user"
                 type="submit"
-                disabled={loading}
               />
             </div>
           </div>
         </form>
-
-        <div className="overflow-x-auto w-full p-6 mt-20 hidden md:block">
-          <div className="flex flex-row p-2 bg-@Red2 text-black rounded-ss-md rounded-se-md justify-between items-center">
-            <p className="font-bold">Team Members</p>
-
-            <label className="relative block flex-initial w-64 rounded-full ">
-              <input
-                className="rounded-full placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-@Red focus:ring-@Red focus:ring-1 sm:text-sm"
-                placeholder="Search for anything..."
-                type="text"
-                name="search"
-              />
-              <span className="sr-only">Search</span>
-              <span className="absolute inset-y-0 right-4 flex justify-end items-center pl-2">
-                <BsSearch className="h-5 w-5 font-bold" />
-              </span>
-            </label>
-          </div>
-
-          {data.map((update) => {
-            return (
-              <TableUsers
-                dataUsers={data}
-                edit={`/update-users/${update.user_id}`}
-              />
-            );
-          })}
-
-          <div className="flex flex-row p-2 bg-white text-black border rounded-es-md rounded-ee-md justify-between items-center">
-            <button className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md">
-              <RiArrowLeftLine /> Previous
-            </button>
-            <div className="btn-group">
-              <button className="btn btn-ghost bg-@Red2">1</button>
-              <button className="btn btn-ghost">2</button>
-              <button className="btn btn-ghost ">...</button>
-              <button className="btn btn-ghost">99</button>
-              <button className="btn btn-ghost">100</button>
-            </div>
-            <button className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md">
-              Next <RiArrowRightLine />
-            </button>
-          </div>
-        </div>
       </div>
     </LayoutAdmin>
   );
 }
 
-export default HomeAdmin;
+export default UpdateUsers;
