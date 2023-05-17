@@ -1,33 +1,24 @@
 import {
-  RiArrowLeftLine,
-  RiArrowRightLine,
-  RiDeleteBin6Line,
-} from "react-icons/ri";
-import { BsFillPlusCircleFill, BsPatchMinusFill } from "react-icons/bs";
-import { useEffect, useState } from "react";
-import { BsSearch } from "react-icons/bs";
-import {
-  useForm,
-  useFieldArray,
   FieldArrayWithId,
   SubmitHandler,
+  useFieldArray,
+  useForm,
 } from "react-hook-form";
+import { BsFillPlusCircleFill, BsPatchMinusFill } from "react-icons/bs";
+import { RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
+import { BsSearch } from "react-icons/bs";
 import Swal from "sweetalert2";
 import axios from "axios";
 import * as z from "zod";
 
-import { CardTableSubmissionType } from "@/components/Card";
+import { PositionData, SubmissionDetail } from "@/utils/types/Admin";
+import { TableSubmission } from "@/components/Table";
 import { TabSubmisionType } from "@/components/Tab";
 import { LayoutAdmin } from "@/components/Layout";
 import { RedButton } from "@/components/Button";
-import { Input, SelectForm } from "@/components/Input";
-import {
-  PositionData,
-  SubmissionData,
-  SubmissionDetail,
-} from "@/utils/types/Admin";
-import { TableSubmission } from "@/components/Table";
+import { Input } from "@/components/Input";
 
 const schema = z.object({
   submission_type_name: z
@@ -116,10 +107,6 @@ export function SubmissionType() {
     name: "submission_value",
   });
 
-  // const onSubmit = (data: Schema) => {
-  //   console.log(data);
-  // };
-
   const onSubmit: SubmitHandler<Schema> = (data: Schema) => {
     setLoading(true);
     axios
@@ -150,14 +137,12 @@ export function SubmissionType() {
       });
     console.log(data);
   };
-  // Handle add position
 
   useEffect(() => {
     fetchDataPositions();
     fetchData();
   }, []);
 
-  const [submissionData, setSubmissionData] = useState<SubmissionDetail[]>([]);
   const fetchData = async () => {
     try {
       const response = await axios.get("submission-type");
@@ -189,20 +174,6 @@ export function SubmissionType() {
       setLoading(false);
     }
   };
-  // const fetchData = async () => {
-  //   axios
-  //     .get("submission-type")
-  //     .then((response) => {
-  //       const { data } = response.data;
-  //       setData(data);
-  //     })
-  //     .catch((error) => {
-  //       alert(error.toString());
-  //     })
-  //     .finally(() => {
-  //       setLoading(false);
-  //     });
-  // };
 
   const fetchDataPositions = async () => {
     axios
@@ -217,11 +188,6 @@ export function SubmissionType() {
       .finally(() => {
         setLoading(false);
       });
-  };
-
-  const handleDeleteRow = (row: SubmissionDetail) => {
-    // Implementasikan logika penghapusan data di sini
-    console.log("Menghapus data:", row);
   };
 
   const handleAddPosition = () => {

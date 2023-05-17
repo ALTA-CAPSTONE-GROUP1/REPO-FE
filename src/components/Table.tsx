@@ -1,15 +1,15 @@
 import { RiDeleteBin6Line, RiPencilLine } from "react-icons/ri";
 import { useTable, Column, Row } from "react-table";
-import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useMemo } from "react";
 import Swal from "@/utils/Swal";
-import { FC } from "react";
 import axios from "axios";
 
 import {
-  PositionData,
-  UserData,
-  OfficeData,
   SubmissionDetail,
+  PositionData,
+  OfficeData,
+  UserData,
 } from "@/utils/types/Admin";
 
 type PropsTablePosition = {
@@ -66,15 +66,11 @@ export function TablePosition(props: PropsTablePosition) {
       <thead {...getTableProps()}>
         {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map(
-              (
-                column // Fix the variable name here
-              ) => (
-                <th {...column.getHeaderProps()} scope="col">
-                  {column.render("Header")}
-                </th>
-              )
-            )}
+            {headerGroup.headers.map((column) => (
+              <th {...column.getHeaderProps()} scope="col">
+                {column.render("Header")}
+              </th>
+            ))}
           </tr>
         ))}
       </thead>
@@ -138,6 +134,7 @@ const handleDelete = async (data: PositionData) => {
 // table users
 type PropsTableUsers = {
   dataUsers: UserData[];
+  edit: string;
 };
 
 const columnsUser: readonly Column<UserData>[] = [
@@ -173,13 +170,7 @@ const columnsUser: readonly Column<UserData>[] = [
 
 export function TableUsers(props: PropsTableUsers) {
   const dataUsers = useMemo(() => props.dataUsers, [props.dataUsers]);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
-
-  const handleEdit = (userData: UserData) => {
-    setSelectedUser(userData);
-    setIsEditModalOpen(true);
-  };
+  const navigate = useNavigate();
 
   const tableHooks = (hooks: any) => {
     hooks.visibleColumns.push((columns: any) => [
@@ -195,7 +186,10 @@ export function TableUsers(props: PropsTableUsers) {
             >
               <RiDeleteBin6Line />
             </button>
-            <button className="btn btn-ghost btn-xl text-xl text-@Blue">
+            <button
+              className="btn btn-ghost btn-xl text-xl text-@Blue"
+              onClick={() => navigate(`${props.edit}`)}
+            >
               <RiPencilLine />
             </button>
           </div>
@@ -249,6 +243,7 @@ export function TableUsers(props: PropsTableUsers) {
     },
     tableHooks
   );
+
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     tableInstanceUser;
 
@@ -258,15 +253,11 @@ export function TableUsers(props: PropsTableUsers) {
       <thead {...getTableProps()}>
         {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map(
-              (
-                column // Fix the variable name here
-              ) => (
-                <th {...column.getHeaderProps()} scope="col">
-                  {column.render("Header")}
-                </th>
-              )
-            )}
+            {headerGroup.headers.map((column) => (
+              <th {...column.getHeaderProps()} scope="col">
+                {column.render("Header")}
+              </th>
+            ))}
           </tr>
         ))}
       </thead>
@@ -297,8 +288,8 @@ type PropsTableOffice = {
 
 const columnsOffice: readonly Column<OfficeData>[] = [
   {
-    Header: "Office",
     accessor: "office_name",
+    Header: "Office",
   },
 ];
 

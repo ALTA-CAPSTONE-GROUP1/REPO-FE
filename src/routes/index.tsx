@@ -22,10 +22,11 @@ import UserIndex from "@/pages/user";
 import Approve from "@/pages/user/Approve";
 import DrawCanvasExample from "@/pages/DrawCanvasExample";
 import { useCookies } from "react-cookie";
+import { UpdateUsers } from "@/pages/admin/UpdateUsers";
 
 axios.defaults.baseURL =
-  // "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
-  "https://hobelcyatramandiri.my.id";
+  "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
+// "https://hobelcyatramandiri.my.id";
 
 const Router: FC = () => {
   const [cookie, setCookies] = useCookies(["token", "user_position", "url"]);
@@ -58,6 +59,10 @@ const Router: FC = () => {
     {
       path: "/admin",
       element: getToken ? <HomeAdmin /> : <Navigate to="/login" />,
+    },
+    {
+      path: "/update-users/:user_id",
+      element: getToken ? <UpdateUsers /> : <Navigate to="/login" />,
     },
     {
       path: "/position",
