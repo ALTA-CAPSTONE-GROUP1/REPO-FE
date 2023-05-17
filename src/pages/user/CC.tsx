@@ -1,7 +1,5 @@
-import { Layout } from "@/components/Layout";
 import CCList from "@/components/CCList";
-import SideBar from "@/components/SideBar";
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { BsSearch } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import axios from "axios";

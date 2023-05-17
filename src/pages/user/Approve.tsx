@@ -1,12 +1,8 @@
-import { Layout } from "@/components/Layout";
-import ApproveList from "@/components/ApproveList";
-import SideBar from "@/components/SideBar";
-import { FC, useEffect, useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "@/utils/Swal";
+import { FC } from "react";
+
+import ApproveList from "@/components/ApproveList";
 import approveTypes from "@/utils/types/approve";
 
 interface Props {
@@ -15,15 +11,6 @@ interface Props {
 
 const Approve: FC<Props> = (props) => {
   const { datas } = props;
-  // const [datas, setDatas] = useState<approveTypes[]>([]);
-  const MySwal = withReactContent(Swal);
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
-
-  // function fetchData() {
-
-  // }
 
   return (
     <div className="drawer-content flex flex-col">
