@@ -1,14 +1,15 @@
 import { RiDeleteBin6Line, RiPencilLine } from "react-icons/ri";
 import { useTable, Column, Row } from "react-table";
+import { useMemo, useState } from "react";
 import Swal from "@/utils/Swal";
-import { useMemo } from "react";
+import { FC } from "react";
 import axios from "axios";
 
 import {
   PositionData,
   UserData,
   OfficeData,
-  SubmissionData,
+  SubmissionDetail,
 } from "@/utils/types/Admin";
 
 type PropsTablePosition = {
@@ -172,6 +173,13 @@ const columnsUser: readonly Column<UserData>[] = [
 
 export function TableUsers(props: PropsTableUsers) {
   const dataUsers = useMemo(() => props.dataUsers, [props.dataUsers]);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<UserData | null>(null);
+
+  const handleEdit = (userData: UserData) => {
+    setSelectedUser(userData);
+    setIsEditModalOpen(true);
+  };
 
   const tableHooks = (hooks: any) => {
     hooks.visibleColumns.push((columns: any) => [
@@ -187,12 +195,9 @@ export function TableUsers(props: PropsTableUsers) {
             >
               <RiDeleteBin6Line />
             </button>
-            <label
-              htmlFor="my-modal-3"
-              className="btn btn-ghost btn-xl text-xl text-@Blue"
-            >
+            <button className="btn btn-ghost btn-xl text-xl text-@Blue">
               <RiPencilLine />
-            </label>
+            </button>
           </div>
         ),
       },
@@ -373,15 +378,11 @@ export function TableOffice(props: PropsTableOffice) {
       <thead {...getTableProps()}>
         {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map(
-              (
-                column // Fix the variable name here
-              ) => (
-                <th {...column.getHeaderProps()} scope="col">
-                  {column.render("Header")}
-                </th>
-              )
-            )}
+            {headerGroup.headers.map((column) => (
+              <th {...column.getHeaderProps()} scope="col">
+                {column.render("Header")}
+              </th>
+            ))}
           </tr>
         ))}
       </thead>
@@ -405,36 +406,34 @@ export function TableOffice(props: PropsTableOffice) {
   );
 }
 
-//Submission Table
-type PropsTableSubmission = {
-  data: SubmissionData[];
-};
+//TABLE SUBMISSION TYPE
+interface TableSubmissionProps {
+  data: SubmissionDetail[];
+}
 
-const columnsSubmission: Column<SubmissionData[][0]>[] = [
+const columnsSubmission: Column<SubmissionDetail>[] = [
   {
-    Header: "Submission Type Name",
+    Header: "Submission Name",
     accessor: "submission_type_name",
   },
   {
-    Header: "Submission Value",
-    accessor: (row) => row.submission_detail[0].submission_value,
+    Header: "Value",
+    accessor: "submission_value",
   },
   {
-    Header: "Submission Requirement",
-    accessor: (row) => row.submission_detail[0].submission_requirement,
+    Header: "Requirement",
+    accessor: "submission_requirement",
   },
 ];
 
-export function TableSubmission(props: PropsTableSubmission) {
-  const data = useMemo(() => props.data, [props.data]);
-
+export const TableSubmission: React.FC<TableSubmissionProps> = ({ data }) => {
   const tableHooks = (hooks: any) => {
     hooks.visibleColumns.push((columns: any) => [
       ...columns,
       {
         id: "Delete",
         Header: <div className="flex pr-3 justify-end">Action</div>,
-        Cell: ({ row }: { row: Row<SubmissionData> }) => (
+        Cell: ({ row }: { row: Row<OfficeData> }) => (
           <div className="flex pr-3 justify-end">
             <button
               className="btn btn-ghost btn-xl text-xl text-@Red"
@@ -447,7 +446,8 @@ export function TableSubmission(props: PropsTableSubmission) {
       },
     ]);
   };
-  const handleDelete = async (data: SubmissionData) => {
+
+  const handleDelete = async (data: OfficeData) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You will not be able to recover your account!",
@@ -485,19 +485,10 @@ export function TableSubmission(props: PropsTableSubmission) {
     });
   };
 
-  const flattenedData: SubmissionData[] = ([] as SubmissionData[]).concat(
-    ...data.map((item) =>
-      item.submission_detail.map((detail) => ({
-        submission_type_name: item.submission_type_name,
-        submission_detail: [detail],
-      }))
-    )
-  );
-
   const tableInstance = useTable(
     {
       columns: columnsSubmission,
-      data: flattenedData,
+      data: data,
     },
     tableHooks
   );
@@ -505,28 +496,24 @@ export function TableSubmission(props: PropsTableSubmission) {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     tableInstance;
 
-  const isEven = (index: number) => index % 2 == 0;
+  const isEven = (index: number) => index % 2 === 0;
+
   return (
     <table className="table w-full border border-@Gray2">
       <thead {...getTableProps()}>
         {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map(
-              (
-                column // Fix the variable name here
-              ) => (
-                <th {...column.getHeaderProps()} scope="col">
-                  {column.render("Header")}
-                </th>
-              )
-            )}
+            {headerGroup.headers.map((column) => (
+              <th {...column.getHeaderProps()} scope="col">
+                {column.render("Header")}
+              </th>
+            ))}
           </tr>
         ))}
       </thead>
       <tbody {...getTableBodyProps()}>
         {rows.map((row, index) => {
           prepareRow(row);
-
           return (
             <tr
               {...row.getRowProps()}
@@ -541,4 +528,4 @@ export function TableSubmission(props: PropsTableSubmission) {
       </tbody>
     </table>
   );
-}
+};

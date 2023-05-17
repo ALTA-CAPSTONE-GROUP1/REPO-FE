@@ -26,9 +26,25 @@ export interface ApprovingData {
 }
 
 export interface SubmissionData {
+  submission_type: [];
+  positions: [];
+}
+// export interface SubmissionData {
+//   submission_type: {
+//     submission_type_name: string;
+//     submission_detail: {
+//       submission_value: number;
+//       submission_requirement: string;
+//     }[];
+//   }[];
+//   positions: {
+//     position_name: string;
+//     position_tag: string;
+//   }[];
+// }
+
+export interface SubmissionDetail {
   submission_type_name: string;
-  submission_detail: {
-    submission_value: number;
-    submission_requirement: string;
-  }[];
+  submission_value: number;
+  submission_requirement: string;
 }
