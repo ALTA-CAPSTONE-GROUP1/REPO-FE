@@ -1,20 +1,18 @@
-import SideBar from "@/components/SideBar";
-import { FC, useEffect, useState } from "react";
-import { RedButton, Red2Button, BlueButton } from "@/components/Button";
-import { CardApprove, CardApproving } from "@/components/Card";
-import { Input } from "@/components/Input";
-import { RiCloseCircleFill } from "react-icons/ri";
-import { Layout } from "@/components/Layout";
-import Loading from "@/components/Loading";
-import withReactContent from "sweetalert2-react-content";
-
-import Swal from "@/utils/Swal";
-import ApproveDetailType from "@/utils/types/ApproveDetail";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
-import * as z from "zod";
+import withReactContent from "sweetalert2-react-content";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { FC, useEffect, useState } from "react";
+import axios from "axios";
+import * as z from "zod";
+
+import { RedButton, Red2Button, BlueButton } from "@/components/Button";
+import ApproveDetailType from "@/utils/types/ApproveDetail";
+import { CardApprove } from "@/components/Card";
+import { Layout } from "@/components/Layout";
+import SideBar from "@/components/SideBar";
+import Loading from "@/components/Loading";
+import Swal from "@/utils/Swal";
 
 const schema = z.object({
   action: z.string(),
@@ -24,12 +22,10 @@ const schema = z.object({
 type Schema = z.infer<typeof schema>;
 
 const ApproveDetail: FC = () => {
-  const [createSubmission, setCreateSubmission] = useState<boolean>(false);
-  const [page, setPage] = useState<string>();
   const [bg1, setBg1] = useState<boolean>(false);
   const [bg2, setBg2] = useState<boolean>(false);
   const [bg3, setBg3] = useState<boolean>(true);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading] = useState<boolean>(false);
   const [data, setData] = useState<ApproveDetailType>();
   const MySwal = withReactContent(Swal);
   const { id } = useParams();
@@ -173,7 +169,7 @@ const ApproveDetail: FC = () => {
                       label="Approve"
                       id="button-approve-approve"
                       type="submit"
-                      onClick={(e) => setAction("approve")}
+                      onClick={() => setAction("approve")}
                     />
                   </div>
                 </div>
