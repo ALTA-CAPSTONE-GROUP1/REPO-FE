@@ -1,8 +1,17 @@
 import { FC } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BsFillFileEarmarkTextFill } from "react-icons/bs";
 import { RiAdminFill, RiLogoutBoxLine } from "react-icons/ri";
+import { useCookies } from "react-cookie";
 export const NavbarAdmin: FC = () => {
+  const [, , removeCookie] = useCookies(["token", "user_position"]);
+  const navigate = useNavigate();
+
+  function handleLogout() {
+    removeCookie("token");
+    removeCookie("user_position");
+    navigate("/");
+  }
   return (
     <header className="relative flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full bg-@Red text-xl py-2 ">
       <div
@@ -39,11 +48,14 @@ export const NavbarAdmin: FC = () => {
                   </a>
                 </li>
                 <li>
-                  <a className="flex items-center gap-2 hover:bg-@Red3 hover:text-black">
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 hover:bg-@Red3 hover:text-black"
+                  >
                     {" "}
                     <RiLogoutBoxLine />
                     Log Out
-                  </a>
+                  </button>
                 </li>
               </ul>
             </li>
