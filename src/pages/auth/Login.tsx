@@ -19,7 +19,7 @@ type Schema = z.infer<typeof schema>;
 
 function Login() {
   const [loading, setLoading] = useState<boolean>(false);
-  const [, setCookie] = useCookies(["token", "user_position"]);
+  const [, setCookie] = useCookies(["token", "user_position", "username"]);
   const navigate = useNavigate();
 
   const {
@@ -29,6 +29,33 @@ function Login() {
   } = useForm<Schema>({
     resolver: zodResolver(schema),
   });
+
+  function handleDataUser(cook: string) {
+    // const url = "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
+    // axios({
+    //   method: "get",
+    //   url: `${url}/profile`,
+    // })
+    axios
+      .get(`profile`, {
+        headers: {
+          Authorization: `Bearer ${cook}`,
+        },
+      })
+      .then((res) => {
+        const { data } = res.data;
+        const name = data.name;
+        setCookie("username", name);
+      })
+      .catch((err) => {
+        const { message } = err.response;
+        Swal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      });
+  }
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
     setLoading(true);
@@ -45,6 +72,7 @@ function Login() {
           if (result.isConfirmed) {
             setCookie("token", data.token, { path: "/" });
             setCookie("user_position", data.role, { path: "/" });
+            handleDataUser(data.token);
             if (data.role === "Admin" || data.role === "admin") {
               navigate("/admin"); // jika user adalah admin, arahkan ke halaman admin
             } else {

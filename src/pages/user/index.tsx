@@ -53,23 +53,28 @@ interface submission_type {
 
 const UserIndex: FC = () => {
   const [createSubmission, setCreateSubmission] = useState<boolean>(false);
-  const [page, setPage] = useState<string>("user-home");
   const [bg1, setBg1] = useState<boolean>(true);
   const [bg2, setBg2] = useState<boolean>(false);
   const [bg3, setBg3] = useState<boolean>(false);
+
   const [datasSubmission, setDatasSubmission] = useState<SubmissionType[]>([]);
-  const [datascc, setDatascc] = useState<ccTypes[]>([]);
   const [datasApprove, setDatasApprove] = useState<approveTypes[]>([]);
-  const MySwal = withReactContent(Swal);
   const [subTypes, setSubTypes] = useState<submission_type[]>([]);
-  const [indexSubtypes, setIndexSub] = useState<number>();
-  const [selectSubType, setSelectSubType] = useState<string>();
-  const [selectValue, setSelectValue] = useState<number>();
+  const [datascc, setDatascc] = useState<ccTypes[]>([]);
   const [to_cc, setTo_Cc] = useState<to_cc_type>();
-  const [, setFile] = useState<any>();
+
+  const [selectSubType, setSelectSubType] = useState<string>();
   const [category, setCategory] = useState<string>("to");
+  const [page, setPage] = useState<string>("user-home");
   const [search, setSearch] = useState<string>("");
+
+  const [selectValue, setSelectValue] = useState<number>();
+  const [indexSubtypes, setIndexSub] = useState<number>();
+
+  const [, setFile] = useState<any>();
+
   const [cookie, , removeCookie] = useCookies(["token", "user_position"]);
+  const MySwal = withReactContent(Swal);
   const navigate = useNavigate();
 
   const {

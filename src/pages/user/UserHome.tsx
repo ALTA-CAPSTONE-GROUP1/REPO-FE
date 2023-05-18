@@ -1,15 +1,11 @@
-import List from "@/components/List";
-import { FC, ReactNode, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { FC, ReactNode } from "react";
+import { RiMenu2Fill } from "react-icons/ri";
 import { BsSearch } from "react-icons/bs";
-import { RiCloseCircleFill, RiMenu2Fill } from "react-icons/ri";
-import { z } from "zod";
-import withReactContent from "sweetalert2-react-content";
+import { Link } from "react-router-dom";
 
-import Swal from "@/utils/Swal";
 import SubmissionType from "@/utils/types/submission";
-import axios from "axios";
-import { Input } from "@/components/Input";
+import List from "@/components/List";
+
 interface Props {
   datas: SubmissionType[];
   children: ReactNode;
@@ -18,20 +14,7 @@ interface Props {
 }
 
 const UserHome: FC<Props> = (props) => {
-  // const { addSubmission } = props;
   const { datas, children, onchange, onchangeInput } = props;
-  const [createSubmission, setCreateSubmission] = useState<boolean>(false);
-  // const [datas, setDatas] = useState<SubmissionType[]>(data);
-  const MySwal = withReactContent(Swal);
-
-  useEffect(() => {
-    // fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // function fetchData() {
-
-  // }
 
   function isCurrentDate(dateString: string) {
     const currentDate = new Date().toISOString().slice(0, 10);
