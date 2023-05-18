@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useNavigate, useParams } from "react-router-dom";
+import { json, useNavigate, useParams } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
@@ -14,14 +14,15 @@ import { LayoutAdmin } from "@/components/Layout";
 import { RedButton } from "@/components/Button";
 import { TabUser } from "@/components/Tab";
 import { Input } from "@/components/Input";
+import { Position } from "./Position";
 
 const schema = z.object({
   password: z.string().min(6, { message: "Password is mininum 6 character" }),
   email: z.string().min(1, { message: "Email is required" }),
   name: z.string().min(1, { message: "Name is required" }),
-  hp: z.string().min(1, { message: "No HP is required" }),
-  position: z.string(),
-  office: z.string(),
+  phone_number: z.string().min(1, { message: "No HP is required" }),
+  position_id: z.string(),
+  office_id: z.string(),
 });
 
 type Schema = z.infer<typeof schema>;
@@ -30,13 +31,18 @@ export function UpdateUsers() {
   const [positionData, setPositionData] = useState<PositionData[]>([]);
   const [officeData, setOfficeData] = useState<OfficeData[]>([]);
   const [data] = useState<UserDataUpdate | null>(null);
+  // const [position, setPosition] = useState<string>("");
+  const [idPosition, setIdPosition] = useState<number>(0);
+  // const [office, setOffice] = useState<string>("");
   const [, setLoading] = useState<boolean>(false);
   const [cookie] = useCookies(["token"]);
   const { user_id } = useParams();
   const getToken = cookie.token;
   const navigate = useNavigate();
+  let position = "";
 
   const {
+    getValues,
     setValue,
     register,
     handleSubmit,
@@ -46,8 +52,6 @@ export function UpdateUsers() {
   });
 
   useEffect(() => {
-    fetchDataPositions();
-    fetchDataOffices();
     fetchData();
   }, []);
 
@@ -59,14 +63,13 @@ export function UpdateUsers() {
         },
       })
       .then((res) => {
-        const { name, email, phone_number, position, office, password } =
-          res.data.data;
-        setValue("name", name);
-        setValue("email", email);
-        setValue("hp", phone_number);
-        setValue("position", position);
-        setValue("office", office);
-        setValue("password", password);
+        const { data } = res.data;
+        setValue("name", data.name);
+        setValue("email", data.email);
+        setValue("phone_number", data.phone_number);
+        setValue("password", data.password);
+        position = data.position;
+        // setOffice(data.office);
       })
       .catch((err) => {
         const { data } = err.response;
@@ -76,6 +79,7 @@ export function UpdateUsers() {
           showCancelButton: false,
         });
       })
+      .finally(fetchDataPositions)
       .finally(() => setLoading(false));
   };
 
@@ -89,6 +93,13 @@ export function UpdateUsers() {
       .then((response) => {
         const { data } = response.data;
         setPositionData(data);
+        console.log(data);
+        const filterPosition = data.filter(
+          (item: any) => item.position === position
+        );
+        console.log(data);
+        alert(JSON.stringify(filterPosition[0].position_id));
+        setIdPosition(filterPosition[0].position_id);
       })
       .catch((error) => {
         alert(error.toString());
@@ -118,16 +129,15 @@ export function UpdateUsers() {
   };
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
+    const postionID = parseInt(data.position_id);
+    const officeID = parseInt(data.office_id);
+
+    const newData = { ...data, position_id: postionID, office_id: officeID };
+
     setLoading(true);
-    const formData = new FormData();
-    let key: keyof typeof data;
-    for (key in data) {
-      formData.append(key, data[key]);
-    }
     axios
-      .put(`users/${user_id}`, formData, {
+      .put(`users/${user_id}`, newData, {
         headers: {
-          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${getToken}`,
         },
       })
@@ -192,10 +202,10 @@ export function UpdateUsers() {
               <label className="font-semibold text-md text-black">No Hp</label>
               <Input
                 register={register}
-                name="hp"
+                name="phone_number"
                 placeholder="Enten Phone Number"
-                id="input-no-hp"
-                error={errors.hp?.message}
+                id="input-no-phone_number"
+                error={errors.phone_number?.message}
               />
             </div>
             <div className="mt-5 w-full">
@@ -203,14 +213,16 @@ export function UpdateUsers() {
                 Position
               </label>
               <select
-                {...register("position")}
-                value={"position"}
+                {...register("position_id")}
                 className="border rounded-md bg-white border-@Gray text-black p-2 focus:outline-none w-full"
                 placeholder="Select Position"
                 id="select-position"
               >
+                <option value={idPosition} disabled selected>
+                  {position}
+                </option>
                 {positionData.map((pos) => (
-                  <option>{pos.position}</option>
+                  <option value={pos.position_id}>{pos.position}</option>
                 ))}
               </select>
             </div>
@@ -218,14 +230,13 @@ export function UpdateUsers() {
               <label className="font-semibold text-md text-black">Office</label>
 
               <select
-                {...register("office")}
-                value={data?.office}
+                {...register("office_id")}
                 className="border rounded-md bg-white border-@Gray text-black p-2 focus:outline-none w-full"
                 placeholder="Select Office"
                 id="select-Office"
               >
                 {officeData.map((office) => (
-                  <option key={office.Name}>{office.Name}</option>
+                  <option value={office.ID}>{office.Name}</option>
                 ))}
               </select>
             </div>

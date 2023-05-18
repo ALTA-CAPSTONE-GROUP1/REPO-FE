@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {
   FieldArrayWithId,
   SubmitHandler,
@@ -77,7 +78,7 @@ export function SubmissionType() {
   const [positionData, setPositionData] = useState<PositionData[]>([]);
   const [dataPosition, setDataPosition] = useState<string[]>([""]);
   const [, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<SubmissionDetail[]>([]);
+  const [data] = useState<SubmissionDetail[]>([]);
   const [cookie] = useCookies(["token", "user_position"]);
 
   const {
@@ -327,13 +328,12 @@ export function SubmissionType() {
                       {...register(`position.${index}`)}
                       className="border rounded-l-lg bg-white border-@Gray text-black p-2 focus:outline-none w-full"
                       id={`select-position-${index}`}
-                      defaultValue=""
                     >
                       <option value="" disabled>
                         Select Position
                       </option>
                       {positionData.map((pos) => (
-                        <option>{pos.position}</option>
+                        <option value={pos.tag}>{pos.position}</option>
                       ))}
                     </select>
                   </div>
@@ -419,13 +419,14 @@ export function SubmissionType() {
                                 )}
                                 className="border rounded-l-lg bg-white border-@Gray text-black p-2 focus:outline-none w-full"
                                 id={`select-${index}-position-to-${idx}`}
-                                defaultValue=""
                               >
                                 <option value="" disabled>
                                   Select Position
                                 </option>
                                 {positionData.map((pos) => (
-                                  <option>{pos.position}</option>
+                                  <option value={pos.tag}>
+                                    {pos.position}
+                                  </option>
                                 ))}
                               </select>
                             </div>
@@ -472,13 +473,14 @@ export function SubmissionType() {
                                 )}
                                 className="border rounded-l-lg bg-white border-@Gray text-black p-2 focus:outline-none w-full "
                                 id={`select-${index}-position-cc-${idx}`}
-                                defaultValue=""
                               >
                                 <option value="" disabled>
                                   Select Position
                                 </option>
                                 {positionData.map((pos) => (
-                                  <option>{pos.position}</option>
+                                  <option value={pos.tag}>
+                                    {pos.position}
+                                  </option>
                                 ))}
                               </select>
                             </div>
