@@ -13,9 +13,10 @@ import { RedButton } from "@/components/Button";
 import { TabOffice } from "@/components/Tab";
 import { Input } from "@/components/Input";
 import { TableOffice } from "@/components/Table";
+import { useCookies } from "react-cookie";
 
 const schema = z.object({
-  office: z.string(),
+  name: z.string(),
 });
 
 type Schema = z.infer<typeof schema>;
@@ -23,6 +24,7 @@ type Schema = z.infer<typeof schema>;
 export const Office: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [officeData, setOfficeData] = useState<OfficeData[]>([]);
+  const [cookie, setCookie] = useCookies(["token", "user_position"]);
 
   const {
     register,
@@ -35,7 +37,11 @@ export const Office: FC = () => {
   const onSubmit: SubmitHandler<Schema> = (data) => {
     setLoading(true);
     axios
-      .post("office", data)
+      .post("office", data, {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
       .then((res) => {
         const { message, data } = res.data;
         if (data) {
@@ -58,14 +64,21 @@ export const Office: FC = () => {
           showCancelButton: false,
         });
       })
-      .finally(() => setLoading(false));
+      .finally(() => setLoading(false))
+      .finally(() => {
+        fetchDataOffices();
+      });
   };
   useEffect(() => {
     fetchDataOffices();
   }, []);
   const fetchDataOffices = async () => {
     axios
-      .get("office")
+      .get("office", {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
       .then((response) => {
         const { data } = response.data;
         setOfficeData(data);
@@ -101,7 +114,7 @@ export const Office: FC = () => {
                 </label>
                 <Input
                   register={register}
-                  name="office"
+                  name="name"
                   placeholder="Enter Office Location"
                   id="input-office-location"
                 />

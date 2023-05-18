@@ -1,4 +1,5 @@
 export interface PositionData {
+  position_id: number;
   position: string;
   tag: string;
   action: string;
@@ -6,7 +7,8 @@ export interface PositionData {
   label: string;
 }
 export interface OfficeData {
-  office_name: string;
+  ID: number;
+  Name: string;
 }
 
 export interface UserData {
