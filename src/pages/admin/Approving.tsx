@@ -181,7 +181,7 @@ export const Approving: FC = () => {
             </div>
           </div>
         </form>
-        {clicked && (
+        {clicked && submissionData ? (
           <div className="overflow-x-auto w-full p-6 mt-2">
             <h3 className="font-bold text-2xl text-black">Submission</h3>
             <div className="mt-5">
@@ -189,23 +189,13 @@ export const Approving: FC = () => {
                 <h3 className="font-bold text-3xl text-black">
                   {submissionData?.title}
                 </h3>
-                <h3 className="font-bold text-xl text-@Green">
-                  {/* {cookies.submission_type} */}
-                </h3>
+                <h3 className="font-bold text-xl text-@Green"></h3>
               </div>
               <div className="mt-2">
                 <h3 className="capitalize font-semibold text-2xl text-black">
                   {applicantData?.position} {applicantData?.name}
                 </h3>
-                {/* <h4 className="capitalize font-semibold text-2xl text-black">
-                To: {cookies.a}
-              </h4>
-              <h5 className="text-@Gray">
-                Cc:{" "}
-                {cc?.map((data) => {
-                  return data.position + " " + data.name + ",";
-                })}
-              </h5> */}
+
                 <p className="mt-5 text-xl">{submissionData?.messageBody}</p>
                 <div className="mt-20 ">
                   <a className="text-5xl text-@Red">
@@ -264,6 +254,8 @@ export const Approving: FC = () => {
               </div>
             </div>
           </div>
+        ) : (
+          <div> </div>
         )}
       </div>
     </LayoutAdmin>

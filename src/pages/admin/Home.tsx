@@ -257,14 +257,7 @@ export function HomeAdmin() {
             </label>
           </div>
 
-          {data.map((update) => {
-            return (
-              <TableUsers
-                dataUsers={data}
-                edit={`/update-users/${update.user_id}`}
-              />
-            );
-          })}
+          <TableUsers dataUsers={data} />
 
           <div className="flex flex-row p-2 bg-white text-black border rounded-es-md rounded-ee-md justify-between items-center">
             <button className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md">

@@ -53,12 +53,17 @@ export function UpdateUsers() {
 
   const fetchData = async () => {
     axios
-      .get(`users/${user_id}`)
+      .get(`users/${user_id}`, {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
       .then((res) => {
-        const { name, email, hp, position, office, password } = res.data.data;
+        const { name, email, phone_number, position, office, password } =
+          res.data.data;
         setValue("name", name);
         setValue("email", email);
-        setValue("hp", hp);
+        setValue("hp", phone_number);
         setValue("position", position);
         setValue("office", office);
         setValue("password", password);
@@ -76,7 +81,11 @@ export function UpdateUsers() {
 
   const fetchDataPositions = async () => {
     axios
-      .get("position")
+      .get("position", {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
       .then((response) => {
         const { data } = response.data;
         setPositionData(data);
@@ -91,7 +100,11 @@ export function UpdateUsers() {
 
   const fetchDataOffices = async () => {
     axios
-      .get("office")
+      .get("office", {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
       .then((response) => {
         const { data } = response.data;
         setOfficeData(data);
@@ -211,7 +224,6 @@ export function UpdateUsers() {
                 placeholder="Select Office"
                 id="select-Office"
               >
-                <option disabled>{data?.office}</option>
                 {officeData.map((office) => (
                   <option key={office.Name}>{office.Name}</option>
                 ))}

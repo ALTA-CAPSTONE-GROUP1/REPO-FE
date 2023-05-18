@@ -96,31 +96,6 @@ export const Position: FC = () => {
       });
     console.log(data);
   };
-  // const data = React.useMemo(() => "position", []);
-
-  // useEffect(() => {
-  //   fetch();
-  // }, []);
-
-  // function fetch() {
-  //   axios
-  //     .get("position")
-  //     .then((res) => {
-  //       const { data } = res.data;
-  //       setDatas(data);
-  //     })
-  //     .catch((err) => {
-  //       const { message } = err.response;
-  //       Swal.fire({
-  //         title: "Failed",
-  //         text: message,
-  //         showCancelButton: false,
-  //       });
-  //     })
-  //     .finally(() => {
-  //       setLoading(false);
-  //     });
-  // }
 
   return (
     <LayoutAdmin>

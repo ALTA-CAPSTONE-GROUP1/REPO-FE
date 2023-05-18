@@ -21,6 +21,7 @@ import { TabSubmisionType } from "@/components/Tab";
 import { LayoutAdmin } from "@/components/Layout";
 import { RedButton } from "@/components/Button";
 import { Input } from "@/components/Input";
+import { useCookies } from "react-cookie";
 
 const schema = z.object({
   submission_type_name: z
@@ -77,8 +78,10 @@ export function SubmissionType() {
   const [dataPosition, setDataPosition] = useState<string[]>([""]);
   const [, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<SubmissionDetail[]>([]);
+  const [cookie] = useCookies(["token", "user_position"]);
 
   const {
+    setValue,
     register,
     control,
     handleSubmit,
@@ -109,10 +112,14 @@ export function SubmissionType() {
     name: "submission_value",
   });
 
-  const onSubmit: SubmitHandler<Schema> = (data: Schema) => {
+  const onSubmit: SubmitHandler<Schema> = (data) => {
     setLoading(true);
     axios
-      .post("/submission-type", data)
+      .post("/submission-type", data, {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
       .then((res) => {
         const { message, data } = res.data;
         if (data) {
@@ -123,7 +130,10 @@ export function SubmissionType() {
             showCancelButton: false,
           }).then((result) => {
             if (result.isConfirmed) {
-              window.location.reload();
+              setValue("submission_type_name", "");
+              setValue("position", []);
+              setValue("submission_value", []);
+              setValue("requirement", "");
             }
           });
         }
@@ -146,40 +156,47 @@ export function SubmissionType() {
   }, []);
 
   const fetchData = async () => {
-    try {
-      const response = await axios.get("submission-type");
-      const { data } = response.data;
-
-      const submissionData = data.submission_type;
-
-      const submissionDetails = submissionData.reduce(
-        (acc: any, submission: any) => {
-          submission.submission_detail.forEach((detail: any) => {
-            const submissionDetail = {
-              submission_type_name: submission.submission_type_name,
-              submission_value: detail.submission_value,
-              submission_requirement: detail.submission_requirement,
-            };
-            acc.push(submissionDetail);
-          });
-          return acc;
+    axios
+      .get("submission-type", {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
         },
-        []
-      );
+      })
+      .then((response) => {
+        const { data } = response.data;
+        const submissionData = data.submission_type;
+        const submissionDetails = submissionData.reduce(
+          (acc: any, submission: any) => {
+            submission.submission_detail.forEach((detail: any) => {
+              const submissionDetail = {
+                submission_type_name: submission.submission_type_name,
+                submission_value: detail.submission_value,
+                submission_requirement: detail.submission_requirement,
+              };
+              acc.push(submissionDetail);
+            });
+            return acc;
+          },
+          []
+        );
 
-      console.log(submissionDetails);
-
-      setData(submissionDetails);
-    } catch (error) {
-      alert(errors.toString());
-    } finally {
-      setLoading(false);
-    }
+        console.log(submissionDetails);
+      })
+      .catch((error) => {
+        alert(error.toString());
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const fetchDataPositions = async () => {
     axios
-      .get("position")
+      .get("position", {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
       .then((response) => {
         const { data } = response.data;
         setPositionData(data);

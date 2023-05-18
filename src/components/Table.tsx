@@ -139,7 +139,7 @@ export function TablePosition(props: PropsTablePosition) {
 // table users
 type PropsTableUsers = {
   dataUsers: UserData[];
-  edit: string;
+  // edit: string;
 };
 
 const columnsUser: readonly Column<UserData>[] = [
@@ -194,7 +194,7 @@ export function TableUsers(props: PropsTableUsers) {
             </button>
             <button
               className="btn btn-ghost btn-xl text-xl text-@Blue"
-              onClick={() => navigate(`${props.edit}`)}
+              onClick={() => navigate(`/update-users/${row.values.user_id}`)}
             >
               <RiPencilLine />
             </button>
