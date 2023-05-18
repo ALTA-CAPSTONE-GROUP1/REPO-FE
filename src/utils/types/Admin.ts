@@ -18,8 +18,10 @@ export interface UserData {
   position: string;
   office: string;
   hp: string;
+  action: string;
 }
 export interface UserDataUpdate extends UserData {
+  phone_number: string;
   password: string;
 }
 export interface ApprovingData {
