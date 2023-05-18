@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { RiDeleteBin6Line, RiPencilLine } from "react-icons/ri";
 import { useTable, Column, Row } from "react-table";
 import { useNavigate } from "react-router-dom";
@@ -300,7 +301,7 @@ const columnsOffice: readonly Column<OfficeData>[] = [
 
 export function TableOffice(props: PropsTableOffice) {
   const data = useMemo(() => props.data, [props.data]);
-  const [cookie, setCookie] = useCookies(["token", "user_position"]);
+  const [cookie] = useCookies(["token", "user_position"]);
 
   const tableHooks = (hooks: any) => {
     hooks.visibleColumns.push((columns: any) => [
@@ -430,11 +431,12 @@ export const TableSubmission: React.FC<TableSubmissionProps> = ({ data }) => {
       {
         id: "Delete",
         Header: <div className="flex pr-3 justify-end">Action</div>,
-        Cell: ({ row }: { row: Row<OfficeData> }) => (
+        // { row }: { row: Row<OfficeData> }
+        Cell: () => (
           <div className="flex pr-3 justify-end">
             <button
               className="btn btn-ghost btn-xl text-xl text-@Red"
-              onClick={() => handleDelete(row.original)}
+              onClick={() => handleDelete()}
             >
               <RiDeleteBin6Line />
             </button>
@@ -444,7 +446,7 @@ export const TableSubmission: React.FC<TableSubmissionProps> = ({ data }) => {
     ]);
   };
 
-  const handleDelete = async (data: OfficeData) => {
+  const handleDelete = async () => {
     Swal.fire({
       title: "Are you sure?",
       text: "You will not be able to recover your account!",

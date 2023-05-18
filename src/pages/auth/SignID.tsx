@@ -1,5 +1,5 @@
-import { FC, useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { Input } from "@/components/Input";
 import { RedButton } from "@/components/Button";
@@ -8,7 +8,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import Swal from "sweetalert2";
 import * as z from "zod";
-import Loading from "@/components/Loading";
 
 const schema = z.object({
   sign_id: z.string().min(5, { message: "Sign ID is Failed" }),
@@ -26,11 +25,8 @@ export function SignID() {
     "date",
   ]);
 
-  const { sign_id } = useParams();
-
   const {
     watch,
-    setValue,
     register,
     handleSubmit,
     formState: { errors },
@@ -42,7 +38,7 @@ export function SignID() {
     axios
       .post(`sign_validation`, data)
       .then((res) => {
-        const { message, data } = res.data;
+        const { data } = res.data;
 
         setCookie("submission_title", data.submission_title, {
           path: "/",

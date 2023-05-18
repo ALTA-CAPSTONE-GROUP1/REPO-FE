@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { BsFileEarmarkPdfFill } from "react-icons/bs";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,7 +25,7 @@ const schema = z.object({
 type Schema = z.infer<typeof schema>;
 
 export const Approving: FC = () => {
-  const [loading, setLoading] = useState<boolean>(true);
+  const [, setLoading] = useState<boolean>(true);
   const [clicked, setClicked] = useState(false);
   const [action, setAction] = useState<string>("");
   const [cookies, setCookie] = useCookies([
@@ -51,7 +52,7 @@ export const Approving: FC = () => {
     axios
       .post(`hyper-approval`, data)
       .then((res) => {
-        const { message, data } = res.data;
+        const { data } = res.data;
         setCookie(
           "submissionData",
           {
@@ -254,7 +255,7 @@ export const Approving: FC = () => {
                           label="Approve"
                           id="button-approve-approve"
                           type="submit"
-                          onClick={(e) => setAction("approve")}
+                          onClick={() => setAction("approve")}
                         />
                       </div>
                     </div>
