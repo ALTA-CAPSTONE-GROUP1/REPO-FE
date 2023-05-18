@@ -13,13 +13,14 @@ import { TableUsers } from "@/components/Table";
 import { RedButton } from "@/components/Button";
 import { TabUser } from "@/components/Tab";
 import { Input } from "@/components/Input";
+import { useCookies } from "react-cookie";
 
 const schema = z.object({
   email: z.string().min(1, { message: "Email is required" }),
   name: z.string().min(1, { message: "Name is required" }),
-  hp: z.string().min(1, { message: "No HP is required" }),
-  position: z.string(),
-  office: z.string(),
+  phone_number: z.string().min(1, { message: "No HP is required" }),
+  office_id: z.string(),
+  position_id: z.string(),
 });
 
 type Schema = z.infer<typeof schema>;
@@ -29,32 +30,46 @@ export function HomeAdmin() {
   const [officeData, setOfficeData] = useState<OfficeData[]>([]);
   const [data, setData] = useState<UserData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [cookie, setCookie] = useCookies(["token", "user_position"]);
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<Schema>({
     resolver: zodResolver(schema),
   });
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
+    const positionID = parseInt(data.position_id);
+    const officeID = parseInt(data.office_id);
+
+    const newData = { ...data, position_id: positionID, office_id: officeID };
+
+    setLoading(true);
     axios
-      .post("users", data)
+      .post("users", newData, {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
       .then((response) => {
         const { message, data } = response.data;
-        if (data) {
-          Swal.fire({
-            icon: "success",
-            title: "Success",
-            text: message,
-            showCancelButton: false,
-          }).then((result) => {
-            if (result.isConfirmed) {
-              window.location.reload();
-            }
-          });
-        }
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: message,
+          showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setValue("email", "");
+            setValue("phone_number", "");
+            setValue("name", "");
+            setValue("office_id", "");
+            setValue("position_id", "");
+          }
+        });
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -64,7 +79,8 @@ export function HomeAdmin() {
           showCancelButton: false,
         });
       })
-      .finally(() => setLoading(false));
+      .finally(() => setLoading(false))
+      .finally(fetchData);
   };
 
   useEffect(() => {
@@ -75,7 +91,11 @@ export function HomeAdmin() {
 
   const fetchData = async () => {
     axios
-      .get("users")
+      .get("users", {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
       .then((response) => {
         const { data } = response.data;
         setData(data);
@@ -90,7 +110,11 @@ export function HomeAdmin() {
 
   const fetchDataPositions = async () => {
     axios
-      .get("position")
+      .get("position", {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
       .then((response) => {
         const { data } = response.data;
         setPositionData(data);
@@ -105,7 +129,11 @@ export function HomeAdmin() {
 
   const fetchDataOffices = async () => {
     axios
-      .get("office")
+      .get("office", {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
       .then((response) => {
         const { data } = response.data;
         setOfficeData(data);
@@ -157,7 +185,7 @@ export function HomeAdmin() {
               <label className="font-semibold text-md text-black">No Hp</label>
               <Input
                 register={register}
-                name="hp"
+                name="phone_number"
                 placeholder="Enten Phone Number"
                 id="input-no-hp"
                 error={errors.name?.message}
@@ -169,7 +197,7 @@ export function HomeAdmin() {
               </label>
 
               <select
-                {...register("position")}
+                {...register("position_id")}
                 className="border rounded-md bg-white border-@Gray text-black p-2 focus:outline-none w-full"
                 placeholder="Select Position"
                 id="select-position"
@@ -178,7 +206,7 @@ export function HomeAdmin() {
                   Select Position
                 </option>
                 {positionData.map((pos) => (
-                  <option>{pos.position}</option>
+                  <option value={pos.position_id}>{pos.position}</option>
                 ))}
               </select>
             </div>
@@ -186,7 +214,7 @@ export function HomeAdmin() {
             <div className="mt-5 w-full">
               <label className="font-semibold text-md text-black">Office</label>
               <select
-                {...register("office")}
+                {...register("office_id")}
                 className="border rounded-md bg-white border-@Gray text-black p-2 focus:outline-none w-full"
                 placeholder="Select Office"
                 id="select-Office"
@@ -195,7 +223,7 @@ export function HomeAdmin() {
                   Select Office
                 </option>
                 {officeData.map((office) => (
-                  <option>{office.office_name}</option>
+                  <option value={office.ID}>{office.Name}</option>
                 ))}
               </select>
             </div>

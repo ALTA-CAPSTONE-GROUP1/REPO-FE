@@ -12,10 +12,11 @@ import {
   UserData,
 } from "@/utils/types/Admin";
 
+import { useCookies } from "react-cookie";
+
 type PropsTablePosition = {
   data: PositionData[];
 };
-
 const columns: readonly Column<PositionData>[] = [
   {
     Header: "Position",
@@ -29,6 +30,7 @@ const columns: readonly Column<PositionData>[] = [
 
 export function TablePosition(props: PropsTablePosition) {
   const data = useMemo(() => props.data, [props.data]);
+  const [cookie] = useCookies(["token", "user_position"]);
 
   const tableHooks = (hooks: any) => {
     hooks.visibleColumns.push((columns: any) => [
@@ -61,6 +63,45 @@ export function TablePosition(props: PropsTablePosition) {
     tableInstance;
 
   const isEven = (index: number) => index % 2 == 0;
+
+  const handleDelete = async (data: PositionData) => {
+    alert(JSON.stringify(data));
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will not be able to recover your account!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`position?position_id=${data.position_id}`, {
+            headers: {
+              Authorization: `Bearer ${cookie.token}`,
+            },
+          })
+          .then((response) => {
+            const { message } = response.data;
+            Swal.fire({
+              icon: "success",
+              title: "Success",
+              text: message,
+              showCancelButton: false,
+            });
+          })
+          .catch((error) => {
+            const { data } = error.response;
+            Swal.fire({
+              icon: "error",
+              title: "Failed",
+              text: data.message,
+              showCancelButton: false,
+            });
+          });
+      }
+    });
+  };
   return (
     <table className="table w-full border border-@Gray2">
       <thead {...getTableProps()}>
@@ -93,43 +134,6 @@ export function TablePosition(props: PropsTablePosition) {
     </table>
   );
 }
-const handleDelete = async (data: PositionData) => {
-  Swal.fire({
-    title: "Are you sure?",
-    text: "You will not be able to recover your account!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes, delete it!",
-    cancelButtonText: "Cancel",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      axios
-        .delete(`position`, {
-          headers: {
-            Authorization: "your-authorization-token",
-          },
-        })
-        .then((response) => {
-          const { message } = response.data;
-          Swal.fire({
-            icon: "success",
-            title: "Success",
-            text: message,
-            showCancelButton: false,
-          });
-        })
-        .catch((error) => {
-          const { data } = error.response;
-          Swal.fire({
-            icon: "error",
-            title: "Failed",
-            text: data.message,
-            showCancelButton: false,
-          });
-        });
-    }
-  });
-};
 
 // table users
 type PropsTableUsers = {
@@ -171,6 +175,7 @@ const columnsUser: readonly Column<UserData>[] = [
 export function TableUsers(props: PropsTableUsers) {
   const dataUsers = useMemo(() => props.dataUsers, [props.dataUsers]);
   const navigate = useNavigate();
+  const [cookie] = useCookies(["token", "user_position"]);
 
   const tableHooks = (hooks: any) => {
     hooks.visibleColumns.push((columns: any) => [
@@ -211,7 +216,7 @@ export function TableUsers(props: PropsTableUsers) {
         axios
           .delete(`users/${userData.user_id}`, {
             headers: {
-              Authorization: "your-authorization-token",
+              Authorization: `Bearer ${cookie.token}`,
             },
           })
           .then((response) => {
@@ -288,13 +293,14 @@ type PropsTableOffice = {
 
 const columnsOffice: readonly Column<OfficeData>[] = [
   {
-    accessor: "office_name",
     Header: "Office",
+    accessor: "Name",
   },
 ];
 
 export function TableOffice(props: PropsTableOffice) {
   const data = useMemo(() => props.data, [props.data]);
+  const [cookie, setCookie] = useCookies(["token", "user_position"]);
 
   const tableHooks = (hooks: any) => {
     hooks.visibleColumns.push((columns: any) => [
@@ -326,9 +332,9 @@ export function TableOffice(props: PropsTableOffice) {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`office`, {
+          .delete(`office?id=${data.ID}`, {
             headers: {
-              Authorization: "your-authorization-token",
+              Authorization: `Bearer ${cookie.token}`,
             },
           })
           .then((response) => {

@@ -1,25 +1,24 @@
 /* eslint-disable prefer-const */
-import { Layout } from "@/components/Layout";
-import UserHome from "./UserHome";
-import { FC, useEffect, useState } from "react";
-import SideBar from "@/components/SideBar";
-import CC from "./CC";
-import Approve from "./Approve";
-import { RiCloseCircleFill } from "react-icons/ri";
-import { Input } from "@/components/Input";
-import { useCookies } from "react-cookie";
-import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import SubmissionType, { to_cc_type } from "@/utils/types/submission";
 import withReactContent from "sweetalert2-react-content";
-import * as z from "zod";
-
-// import Swal from "@/utils/Swal";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { RiCloseCircleFill } from "react-icons/ri";
+import { FC, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
 import axios from "axios";
-import ccTypes from "@/utils/types/cc";
+import * as z from "zod";
+
+import SubmissionType, { to_cc_type } from "@/utils/types/submission";
 import approveTypes from "@/utils/types/approve";
+import { Layout } from "@/components/Layout";
+import { Input } from "@/components/Input";
+import SideBar from "@/components/SideBar";
+import ccTypes from "@/utils/types/cc";
+import UserHome from "./UserHome";
+import Approve from "./Approve";
+import CC from "./CC";
 
 const schema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
@@ -58,7 +57,6 @@ const UserIndex: FC = () => {
   const [bg1, setBg1] = useState<boolean>(true);
   const [bg2, setBg2] = useState<boolean>(false);
   const [bg3, setBg3] = useState<boolean>(false);
-  const navigate = useNavigate();
   const [datasSubmission, setDatasSubmission] = useState<SubmissionType[]>([]);
   const [datascc, setDatascc] = useState<ccTypes[]>([]);
   const [datasApprove, setDatasApprove] = useState<approveTypes[]>([]);
@@ -68,9 +66,11 @@ const UserIndex: FC = () => {
   const [selectSubType, setSelectSubType] = useState<string>();
   const [selectValue, setSelectValue] = useState<number>();
   const [to_cc, setTo_Cc] = useState<to_cc_type>();
-  const [file, setFile] = useState<any>();
+  const [, setFile] = useState<any>();
   const [category, setCategory] = useState<string>("to");
   const [search, setSearch] = useState<string>("");
+  const [cookie, , removeCookie] = useCookies(["token", "user_position"]);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -81,31 +81,22 @@ const UserIndex: FC = () => {
     resolver: zodResolver(schema),
   });
 
-  const {
-    fields: fieldsSubValTo,
-    append: appendSubValTo,
-    remove: removeSubValTo,
-    update: updateSubValTo,
-  } = useFieldArray({
+  const { append: appendSubValTo } = useFieldArray({
     control,
     name: "to",
   });
 
-  const {
-    fields: fieldsSubValCc,
-    append: appendSubValCc,
-    remove: removeSubValCc,
-    update: updateSubValCc,
-  } = useFieldArray({
+  const { append: appendSubValCc } = useFieldArray({
     control,
     name: "cc",
   });
 
   useEffect(() => {
-    const url = "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
     if (page == "user-home") {
       // axios
       //   .get(`submission?${category}=${search}`)
+      const url =
+        "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
       axios({
         method: "get",
         url: `${url}/submission?${category}=${search}`,
@@ -131,7 +122,11 @@ const UserIndex: FC = () => {
         });
     } else if (page == "cc") {
       axios
-        .get(`cc`)
+        .get(`cc`, {
+          headers: {
+            Authorization: `Bearer ${cookie.token}`,
+          },
+        })
         .then((res) => {
           const { data } = res.data;
           setDatascc(data);
@@ -147,7 +142,11 @@ const UserIndex: FC = () => {
         });
     } else {
       axios
-        .get(`approver`)
+        .get(`approver`, {
+          headers: {
+            Authorization: `Bearer ${cookie.token}`,
+          },
+        })
         .then((res) => {
           const { data } = res.data;
           setDatasApprove(data);
@@ -193,7 +192,6 @@ const UserIndex: FC = () => {
   }
 
   function handleTypeSelect(event: React.ChangeEvent<HTMLSelectElement>) {
-    alert(event.target.value);
     setIndexSub(subTypes.findIndex((item) => item.name === event.target.value));
     setSelectSubType(
       subTypes[subTypes.findIndex((item) => item.name === event.target.value)]
@@ -202,7 +200,6 @@ const UserIndex: FC = () => {
   }
 
   function handleGetToCC(event: React.ChangeEvent<HTMLSelectElement>) {
-    alert(selectSubType);
     let to: string[] = [];
     let cc: string[] = [];
 
@@ -219,15 +216,13 @@ const UserIndex: FC = () => {
       )
       .then((res) => {
         const { data } = res.data;
-        console.log(JSON.stringify(data.to));
         data.to.map((dataz: any) => {
           return to.push(dataz.approver_id);
         });
         data.cc.map((dataz: any) => {
           return cc.push(dataz.cc_id);
         });
-        console.log(to);
-        console.log(cc);
+
         appendSubValTo(to);
         appendSubValCc(cc);
 
@@ -280,9 +275,16 @@ const UserIndex: FC = () => {
     setSearch(event.target.value);
   }
 
+  function handleLogout() {
+    removeCookie("token");
+    removeCookie("user_position");
+    navigate("/");
+  }
+
   return (
     <Layout>
       <SideBar
+        onClickLogout={handleLogout}
         bg1={bg1}
         bg2={bg2}
         bg3={bg3}
@@ -325,7 +327,7 @@ const UserIndex: FC = () => {
                             <option disabled selected>
                               Select Submission Type
                             </option>
-                            {subTypes.map((data, index) => {
+                            {subTypes.map((data) => {
                               return (
                                 <option value={data.name}>{data.name}</option>
                               );
@@ -374,6 +376,7 @@ const UserIndex: FC = () => {
                           placeholder="To:"
                           className=" border-b-2 focus:outline-none focus:border-b-@Red w-full mt-3"
                         />
+
                         <Input
                           disabled
                           name="cc"

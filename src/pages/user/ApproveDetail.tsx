@@ -13,6 +13,7 @@ import { Layout } from "@/components/Layout";
 import SideBar from "@/components/SideBar";
 import Loading from "@/components/Loading";
 import Swal from "@/utils/Swal";
+import { useCookies } from "react-cookie";
 
 const schema = z.object({
   action: z.string(),
@@ -31,6 +32,7 @@ const ApproveDetail: FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [action, setAction] = useState<string>("");
+  const [cookie, , removeCookie] = useCookies(["token", "user_position"]);
 
   const {
     register,
@@ -84,7 +86,6 @@ const ApproveDetail: FC = () => {
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
     const newData = { ...data, action: action };
-    alert(JSON.stringify(newData));
     axios
       .put(`approver/${id}`, newData)
       .then((res) => {
@@ -104,9 +105,17 @@ const ApproveDetail: FC = () => {
         });
       });
   };
+
+  function handleLogout() {
+    removeCookie("token");
+    removeCookie("user_position");
+    navigate("/");
+  }
+
   return (
     <Layout>
       <SideBar
+        onClickLogout={handleLogout}
         bg1={bg1}
         bg2={bg2}
         bg3={bg3}

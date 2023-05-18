@@ -1,28 +1,15 @@
-import CCList from "@/components/CCList";
-import { FC } from "react";
 import { BsSearch } from "react-icons/bs";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import withReactContent from "sweetalert2-react-content";
+import { FC } from "react";
 
-import Swal from "@/utils/Swal";
+import CCList from "@/components/CCList";
 import ccTypes from "@/utils/types/cc";
+
 interface Props {
   datas: ccTypes[];
 }
 const CC: FC<Props> = (props) => {
-  // const [datas, setDatas] = useState<ccTypes[]>([]);
-  const MySwal = withReactContent(Swal);
   const { datas } = props;
-
-  // useEffect(() => {
-  //   fetchData();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
-  // function fetchData() {
-
-  // }
 
   return (
     <div className="drawer-content flex flex-col h-[90%]">
@@ -66,4 +53,5 @@ const CC: FC<Props> = (props) => {
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export default CC;

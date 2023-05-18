@@ -54,18 +54,17 @@ export const Position: FC = () => {
       })
       .then((res) => {
         const { message, data } = res.data;
-        if (data) {
-          Swal.fire({
-            title: "Success",
-            text: message,
-            showCancelButton: false,
-          }).then((result) => {
-            if (result.isConfirmed) {
-              window.location.reload();
-            }
-            console.log(result);
-          });
-        }
+        Swal.fire({
+          title: "Success",
+          text: message,
+          showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setValue("position", "");
+            setValue("tag", "");
+          }
+          console.log(result);
+        });
       })
       .catch((error) => {
         const { message } = error.response.data;

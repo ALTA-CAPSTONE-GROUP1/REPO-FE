@@ -38,12 +38,17 @@ const Profile: FC = () => {
   }, []);
 
   function fetchData() {
-    axios
-      .get(`profile`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+    const url = "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
+    axios({
+      method: "get",
+      url: `${url}/profile`,
+    })
+      // axios
+      //   .get(`profile`, {
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   })
       .then((res) => {
         const { data } = res.data;
         setValue("name", data.name);

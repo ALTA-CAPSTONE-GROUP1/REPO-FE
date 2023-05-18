@@ -1,15 +1,12 @@
 /* eslint-disable prefer-const */
-import List from "@/components/List";
 import SideBar from "@/components/SideBar";
 import { FC, useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { BsSearch } from "react-icons/bs";
+import { useNavigate, useParams } from "react-router-dom";
 import { CardSubmission } from "@/components/Card";
 import { Input } from "@/components/Input";
 import { RiCloseCircleFill } from "react-icons/ri";
 import { Layout } from "@/components/Layout";
 import Loading from "@/components/Loading";
-import { useCookies } from "react-cookie";
 import { RedButton } from "@/components/Button";
 import axios from "axios";
 import SubDetailType from "@/utils/types/SubDetail";
@@ -20,6 +17,7 @@ import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import Swal from "@/utils/Swal";
 import { to_cc_type } from "@/utils/types/submission";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useCookies } from "react-cookie";
 
 interface submission_type {
   name: string;
@@ -67,6 +65,7 @@ const SubDetail: FC = () => {
   const [subTypes, setSubTypes] = useState<submission_type[]>([]);
   const [to_cc, setTo_Cc] = useState<to_cc_type>();
   const [selectValue, setSelectValue] = useState<number>();
+  const [cookie, , removeCookie] = useCookies(["token", "user_position"]);
 
   const {
     register,
@@ -231,9 +230,16 @@ const SubDetail: FC = () => {
       });
   };
 
+  function handleLogout() {
+    removeCookie("token");
+    removeCookie("user_position");
+    navigate("/");
+  }
+
   return (
     <Layout>
       <SideBar
+        onClickLogout={handleLogout}
         bg1={bg1}
         bg2={bg2}
         bg3={bg3}

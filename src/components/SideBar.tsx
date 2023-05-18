@@ -6,6 +6,7 @@ interface Props {
   onClickUserHome: React.MouseEventHandler<HTMLButtonElement>;
   onClickCC: React.MouseEventHandler<HTMLButtonElement>;
   onClickApprove: React.MouseEventHandler<HTMLButtonElement>;
+  onClickLogout: React.MouseEventHandler<HTMLButtonElement>;
   bg1: boolean;
   bg2: boolean;
   bg3: boolean;
@@ -18,6 +19,7 @@ const SideBar: FC<Props> = (props) => {
     onClickUserHome,
     onClickCC,
     onClickApprove,
+    onClickLogout,
     bg1,
     bg2,
     bg3,
@@ -90,7 +92,7 @@ const SideBar: FC<Props> = (props) => {
             <div className="divider"></div>
           </li>
           <li className="flex justify-center items-center">
-            <a>Logout</a>
+            <button onClick={onClickLogout}>Logout</button>
           </li>
         </ul>
       </div>
