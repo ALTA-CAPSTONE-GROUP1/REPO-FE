@@ -1,19 +1,13 @@
-import {
-  RiArrowLeftLine,
-  RiArrowRightLine,
-  RiDeleteBin6Line,
-} from "react-icons/ri";
-import { useNavigate, useParams } from "react-router-dom";
-import React, { FC, useState, useEffect } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
+import { FC, useState, useEffect } from "react";
 import { BsSearch } from "react-icons/bs";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Swal from "sweetalert2";
 import axios from "axios";
 import * as z from "zod";
-import { useTable } from "react-table";
 
-import { CardTablePosition } from "@/components/Card";
 import { LayoutAdmin } from "@/components/Layout";
 import { TabPosition } from "@/components/Tab";
 import { RedButton } from "@/components/Button";
@@ -31,11 +25,9 @@ type Schema = z.infer<typeof schema>;
 
 export const Position: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const { position_id } = useParams();
-  const [cookie, setCookie] = useCookies(["token", "user_position"]);
+  const [cookie] = useCookies(["token", "user_position"]);
 
   const {
-    watch,
     setValue,
     register,
     handleSubmit,
@@ -53,7 +45,7 @@ export const Position: FC = () => {
         },
       })
       .then((res) => {
-        const { message, data } = res.data;
+        const { message } = res.data;
         Swal.fire({
           title: "Success",
           text: message,

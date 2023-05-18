@@ -72,11 +72,7 @@ export const NavbarAdmin: FC = () => {
   );
 };
 export const NavbarUser: FC = () => {
-  const [cookies, , removeCookie] = useCookies([
-    "token",
-    "user_position",
-    "username",
-  ]);
+  const [cookies, ,] = useCookies(["token", "user_position", "username"]);
 
   return (
     <header className="relative flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full bg-@Red text-xl md:px-10 h-[10%]">

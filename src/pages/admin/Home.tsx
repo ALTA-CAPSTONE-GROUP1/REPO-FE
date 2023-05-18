@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,7 +31,7 @@ export function HomeAdmin() {
   const [officeData, setOfficeData] = useState<OfficeData[]>([]);
   const [data, setData] = useState<UserData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [cookie, setCookie] = useCookies(["token", "user_position"]);
+  const [cookie] = useCookies(["token", "user_position"]);
 
   const {
     register,
@@ -55,7 +56,7 @@ export function HomeAdmin() {
         },
       })
       .then((response) => {
-        const { message, data } = response.data;
+        const { message } = response.data;
         Swal.fire({
           icon: "success",
           title: "Success",

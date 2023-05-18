@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
 import { FC, useState, useEffect } from "react";
 import { BsSearch } from "react-icons/bs";
@@ -24,13 +25,9 @@ type Schema = z.infer<typeof schema>;
 export const Office: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [officeData, setOfficeData] = useState<OfficeData[]>([]);
-  const [cookie, setCookie] = useCookies(["token", "user_position"]);
+  const [cookie] = useCookies(["token", "user_position"]);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<Schema>({
+  const { register, handleSubmit } = useForm<Schema>({
     resolver: zodResolver(schema),
   });
 

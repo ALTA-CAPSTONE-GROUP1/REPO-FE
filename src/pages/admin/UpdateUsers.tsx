@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,8 +29,8 @@ type Schema = z.infer<typeof schema>;
 export function UpdateUsers() {
   const [positionData, setPositionData] = useState<PositionData[]>([]);
   const [officeData, setOfficeData] = useState<OfficeData[]>([]);
-  const [data, setData] = useState<UserDataUpdate | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [data] = useState<UserDataUpdate | null>(null);
+  const [, setLoading] = useState<boolean>(false);
   const [cookie] = useCookies(["token"]);
   const { user_id } = useParams();
   const getToken = cookie.token;
@@ -212,7 +213,7 @@ export function UpdateUsers() {
               >
                 <option disabled>{data?.office}</option>
                 {officeData.map((office) => (
-                  <option key={office.office_name}>{office.office_name}</option>
+                  <option key={office.Name}>{office.Name}</option>
                 ))}
               </select>
             </div>

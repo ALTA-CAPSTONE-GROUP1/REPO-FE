@@ -1,5 +1,4 @@
-import { ReactNode, FC, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { ReactNode, FC } from "react";
 interface Props {
   children: ReactNode;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
@@ -12,7 +11,6 @@ interface Props {
   bg3: boolean;
 }
 const SideBar: FC<Props> = (props) => {
-  const navigate = useNavigate();
   const {
     children,
     onClick,

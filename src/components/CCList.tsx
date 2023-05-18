@@ -1,10 +1,9 @@
 import ccTypes from "@/utils/types/cc";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import { BsDownload } from "react-icons/bs";
 
 const CCList: FC<ccTypes> = (props) => {
-  const [colorBg, setColorBg] = useState<string>("");
-  const { submission_id, from, to, title, submission_type, attachment } = props;
+  const { from, title, submission_type } = props;
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps

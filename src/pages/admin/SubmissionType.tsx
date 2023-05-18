@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   FieldArrayWithId,
   SubmitHandler,
@@ -73,7 +75,7 @@ type Schema = z.infer<typeof schema>;
 export function SubmissionType() {
   const [positionData, setPositionData] = useState<PositionData[]>([]);
   const [dataPosition, setDataPosition] = useState<string[]>([""]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<SubmissionDetail[]>([]);
 
   const {
@@ -300,7 +302,7 @@ export function SubmissionType() {
                 </span>
               </button>
             </div>
-            {dataPosition.map((position, index) => (
+            {dataPosition.map((_position, index) => (
               <div className="flex flex-row" key={index}>
                 <div className="mt-5 w-full">
                   <div>
@@ -391,7 +393,7 @@ export function SubmissionType() {
                             </span>
                           </button>
                         </div>
-                        {fieldSubVal.position_to.map((position_to, idx) => (
+                        {fieldSubVal.position_to.map((_position_to, idx) => (
                           <div key={idx} className="flex flex-row mt-5  w-full">
                             <div className="w-full">
                               <select
@@ -444,7 +446,7 @@ export function SubmissionType() {
                             </span>
                           </button>
                         </div>
-                        {fieldSubVal.position_cc.map((position_cc, idx) => (
+                        {fieldSubVal.position_cc.map((_position_cc, idx) => (
                           <div key={idx} className="flex flex-row mt-5  w-full">
                             <div className="w-full">
                               <select

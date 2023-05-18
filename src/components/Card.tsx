@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { BsFileEarmarkPdfFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { BlueButton, Red2Button, RedButton } from "@/components/Button";
@@ -231,7 +231,6 @@ export const CardSubmission: FC<PropsSubmission> = (props) => {
     title,
     message,
     approver_action,
-    action_message,
     attachment,
     onClick,
     onClickPdf,
@@ -315,15 +314,6 @@ export const CardSubmission: FC<PropsSubmission> = (props) => {
   );
 };
 
-interface PropsApprove {
-  title: string;
-  type: string;
-  from: string;
-  cc: string;
-  message: string;
-  file: string;
-  to: string;
-}
 export const CardApprove: FC<ApproveDetailType> = (props) => {
   const {
     title,
