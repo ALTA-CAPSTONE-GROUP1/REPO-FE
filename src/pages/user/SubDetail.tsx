@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable prefer-const */
 import SideBar from "@/components/SideBar";
 import { FC, useEffect, useState } from "react";
@@ -52,20 +53,24 @@ type Schema = z.infer<typeof schema>;
 
 const SubDetail: FC = () => {
   const [createSubmission, setCreateSubmission] = useState<boolean>(false);
-  const [page, setPage] = useState<string>("user-home");
+  const [editMode, setEditMode] = useState<boolean>(false);
   const [bg1, setBg1] = useState<boolean>(false);
   const [bg2, setBg2] = useState<boolean>(false);
   const [bg3, setBg3] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const navigate = useNavigate();
-  const [editMode, setEditMode] = useState<boolean>(false);
-  const [data, setData] = useState<Partial<SubDetailType>>();
-  const MySwal = withReactContent(Swal);
-  const { id } = useParams();
-  const [subTypes, setSubTypes] = useState<submission_type[]>([]);
-  const [to_cc, setTo_Cc] = useState<to_cc_type>();
+  const [loading] = useState<boolean>(false);
+
+  const [, setPage] = useState<string>("user-home");
+
   const [selectValue, setSelectValue] = useState<number>();
-  const [cookie, , removeCookie] = useCookies(["token", "user_position"]);
+
+  const [subTypes, setSubTypes] = useState<submission_type[]>([]);
+  const [data, setData] = useState<Partial<SubDetailType>>();
+  const [to_cc, setTo_Cc] = useState<to_cc_type>();
+
+  const [, , removeCookie] = useCookies(["token", "user_position"]);
+  const MySwal = withReactContent(Swal);
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   const {
     register,
@@ -76,22 +81,12 @@ const SubDetail: FC = () => {
     resolver: zodResolver(schema),
   });
 
-  const {
-    fields: fieldsSubValTo,
-    append: appendSubValTo,
-    remove: removeSubValTo,
-    update: updateSubValTo,
-  } = useFieldArray({
+  const { append: appendSubValTo } = useFieldArray({
     control,
     name: "to",
   });
 
-  const {
-    fields: fieldsSubValCc,
-    append: appendSubValCc,
-    remove: removeSubValCc,
-    update: updateSubValCc,
-  } = useFieldArray({
+  const { append: appendSubValCc } = useFieldArray({
     control,
     name: "cc",
   });
@@ -105,8 +100,14 @@ const SubDetail: FC = () => {
     if (dataSub !== null) {
       setSubTypes(JSON.parse(dataSub));
     }
-    axios
-      .get(`/submission/${id}`)
+
+    // axios
+    //   .get(`submission?${category}=${search}`)
+    const url = "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
+    axios({
+      method: "get",
+      url: `${url}/submission/${id}`,
+    })
       .then((res) => {
         const { data } = res.data;
         setData(data);
@@ -168,9 +169,7 @@ const SubDetail: FC = () => {
     let to: string[] = [];
     let cc: string[] = [];
     let type = "";
-    // if (indexSubtypes) {
     type = subTypes[0].name;
-    // }
     const value = event.target.value;
     setSelectValue(parseInt(value));
 
@@ -236,6 +235,33 @@ const SubDetail: FC = () => {
     navigate("/");
   }
 
+  function handleDelete() {
+    // axios
+    //   .delete(`submission?${category}=${search}`)
+    const url = "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
+    axios({
+      method: "delete",
+      url: `${url}/submission/${id}`,
+    })
+      .then((res) => {
+        const { message } = res.data;
+        MySwal.fire({
+          icon: "success",
+          title: "Success",
+          text: message,
+          showCancelButton: false,
+        });
+      })
+      .catch((err) => {
+        const { message } = err.response;
+        MySwal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      });
+  }
+
   return (
     <Layout>
       <SideBar
@@ -254,6 +280,7 @@ const SubDetail: FC = () => {
               <Loading />
             ) : (
               <CardSubmission
+                onClickDelete={handleDelete}
                 onClickPdf={handlePdf}
                 title={data?.title}
                 submission_type={data?.submission_type}

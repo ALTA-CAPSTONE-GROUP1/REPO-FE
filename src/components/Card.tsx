@@ -221,6 +221,7 @@ export const CardApproving: FC<ApproveDetailType> = (props) => {
 interface PropsSubmission extends SubDetailType {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   onClickPdf: React.MouseEventHandler<HTMLButtonElement>;
+  onClickDelete: React.MouseEventHandler<HTMLButtonElement>;
 }
 export const CardSubmission: FC<PropsSubmission> = (props) => {
   const {
@@ -234,6 +235,7 @@ export const CardSubmission: FC<PropsSubmission> = (props) => {
     attachment,
     onClick,
     onClickPdf,
+    onClickDelete,
   } = props;
 
   return (
@@ -289,6 +291,14 @@ export const CardSubmission: FC<PropsSubmission> = (props) => {
           </div> */}
           <div className="flex justify-end">
             <div className="flex flex-col md:flex-row gap-2">
+              <div className="w-40">
+                <Red2Button
+                  label="Delete"
+                  id="button-approve-revise"
+                  type="submit"
+                  onClick={onClickDelete}
+                />
+              </div>
               <div className="w-40">
                 <RedButton
                   label="Edit"

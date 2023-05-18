@@ -3,6 +3,7 @@ import withReactContent from "sweetalert2-react-content";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FC, useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
 import axios from "axios";
 import * as z from "zod";
 
@@ -13,7 +14,6 @@ import { Layout } from "@/components/Layout";
 import SideBar from "@/components/SideBar";
 import Loading from "@/components/Loading";
 import Swal from "@/utils/Swal";
-import { useCookies } from "react-cookie";
 
 const schema = z.object({
   action: z.string(),
@@ -23,22 +23,22 @@ const schema = z.object({
 type Schema = z.infer<typeof schema>;
 
 const ApproveDetail: FC = () => {
+  const [, , removeCookie] = useCookies(["token", "user_position"]);
+
   const [bg1, setBg1] = useState<boolean>(false);
   const [bg2, setBg2] = useState<boolean>(false);
   const [bg3, setBg3] = useState<boolean>(true);
   const [loading] = useState<boolean>(false);
-  const [data, setData] = useState<ApproveDetailType>();
-  const MySwal = withReactContent(Swal);
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [action, setAction] = useState<string>("");
-  const [cookie, , removeCookie] = useCookies(["token", "user_position"]);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<Schema>({
+  const [data, setData] = useState<ApproveDetailType>();
+
+  const [action, setAction] = useState<string>("");
+
+  const MySwal = withReactContent(Swal);
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  const { register, handleSubmit } = useForm<Schema>({
     resolver: zodResolver(schema),
   });
 

@@ -1,6 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
 import axios from "axios";
 import * as z from "zod";
 
@@ -10,19 +12,18 @@ import { Input } from "@/components/Input";
 import Swal from "@/utils/Swal";
 
 const schema = z.object({
-  name: z.string(),
-  email: z.string().min(10, { message: "Input Correct Email" }),
-  hp: z.string().min(10, { message: "Hp number didn't allow to empty" }),
-  position: z.string(),
-  office: z.string(),
-  password: z.string(),
+  email: z.string().min(1, { message: "Email is required" }),
+  name: z.string().min(1, { message: "Name is required" }),
+  phone_number: z.string().min(1, { message: "No HP is required" }),
 });
 
 type Schema = z.infer<typeof schema>;
 
 const Profile: FC = () => {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJ1c2VySUQiOjR9.QTZxERh4CwC_UnL_eJvTi_A_qdLeBZ-IjR4nqoxjodk";
+  const [cookie] = useCookies(["token", "user_position", "username"]);
+
+  const [position, setUsePosition] = useState<string>("");
+  const [office, setUseOffice] = useState<string>("");
 
   const {
     register,
@@ -38,25 +39,24 @@ const Profile: FC = () => {
   }, []);
 
   function fetchData() {
-    const url = "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
-    axios({
-      method: "get",
-      url: `${url}/profile`,
-    })
-      // axios
-      //   .get(`profile`, {
-      //     headers: {
-      //       Authorization: `Bearer ${token}`,
-      //     },
-      //   })
+    // const url = "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
+    // axios({
+    //   method: "get",
+    //   url: `${url}/profile`,
+    // })
+    axios
+      .get(`profile`, {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
       .then((res) => {
         const { data } = res.data;
         setValue("name", data.name);
         setValue("email", data.email);
-        setValue("hp", data.hp);
-        setValue("position", data.position);
-        setValue("office", data.office);
-        setValue("password", data.password);
+        setValue("phone_number", data.phone_number);
+        setUseOffice(data.office);
+        setUsePosition(data.position);
       })
       .catch((err) => {
         const { message } = err.response;
@@ -68,16 +68,18 @@ const Profile: FC = () => {
       });
   }
   const onSubmit: SubmitHandler<Schema> = (data) => {
+    alert(JSON.stringify(data));
     axios
       .put(`profile`, data, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${cookie.token}`,
         },
       })
       .then((res) => {
         const { message } = res.data;
         Swal.fire({
-          title: "Failed",
+          icon: "success",
+          title: "Success",
           text: message,
           showCancelButton: false,
         });
@@ -126,9 +128,9 @@ const Profile: FC = () => {
               <label className="font-semibold text-md text-black">No Hp</label>
               <Input
                 type="number"
-                error={errors.hp?.message}
+                error={errors.phone_number?.message}
                 register={register}
-                name="hp"
+                name="phone_number"
                 placeholder="Enter Phone Number"
                 id="input-no-hp"
               />
@@ -140,7 +142,8 @@ const Profile: FC = () => {
               <Input
                 disabled
                 type="text"
-                register={register}
+                // register={register}
+                defaultValue={position}
                 name="position"
                 placeholder="Enter Phone Number"
                 id="input-no-hp"
@@ -151,7 +154,8 @@ const Profile: FC = () => {
               <Input
                 disabled
                 type="text"
-                register={register}
+                // register={register}
+                defaultValue={office}
                 name="office"
                 placeholder="Enter Phone Number"
                 id="input-no-hp"
@@ -163,8 +167,8 @@ const Profile: FC = () => {
                 Password
               </label>
               <Input
-                error={errors.password?.message}
-                register={register}
+                // error={errors.password?.message}
+                // register={register}
                 name="password"
                 placeholder="Enter Password"
                 id="input-no-hp"

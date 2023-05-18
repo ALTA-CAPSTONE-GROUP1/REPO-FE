@@ -1,6 +1,5 @@
-import { Layout } from "@/components/Layout";
 import { FC } from "react";
-import UserHome from "./user/UserHome";
+import { Link } from "react-router-dom";
 
 const Home: FC = () => {
   return (
@@ -20,9 +19,9 @@ const Home: FC = () => {
             a id nisi.
           </p>
 
-          <a href="/login" className="btn glass rounded-full">
+          <Link to={"/login"} className="btn glass rounded-full">
             Get Started
-          </a>
+          </Link>
         </div>
       </div>
     </div>

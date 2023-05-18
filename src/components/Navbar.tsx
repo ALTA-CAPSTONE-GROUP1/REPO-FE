@@ -4,14 +4,20 @@ import { BsFillFileEarmarkTextFill } from "react-icons/bs";
 import { RiAdminFill, RiLogoutBoxLine } from "react-icons/ri";
 import { useCookies } from "react-cookie";
 export const NavbarAdmin: FC = () => {
-  const [, , removeCookie] = useCookies(["token", "user_position"]);
+  const [cookies, , removeCookie] = useCookies([
+    "token",
+    "user_position",
+    "username",
+  ]);
   const navigate = useNavigate();
 
   function handleLogout() {
     removeCookie("token");
     removeCookie("user_position");
+    removeCookie("username");
     navigate("/");
   }
+
   return (
     <header className="relative flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full bg-@Red text-xl py-2 ">
       <div
@@ -27,7 +33,7 @@ export const NavbarAdmin: FC = () => {
           <ul className="menu menu-horizontal px-1">
             <li>
               <a className="capitalize font-semibold text-white text-lg btn btn-ghost">
-                <RiAdminFill /> Admin
+                <RiAdminFill /> {cookies.username}
                 <svg
                   className="fill-current"
                   xmlns="http://www.w3.org/2000/svg"
@@ -66,6 +72,12 @@ export const NavbarAdmin: FC = () => {
   );
 };
 export const NavbarUser: FC = () => {
+  const [cookies, , removeCookie] = useCookies([
+    "token",
+    "user_position",
+    "username",
+  ]);
+
   return (
     <header className="relative flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full bg-@Red text-xl md:px-10 h-[10%]">
       <div
@@ -84,7 +96,7 @@ export const NavbarUser: FC = () => {
           <ul className="menu menu-horizontal px-1">
             <li>
               <a className="capitalize font-semibold  btn btn-ghost">
-                User Name{" "}
+                {cookies.username}
               </a>{" "}
               <ul className="p-2 bg-white text-@Red  ">
                 <li className="">

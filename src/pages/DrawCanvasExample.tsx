@@ -1,4 +1,5 @@
-import * as React from "react";
+import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
+import { useLocation } from "react-router-dom";
 import {
   LayerRenderStatus,
   Plugin,
@@ -6,20 +7,15 @@ import {
   Viewer,
   Worker,
 } from "@react-pdf-viewer/core";
-import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 import { FC } from "react";
-import { useLocation, useParams } from "react-router-dom";
 
-interface DrawCanvasExampleProps {
-  fileUrl: string;
-}
-
-const DrawCanvasExample: FC = (props) => {
-  const defaultLayoutPluginInstance = defaultLayoutPlugin();
+const DrawCanvasExample: FC = () => {
   const location = useLocation();
-
-  const urlnya = new URLSearchParams(location.search).get("url");
   const approver = new URLSearchParams(location.search).get("approver");
+  const urlnya = new URLSearchParams(location.search).get("url");
+
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
+
   const message = approver;
 
   const customCanvasPlugin = (): Plugin => {
