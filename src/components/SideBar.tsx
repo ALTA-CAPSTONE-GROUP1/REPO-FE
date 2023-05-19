@@ -1,4 +1,9 @@
 import { ReactNode, FC } from "react";
+import { RiFileAddFill } from "react-icons/ri";
+import { RiFileList2Fill } from "react-icons/ri";
+import { BsFileCheckFill } from "react-icons/bs";
+import { RiLogoutBoxLine } from "react-icons/ri";
+
 interface Props {
   children: ReactNode;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
@@ -78,19 +83,26 @@ const SideBar: FC<Props> = (props) => {
             )}
           </li>
           <li className={`${bg1 ? "bg-@Red3" : ""}  rounded-full mt-3 `}>
-            <button onClick={onClickUserHome}>Submission</button>
+            <button onClick={onClickUserHome}>
+              <RiFileAddFill /> Submission
+            </button>
           </li>
           <li className={`${bg2 ? "bg-@Red3" : ""}  rounded-full mt-3 `}>
-            <button onClick={onClickCC}>CC</button>
+            <button onClick={onClickCC}>
+              {" "}
+              <RiFileList2Fill /> CC
+            </button>
           </li>
           <li className={`${bg3 ? "bg-@Red3" : ""}  rounded-full mt-3 `}>
-            <button onClick={onClickApprove}>Approve</button>
+            <button onClick={onClickApprove}>
+              <BsFileCheckFill /> Approve
+            </button>
           </li>
           <li>
             <div className="divider"></div>
           </li>
           <li className="flex justify-center items-center">
-            <button onClick={onClickLogout}>Logout</button>
+            <button onClick={onClickLogout}><RiLogoutBoxLine/> Logout</button>
           </li>
         </ul>
       </div>

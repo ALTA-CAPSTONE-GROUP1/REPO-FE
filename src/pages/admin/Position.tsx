@@ -26,6 +26,7 @@ type Schema = z.infer<typeof schema>;
 export const Position: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [cookie] = useCookies(["token", "user_position"]);
+  const [data, setData] = useState<PositionData[]>([]);
 
   const {
     setValue,
@@ -36,6 +37,9 @@ export const Position: FC = () => {
     resolver: zodResolver(schema),
   });
 
+  useEffect(() => {
+    fetchData();
+  }, []);
   const onSubmit: SubmitHandler<Schema> = (data) => {
     setLoading(true);
     axios
@@ -71,13 +75,8 @@ export const Position: FC = () => {
   };
 
   //get data in table
-  const [data, setData] = useState<PositionData[]>([]);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  function fetchData() {
     axios
       .get("position", {
         headers: {
@@ -95,8 +94,45 @@ export const Position: FC = () => {
         setLoading(false);
       });
     console.log(data);
-  };
+  }
 
+  function handleDelete(id: number) {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will not be able to recover your account!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`position?position_id=${id}`, {
+            headers: {
+              Authorization: `Bearer ${cookie.token}`,
+            },
+          })
+          .then((response) => {
+            const { message } = response.data;
+            Swal.fire({
+              icon: "success",
+              title: "Success",
+              text: message,
+              showCancelButton: false,
+            }).finally(fetchData);
+          })
+          .catch((error) => {
+            const { data } = error.response;
+            Swal.fire({
+              icon: "error",
+              title: "Failed",
+              text: data.message,
+              showCancelButton: false,
+            });
+          });
+      }
+    });
+  }
   return (
     <LayoutAdmin>
       <div
@@ -166,7 +202,7 @@ export const Position: FC = () => {
               </span>
             </label>
           </div>
-          <TablePosition data={data} />
+          <TablePosition data={data} onClickDelete={(id) => handleDelete(id)} />
           <div className="flex flex-row p-2 bg-white text-black border rounded-es-md rounded-ee-md justify-between items-center">
             <button className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md">
               <RiArrowLeftLine /> Previous

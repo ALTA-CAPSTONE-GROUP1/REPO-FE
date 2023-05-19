@@ -13,10 +13,9 @@ import {
   UserData,
 } from "@/utils/types/Admin";
 
-import { useCookies } from "react-cookie";
-
 type PropsTablePosition = {
   data: PositionData[];
+  onClickDelete: (id: number) => void;
 };
 const columns: readonly Column<PositionData>[] = [
   {
@@ -31,7 +30,6 @@ const columns: readonly Column<PositionData>[] = [
 
 export function TablePosition(props: PropsTablePosition) {
   const data = useMemo(() => props.data, [props.data]);
-  const [cookie] = useCookies(["token", "user_position"]);
 
   const tableHooks = (hooks: any) => {
     hooks.visibleColumns.push((columns: any) => [
@@ -44,7 +42,7 @@ export function TablePosition(props: PropsTablePosition) {
             {" "}
             <button
               className="btn btn-ghost btn-xl text-xl text-@Red"
-              onClick={() => handleDelete(row.original)}
+              onClick={() => props.onClickDelete(row.original.position_id)}
             >
               <RiDeleteBin6Line />
             </button>{" "}
@@ -65,44 +63,6 @@ export function TablePosition(props: PropsTablePosition) {
 
   const isEven = (index: number) => index % 2 == 0;
 
-  const handleDelete = async (data: PositionData) => {
-    alert(JSON.stringify(data));
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You will not be able to recover your account!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "Cancel",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .delete(`position?position_id=${data.position_id}`, {
-            headers: {
-              Authorization: `Bearer ${cookie.token}`,
-            },
-          })
-          .then((response) => {
-            const { message } = response.data;
-            Swal.fire({
-              icon: "success",
-              title: "Success",
-              text: message,
-              showCancelButton: false,
-            });
-          })
-          .catch((error) => {
-            const { data } = error.response;
-            Swal.fire({
-              icon: "error",
-              title: "Failed",
-              text: data.message,
-              showCancelButton: false,
-            });
-          });
-      }
-    });
-  };
   return (
     <table className="table w-full border border-@Gray2">
       <thead {...getTableProps()}>
@@ -140,6 +100,7 @@ export function TablePosition(props: PropsTablePosition) {
 type PropsTableUsers = {
   dataUsers: UserData[];
   // edit: string;
+  onclickDelete: (id: string) => void;
 };
 
 const columnsUser: readonly Column<UserData>[] = [
@@ -176,7 +137,6 @@ const columnsUser: readonly Column<UserData>[] = [
 export function TableUsers(props: PropsTableUsers) {
   const dataUsers = useMemo(() => props.dataUsers, [props.dataUsers]);
   const navigate = useNavigate();
-  const [cookie] = useCookies(["token", "user_position"]);
 
   const tableHooks = (hooks: any) => {
     hooks.visibleColumns.push((columns: any) => [
@@ -188,7 +148,7 @@ export function TableUsers(props: PropsTableUsers) {
           <div className="flex pr-3 justify-center">
             <button
               className="btn btn-ghost btn-xl text-xl text-@Red"
-              onClick={() => handleDelete(row.original)}
+              onClick={() => props.onclickDelete(row.original.user_id)}
             >
               <RiDeleteBin6Line />
             </button>
@@ -202,44 +162,6 @@ export function TableUsers(props: PropsTableUsers) {
         ),
       },
     ]);
-  };
-
-  const handleDelete = async (userData: UserData) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You will not be able to recover your account!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "Cancel",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .delete(`users/${userData.user_id}`, {
-            headers: {
-              Authorization: `Bearer ${cookie.token}`,
-            },
-          })
-          .then((response) => {
-            const { message } = response.data;
-            Swal.fire({
-              icon: "success",
-              title: "Success",
-              text: message,
-              showCancelButton: false,
-            });
-          })
-          .catch((error) => {
-            const { data } = error.response;
-            Swal.fire({
-              icon: "error",
-              title: "Failed",
-              text: data.message,
-              showCancelButton: false,
-            });
-          });
-      }
-    });
   };
 
   const tableInstanceUser = useTable(
@@ -290,6 +212,7 @@ export function TableUsers(props: PropsTableUsers) {
 //office table
 type PropsTableOffice = {
   data: OfficeData[];
+  onClickDelete: (id: number) => void;
 };
 
 const columnsOffice: readonly Column<OfficeData>[] = [
@@ -301,7 +224,6 @@ const columnsOffice: readonly Column<OfficeData>[] = [
 
 export function TableOffice(props: PropsTableOffice) {
   const data = useMemo(() => props.data, [props.data]);
-  const [cookie] = useCookies(["token", "user_position"]);
 
   const tableHooks = (hooks: any) => {
     hooks.visibleColumns.push((columns: any) => [
@@ -313,7 +235,7 @@ export function TableOffice(props: PropsTableOffice) {
           <div className="flex pr-3 justify-end">
             <button
               className="btn btn-ghost btn-xl text-xl text-@Red"
-              onClick={() => handleDelete(row.original)}
+              onClick={() => props.onClickDelete(row.original.ID)}
             >
               <RiDeleteBin6Line />
             </button>
@@ -321,43 +243,6 @@ export function TableOffice(props: PropsTableOffice) {
         ),
       },
     ]);
-  };
-  const handleDelete = async (data: OfficeData) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You will not be able to recover your account!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "Cancel",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .delete(`office?id=${data.ID}`, {
-            headers: {
-              Authorization: `Bearer ${cookie.token}`,
-            },
-          })
-          .then((response) => {
-            const { message } = response.data;
-            Swal.fire({
-              icon: "success",
-              title: "Success",
-              text: message,
-              showCancelButton: false,
-            });
-          })
-          .catch((error) => {
-            const { data } = error.response;
-            Swal.fire({
-              icon: "error",
-              title: "Failed",
-              text: data.message,
-              showCancelButton: false,
-            });
-          });
-      }
-    });
   };
 
   const tableInstance = useTable(
