@@ -67,8 +67,8 @@ export function HomeAdmin() {
             setValue("email", "");
             setValue("phone_number", "");
             setValue("name", "");
-            setValue("office_id", "");
-            setValue("position_id", "");
+            setValue("office_id", "Select Office");
+            setValue("position_id", "Select Position");
           }
         });
       })

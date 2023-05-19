@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { json, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
@@ -9,12 +9,10 @@ import axios from "axios";
 import * as z from "zod";
 
 import { OfficeData, PositionData } from "@/utils/types/Admin";
-import { UserDataUpdate } from "@/utils/types/Admin";
 import { LayoutAdmin } from "@/components/Layout";
 import { RedButton } from "@/components/Button";
 import { TabUser } from "@/components/Tab";
 import { Input } from "@/components/Input";
-import { Position } from "./Position";
 
 const schema = z.object({
   password: z.string().min(6, { message: "Password is mininum 6 character" }),
@@ -30,19 +28,17 @@ type Schema = z.infer<typeof schema>;
 export function UpdateUsers() {
   const [positionData, setPositionData] = useState<PositionData[]>([]);
   const [officeData, setOfficeData] = useState<OfficeData[]>([]);
-  const [data] = useState<UserDataUpdate | null>(null);
-  // const [position, setPosition] = useState<string>("");
   const [idPosition, setIdPosition] = useState<number>(0);
-  // const [office, setOffice] = useState<string>("");
+  const [idOffice, setIdOffice] = useState<number>(0);
   const [, setLoading] = useState<boolean>(false);
   const [cookie] = useCookies(["token"]);
   const { user_id } = useParams();
   const getToken = cookie.token;
   const navigate = useNavigate();
   let position = "";
+  let offices = "";
 
   const {
-    getValues,
     setValue,
     register,
     handleSubmit,
@@ -69,7 +65,9 @@ export function UpdateUsers() {
         setValue("phone_number", data.phone_number);
         setValue("password", data.password);
         position = data.position;
-        // setOffice(data.office);
+        offices = data.office;
+        console.log(offices);
+        console.log(position);
       })
       .catch((err) => {
         const { data } = err.response;
@@ -93,20 +91,18 @@ export function UpdateUsers() {
       .then((response) => {
         const { data } = response.data;
         setPositionData(data);
-        console.log(data);
         const filterPosition = data.filter(
           (item: any) => item.position === position
         );
-        console.log(data);
-        alert(JSON.stringify(filterPosition[0].position_id));
-        setIdPosition(filterPosition[0].position_id);
+        setIdPosition(filterPosition[0].position);
       })
       .catch((error) => {
         alert(error.toString());
       })
       .finally(() => {
         setLoading(false);
-      });
+      })
+      .finally(fetchDataOffices);
   };
 
   const fetchDataOffices = async () => {
@@ -119,6 +115,8 @@ export function UpdateUsers() {
       .then((response) => {
         const { data } = response.data;
         setOfficeData(data);
+        const filterOffice = data.filter((item: any) => item.Name === offices);
+        setIdOffice(filterOffice[0].Name);
       })
       .catch((error) => {
         alert(error.toString());
@@ -161,8 +159,9 @@ export function UpdateUsers() {
           showCancelButton: false,
         });
       })
-      .finally(() => fetchData());
+      .finally(() => setLoading(false));
   };
+
   return (
     <LayoutAdmin>
       <div
@@ -219,7 +218,7 @@ export function UpdateUsers() {
                 id="select-position"
               >
                 <option value={idPosition} disabled selected>
-                  {position}
+                  {idPosition}
                 </option>
                 {positionData.map((pos) => (
                   <option value={pos.position_id}>{pos.position}</option>
@@ -235,6 +234,9 @@ export function UpdateUsers() {
                 placeholder="Select Office"
                 id="select-Office"
               >
+                <option value={idOffice} disabled selected>
+                  {idOffice}
+                </option>
                 {officeData.map((office) => (
                   <option value={office.ID}>{office.Name}</option>
                 ))}
