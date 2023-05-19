@@ -11,6 +11,7 @@ interface Props {
   children: ReactNode;
   onchange: React.ChangeEventHandler<HTMLSelectElement>;
   onchangeInput: React.ChangeEventHandler<HTMLInputElement>;
+  select: boolean;
 }
 
 const UserHome: FC<Props> = (props) => {
@@ -33,7 +34,7 @@ const UserHome: FC<Props> = (props) => {
         <div className="form-control rounded-full flex flex-row relative border-2">
           <select
             onChange={onchange}
-            className=" bg-@Red flex-initial w-[10%] rounded-l-full flex justify-center items-center"
+            className=" bg-@Red flex-initial w-[10%] rounded-l-full focus:rounded-none transition-all ease-in-out flex justify-center items-center"
           >
             <option
               className=" text-center rounded-tl-full"

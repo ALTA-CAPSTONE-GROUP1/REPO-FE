@@ -58,6 +58,7 @@ const UserIndex: FC = () => {
   const [bg1, setBg1] = useState<boolean>(true);
   const [bg2, setBg2] = useState<boolean>(false);
   const [bg3, setBg3] = useState<boolean>(false);
+  const [select, setSelect] = useState<boolean>(false);
 
   const [datasSubmission, setDatasSubmission] = useState<SubmissionType[]>([]);
   const [datasApprove, setDatasApprove] = useState<approveTypes[]>([]);
@@ -190,6 +191,7 @@ const UserIndex: FC = () => {
     setBg3(false);
     setPage("cc");
     setDatasSubmission([]);
+    setCreateSubmission(false);
     setDatasApprove([]);
   }
 
@@ -200,6 +202,7 @@ const UserIndex: FC = () => {
     setPage("approve");
     setDatasApprove([]);
     setDatascc([]);
+    setCreateSubmission(false);
   }
 
   function handleTypeSelect(event: React.ChangeEvent<HTMLSelectElement>) {
@@ -220,10 +223,15 @@ const UserIndex: FC = () => {
     }
     const value = event.target.value;
     setSelectValue(parseInt(value));
-
+    console.log(type);
     axios
       .get(
-        `submission/requirements?submissiont_type=${type}&submission_value=${value}`
+        `submission/requirements?submissiont_type=${type}&submission_value=${value}`,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie.token}`,
+          },
+        }
       )
       .then((res) => {
         const { data } = res.data;
@@ -280,6 +288,7 @@ const UserIndex: FC = () => {
 
   function handleSearch(event: React.ChangeEvent<HTMLSelectElement>) {
     setCategory(event.target.value);
+    setSelect(true);
   }
 
   function handleSearchInput(event: React.ChangeEvent<HTMLInputElement>) {
@@ -309,6 +318,7 @@ const UserIndex: FC = () => {
             datas={datasSubmission}
             onchange={(e) => handleSearch(e)}
             onchangeInput={(e) => handleSearchInput(e)}
+            select={select}
           >
             <div className="h-10 w-full bg-@Red4 relative transition-all">
               {createSubmission ? (

@@ -147,6 +147,46 @@ export function HomeAdmin() {
       });
   };
 
+  function handleDelete(id: string) {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will not be able to recover your account!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          axios
+            .delete(`users/${id}`, {
+              headers: {
+                Authorization: `Bearer ${cookie.token}`,
+              },
+            })
+            .then((response) => {
+              const { message } = response.data;
+              Swal.fire({
+                icon: "success",
+                title: "Success",
+                text: message,
+                showCancelButton: false,
+              });
+            })
+            .catch((error) => {
+              const { data } = error.response;
+              Swal.fire({
+                icon: "error",
+                title: "Failed",
+                text: data.message,
+                showCancelButton: false,
+              });
+            });
+        }
+      })
+      .finally(fetchData);
+  }
+
   return (
     <LayoutAdmin>
       <div
@@ -257,7 +297,10 @@ export function HomeAdmin() {
             </label>
           </div>
 
-          <TableUsers dataUsers={data} />
+          <TableUsers
+            dataUsers={data}
+            onclickDelete={(id) => handleDelete(id)}
+          />
 
           <div className="flex flex-row p-2 bg-white text-black border rounded-es-md rounded-ee-md justify-between items-center">
             <button className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md">

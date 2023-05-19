@@ -34,7 +34,7 @@ const CC: FC<Props> = (props) => {
         </div>
       </div>
       <div className="h-full overflow-auto  min-w-[50rem]">
-        {datas.map((data) => {
+        {datas?.map((data) => {
           return (
             <Link to={""}>
               <CCList
