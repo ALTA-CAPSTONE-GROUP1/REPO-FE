@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable prefer-const */
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import withReactContent from "sweetalert2-react-content";
@@ -98,14 +100,18 @@ const UserIndex: FC = () => {
 
   useEffect(() => {
     if (page == "user-home") {
-      // axios
-      //   .get(`submission?${category}=${search}`)
-      const url =
-        "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
-      axios({
-        method: "get",
-        url: `${url}/submission?${category}=${search}`,
-      })
+      axios
+        .get(`submission?${category}=${search}`, {
+          headers: {
+            Authorization: `Bearer ${cookie.token}`,
+          },
+        })
+        // const url =
+        //   "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
+        // axios({
+        //   method: "get",
+        //   url: `${url}/submission?${category}=${search}`,
+        // })
         .then((res) => {
           const { data } = res.data;
           setDatasSubmission(data.submissions);
@@ -332,7 +338,7 @@ const UserIndex: FC = () => {
                             <option disabled selected>
                               Select Submission Type
                             </option>
-                            {subTypes.map((data) => {
+                            {subTypes?.map((data) => {
                               return (
                                 <option value={data.name}>{data.name}</option>
                               );

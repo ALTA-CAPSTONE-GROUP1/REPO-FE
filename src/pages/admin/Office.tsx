@@ -145,7 +145,8 @@ export const Office: FC = () => {
               </span>
             </label>
           </div>
-          <TableOffice data={officeData} />
+          {officeData ? <TableOffice data={officeData} /> : ""}
+
           <div className="flex flex-row p-2 bg-white text-black border rounded-es-md rounded-ee-md justify-between items-center">
             <button className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md">
               <RiArrowLeftLine /> Previous
