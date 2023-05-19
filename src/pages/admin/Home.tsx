@@ -206,7 +206,7 @@ export function HomeAdmin() {
                 <option disabled selected>
                   Select Position
                 </option>
-                {positionData.map((pos) => (
+                {positionData?.map((pos) => (
                   <option value={pos.position_id}>{pos.position}</option>
                 ))}
               </select>
@@ -223,7 +223,7 @@ export function HomeAdmin() {
                 <option disabled selected>
                   Select Office
                 </option>
-                {officeData.map((office) => (
+                {officeData?.map((office) => (
                   <option value={office.ID}>{office.Name}</option>
                 ))}
               </select>

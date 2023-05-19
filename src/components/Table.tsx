@@ -374,9 +374,9 @@ export function TableOffice(props: PropsTableOffice) {
   return (
     <table className="table w-full border border-@Gray2">
       <thead {...getTableProps()}>
-        {headerGroups.map((headerGroup) => (
+        {headerGroups?.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
+            {headerGroup.headers?.map((column) => (
               <th {...column.getHeaderProps()} scope="col">
                 {column.render("Header")}
               </th>
@@ -385,7 +385,7 @@ export function TableOffice(props: PropsTableOffice) {
         ))}
       </thead>
       <tbody {...getTableBodyProps()}>
-        {rows.map((row, index) => {
+        {rows?.map((row, index) => {
           prepareRow(row);
 
           return (
@@ -393,7 +393,7 @@ export function TableOffice(props: PropsTableOffice) {
               {...row.getRowProps()}
               className={isEven(index) ? "bg-@Gray" : ""}
             >
-              {row.cells.map((cell) => {
+              {row.cells?.map((cell) => {
                 return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
               })}
             </tr>
