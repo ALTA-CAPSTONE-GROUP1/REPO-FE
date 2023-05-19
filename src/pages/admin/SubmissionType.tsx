@@ -78,7 +78,7 @@ export function SubmissionType() {
   const [positionData, setPositionData] = useState<PositionData[]>([]);
   const [dataPosition, setDataPosition] = useState<string[]>([""]);
   const [, setLoading] = useState<boolean>(false);
-  const [data] = useState<SubmissionDetail[]>([]);
+  const [data, setData] = useState<SubmissionDetail[]>([]);
   const [cookie] = useCookies(["token", "user_position"]);
 
   const {
@@ -180,11 +180,15 @@ export function SubmissionType() {
           },
           []
         );
-
-        console.log(submissionDetails);
+        setData(submissionDetails);
       })
       .catch((error) => {
-        alert(error.toString());
+        const { message } = error.response.data;
+        Swal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
       })
       .finally(() => {
         setLoading(false);
