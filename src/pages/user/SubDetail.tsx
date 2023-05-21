@@ -68,7 +68,7 @@ const SubDetail: FC = () => {
   const [data, setData] = useState<Partial<SubDetailType>>();
   const [to_cc, setTo_Cc] = useState<to_cc_type>();
 
-  const [, , removeCookie] = useCookies(["token", "user_position"]);
+  const [cookie, , removeCookie] = useCookies(["token", "user_position"]);
   const MySwal = withReactContent(Swal);
   const navigate = useNavigate();
   const { id } = useParams();
@@ -102,13 +102,17 @@ const SubDetail: FC = () => {
       setSubTypes(JSON.parse(dataSub));
     }
 
-    // axios
-    //   .get(`submission?${category}=${search}`)
-    const url = "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
-    axios({
-      method: "get",
-      url: `${url}/submission/${id}`,
-    })
+    axios
+      .get(`submission/${id}`, {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
+      // const url = "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
+      // axios({
+      //   method: "get",
+      //   url: `${url}/submission/${id}`,
+      // })
       .then((res) => {
         const { data } = res.data;
         setData(data);

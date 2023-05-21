@@ -34,7 +34,7 @@ const List: FC<SubmissionType> = (props) => {
     setTo(stringJoin);
   }
 
-  const downloadFile = () => {
+  const downloadFile = (attachment: string) => {
     // const link = document.createElement("a");
     // link.href = "/images/test.pdf";
     // // link.download = "/images/test.pdf";
@@ -42,7 +42,8 @@ const List: FC<SubmissionType> = (props) => {
     // link.click();
     // document.body.removeChild(link);
     const url = "/images/test2.pdf";
-    window.open(`/app2?url=${url}`);
+    // window.open(`/app2?url=${url}`);
+    window.open(attachment);
   };
 
   return (
@@ -55,11 +56,11 @@ const List: FC<SubmissionType> = (props) => {
       <div className="flex flex-col">
         <p>{title}</p>
         <button
-          onClick={downloadFile}
+          onClick={() => downloadFile(attachment)}
           className=" font-bold py-2 rounded flex justify-start items-center"
         >
           <img src="/images/pdf.png" alt="" className="w-6 h-6 object-cover" />
-          <p>{attachment}</p>
+          {/* <p>{attachment}</p> */}
         </button>
       </div>
       <div className={`${colorStatus} max-w-[3rem]`}>

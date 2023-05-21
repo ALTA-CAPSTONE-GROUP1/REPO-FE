@@ -25,8 +25,8 @@ import CC from "./CC";
 const schema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
   message: z.string().min(5, { message: "Message is required" }),
-  sub_type: z.string(),
-  value: z.string(),
+  submission_type: z.string(),
+  submission_value: z.string(),
   attachment: z.any(),
   to: z
     .string()
@@ -55,10 +55,10 @@ interface submission_type {
 
 const UserIndex: FC = () => {
   const [createSubmission, setCreateSubmission] = useState<boolean>(false);
-  const [bg1, setBg1] = useState<boolean>(true);
+  const [select, setSelect] = useState<boolean>(false);
   const [bg2, setBg2] = useState<boolean>(false);
   const [bg3, setBg3] = useState<boolean>(false);
-  const [select, setSelect] = useState<boolean>(false);
+  const [bg1, setBg1] = useState<boolean>(true);
 
   const [datasSubmission, setDatasSubmission] = useState<SubmissionType[]>([]);
   const [datasApprove, setDatasApprove] = useState<approveTypes[]>([]);
@@ -74,7 +74,7 @@ const UserIndex: FC = () => {
   const [selectValue, setSelectValue] = useState<number>();
   const [indexSubtypes, setIndexSub] = useState<number>();
 
-  const [, setFile] = useState<any>();
+  const [file, setFile] = useState<any>();
 
   const [cookie, , removeCookie] = useCookies(["token", "user_position"]);
   const MySwal = withReactContent(Swal);
@@ -89,7 +89,11 @@ const UserIndex: FC = () => {
     resolver: zodResolver(schema),
   });
 
-  const { append: appendSubValTo } = useFieldArray({
+  const {
+    fields: fieldsSubVal,
+    remove: removeSubValTo,
+    append: appendSubValTo,
+  } = useFieldArray({
     control,
     name: "to",
   });
@@ -100,6 +104,7 @@ const UserIndex: FC = () => {
   });
 
   useEffect(() => {
+    // ?${category}=${search}
     if (page == "user-home") {
       axios
         .get(`submission?${category}=${search}`, {
@@ -214,6 +219,7 @@ const UserIndex: FC = () => {
   }
 
   function handleGetToCC(event: React.ChangeEvent<HTMLSelectElement>) {
+    console.log(selectValue);
     let to: string[] = [];
     let cc: string[] = [];
 
@@ -221,12 +227,12 @@ const UserIndex: FC = () => {
     if (indexSubtypes) {
       type = subTypes[indexSubtypes].name;
     }
-    const value = event.target.value;
-    setSelectValue(parseInt(value));
+    const values = event.target.value;
+    setSelectValue(parseInt(values));
     console.log(type);
     axios
       .get(
-        `submission/requirements?submissiont_type=${type}&submission_value=${value}`,
+        `submission/requirements?submission_type=${type}&submission_value=${values}`,
         {
           headers: {
             Authorization: `Bearer ${cookie.token}`,
@@ -241,6 +247,10 @@ const UserIndex: FC = () => {
         data.cc.map((dataz: any) => {
           return cc.push(dataz.cc_id);
         });
+
+        for (let i = 0; i < fieldsSubVal.length; i++) {
+          removeSubValTo(i);
+        }
 
         appendSubValTo(to);
         appendSubValCc(cc);
@@ -259,14 +269,43 @@ const UserIndex: FC = () => {
   }
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
+    console.log(selectValue);
+    console.log(data);
+    console.log(file);
+    const newData = {
+      ...data,
+      submission_value: parseInt(data.submission_value),
+      attachment: file,
+    };
+    console.log(newData);
     const formData = new FormData();
-    let key: keyof typeof data;
-    for (key in data) {
-      if (key === "attachment") formData.append(key, data[key][0]);
-      formData.append(key, data[key]);
+    let key: keyof typeof newData;
+    for (key in newData) {
+      // if (key === "attachment") formData.append(key, newData[key][0]);
+      if (key === "to") {
+        newData.to.map((value: any) => {
+          return formData.append(`to`, value);
+        });
+      } else if (key === "cc") {
+        newData.to.map((value: any) => {
+          return formData.append(`cc`, value);
+        });
+      } else {
+        formData.append(key, newData[key]);
+      }
     }
+
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+
     axios
-      .post("submission", formData)
+      .post("submission", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
       .then((res) => {
         const { message } = res.data;
         Swal.fire({
@@ -340,7 +379,7 @@ const UserIndex: FC = () => {
                       <div className="form-control">
                         <div className="input-group rounded-md justify-between w-[40%]">
                           <select
-                            {...register("sub_type")}
+                            {...register("submission_type")}
                             className="select select-bordered"
                             onChange={(e) => handleTypeSelect(e)}
                             value={selectSubType}
@@ -355,10 +394,10 @@ const UserIndex: FC = () => {
                             })}
                           </select>
                           <select
-                            {...register("value")}
+                            {...register("submission_value")}
                             className="select select-bordered"
                             onChange={(e) => handleGetToCC(e)}
-                            value={selectValue}
+                            // value={selectValue}
                           >
                             <option disabled selected>
                               Select Value
@@ -432,7 +471,7 @@ const UserIndex: FC = () => {
 
                         <div className="flex justify-between items-end mt-5 h-20 max-h-20">
                           <Input
-                            register={register}
+                            // register={register}
                             name="attachment"
                             type="file"
                             className="w-full "

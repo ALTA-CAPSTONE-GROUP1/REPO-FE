@@ -49,11 +49,6 @@ function Login() {
       })
       .catch((err) => {
         const { message } = err.response;
-        Swal.fire({
-          title: "Failed",
-          text: message,
-          showCancelButton: false,
-        });
       });
   }
 
