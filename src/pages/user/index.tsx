@@ -55,10 +55,10 @@ interface submission_type {
 
 const UserIndex: FC = () => {
   const [createSubmission, setCreateSubmission] = useState<boolean>(false);
-  const [bg1, setBg1] = useState<boolean>(true);
+  const [select, setSelect] = useState<boolean>(false);
   const [bg2, setBg2] = useState<boolean>(false);
   const [bg3, setBg3] = useState<boolean>(false);
-  const [select, setSelect] = useState<boolean>(false);
+  const [bg1, setBg1] = useState<boolean>(true);
 
   const [datasSubmission, setDatasSubmission] = useState<SubmissionType[]>([]);
   const [datasApprove, setDatasApprove] = useState<approveTypes[]>([]);
@@ -98,7 +98,7 @@ const UserIndex: FC = () => {
     name: "to",
   });
 
-  const { remove: removeSubValCc, append: appendSubValCc } = useFieldArray({
+  const { append: appendSubValCc } = useFieldArray({
     control,
     name: "cc",
   });
@@ -283,11 +283,11 @@ const UserIndex: FC = () => {
     for (key in newData) {
       // if (key === "attachment") formData.append(key, newData[key][0]);
       if (key === "to") {
-        newData.to.map((value) => {
+        newData.to.map((value: any) => {
           return formData.append(`to`, value);
         });
       } else if (key === "cc") {
-        newData.to.map((value) => {
+        newData.to.map((value: any) => {
           return formData.append(`cc`, value);
         });
       } else {
