@@ -263,7 +263,7 @@ export const CardSubmission: FC<PropsSubmission> = (props) => {
               <BsFileEarmarkPdfFill />
             </button>
             <h3 className="capitalize font-semibold text-2xl text-black">
-              {attachment}
+              {/* {attachment} */}
             </h3>
             <h4 className="text-@Gray font-semibold max-w-[60%]">
               {approver_action?.map((data) => {

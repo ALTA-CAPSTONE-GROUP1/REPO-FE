@@ -33,7 +33,7 @@ export const NavbarAdmin: FC = () => {
           <ul className="menu menu-horizontal px-1">
             <li>
               <a className="capitalize font-semibold text-white text-lg btn btn-ghost">
-                <RiAdminFill /> {cookies.username}
+                <RiAdminFill /> {cookies.username ? cookies.username : "Admin"}
                 <svg
                   className="fill-current"
                   xmlns="http://www.w3.org/2000/svg"

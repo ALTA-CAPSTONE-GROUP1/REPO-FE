@@ -21,6 +21,7 @@ import { useCookies } from "react-cookie";
 import Login from "@/pages/auth/Login";
 import UserIndex from "@/pages/user";
 import Start from "@/pages";
+import Testink from "@/pages/Testink";
 
 axios.defaults.baseURL =
   // "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
@@ -116,6 +117,10 @@ const Router: FC = () => {
           <Navigate to="/" />
         ),
       // <DrawCanvasExample />
+    },
+    {
+      path: "/test",
+      element: <Testink />,
     },
   ]);
 
