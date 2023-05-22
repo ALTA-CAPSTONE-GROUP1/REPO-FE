@@ -15,7 +15,12 @@ import { Input } from "@/components/Input";
 
 const schema = z.object({
   submission_id: z.string().min(1, { message: "Submission ID is Failed" }),
-  token: z.string().min(16, { message: "Submission ID Minimum 16 Character" }),
+  token: z
+    .string()
+    .min(16, { message: "Submission ID Minimum 16 Character" })
+    .refine((value) => value === "eproposal16character", {
+      message: "Invalid token",
+    }),
 });
 type Schema = z.infer<typeof schema>;
 
@@ -29,6 +34,7 @@ export const Approving: FC = () => {
     "approverData",
     "token",
   ]);
+  const [data, setData] = useState("");
   const navigate = useNavigate();
   const submissionData = cookies.submissionData;
   const applicantData = cookies.applicantData;
@@ -58,7 +64,8 @@ export const Approving: FC = () => {
         setCookie(
           "submissionData",
           {
-            title: data["submission-title"],
+            title: data.submission_title,
+            type: data.submission_type,
             attachment: data.attachment,
             messageBody: data.message_body,
           },
@@ -73,6 +80,7 @@ export const Approving: FC = () => {
           { path: "/" }
         );
         setCookie("approverData", data.approver_action, { path: "/" });
+        setData(data);
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -106,7 +114,7 @@ export const Approving: FC = () => {
             showCancelButton: false,
           }).then((result) => {
             if (result.isConfirmed) {
-              navigate("/approvong");
+              navigate("/approving");
             }
           });
         }
@@ -170,7 +178,7 @@ export const Approving: FC = () => {
                   id="button-search-id-submission"
                   type="submit"
                   onClick={() => {
-                    if (watch("token") === "ss#561618sadadadsw") {
+                    if (watch("token") === "eproposal16character") {
                       setClicked(true);
                     } else {
                       Swal.fire({
@@ -189,12 +197,15 @@ export const Approving: FC = () => {
         {clicked && submissionData ? (
           <div className="overflow-x-auto w-full p-6 mt-2">
             <h3 className="font-bold text-2xl text-black">Submission</h3>
+
             <div className="mt-5">
               <div className="flex justify-between">
                 <h3 className="font-bold text-3xl text-black">
                   {submissionData?.title}
                 </h3>
-                <h3 className="font-bold text-xl text-@Green"></h3>
+                <h3 className="font-bold text-xl text-@Green">
+                  {submissionData?.type}
+                </h3>
               </div>
               <div className="mt-2">
                 <h3 className="capitalize font-semibold text-2xl text-black">
@@ -206,6 +217,7 @@ export const Approving: FC = () => {
                   <a className="text-5xl text-@Red">
                     <BsFileEarmarkPdfFill />
                   </a>
+                  {submissionData?.attachment}
                   {approverData &&
                     approverData.map((approver: any, index: number) => (
                       <div key={index} className="flex flex-row gap-2">
