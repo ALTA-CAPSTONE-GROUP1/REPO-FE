@@ -222,16 +222,18 @@ interface PropsSubmission extends SubDetailType {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   onClickPdf: React.MouseEventHandler<HTMLButtonElement>;
   onClickDelete: React.MouseEventHandler<HTMLButtonElement>;
+  status: string | null;
 }
 export const CardSubmission: FC<PropsSubmission> = (props) => {
   const {
+    status,
+    action_message,
     to,
     cc,
     submission_type,
     title,
     message,
     approver_action,
-    attachment,
     onClick,
     onClickPdf,
     onClickDelete,
@@ -265,15 +267,25 @@ export const CardSubmission: FC<PropsSubmission> = (props) => {
             <h3 className="capitalize font-semibold text-2xl text-black">
               {/* {attachment} */}
             </h3>
+            <p></p>
             <h4 className="text-@Gray font-semibold max-w-[60%]">
               {approver_action?.map((data) => {
                 return (
-                  data.action +
-                  " by " +
-                  data.approver_position +
-                  " " +
-                  data.approver_name +
-                  ","
+                  <div
+                    className="tooltip"
+                    data-tip={
+                      data.action === "approve" ? `${action_message}` : ""
+                    }
+                  >
+                    <p>
+                      {data.action +
+                        " by " +
+                        data.approver_position +
+                        " " +
+                        data.approver_name +
+                        ","}
+                    </p>
+                  </div>
                 );
               })}
             </h4>
@@ -290,22 +302,40 @@ export const CardSubmission: FC<PropsSubmission> = (props) => {
           </div> */}
           <div className="flex justify-end">
             <div className="flex flex-col md:flex-row gap-2">
-              <div className="w-40">
-                <Red2Button
-                  label="Delete"
-                  id="button-approve-revise"
-                  type="submit"
-                  onClick={onClickDelete}
-                />
-              </div>
-              <div className="w-40">
-                <RedButton
-                  label="Edit"
-                  id="button-sub-edit"
-                  type="submit"
-                  onClick={onClick}
-                />
-              </div>
+              {status === "Sent" || status === "sent" ? (
+                <div className="flex w-full justify-between">
+                  <div className="w-40 px-2">
+                    <Red2Button
+                      label="Delete"
+                      id="button-approve-revise"
+                      type="submit"
+                      onClick={onClickDelete}
+                    />
+                  </div>
+                  <div className="w-40 px-2">
+                    <RedButton
+                      label="Edit"
+                      id="button-sub-edit"
+                      type="submit"
+                      onClick={onClick}
+                    />
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
+              {status === "revised" ? (
+                <div className="w-40">
+                  <RedButton
+                    label="Edit"
+                    id="button-sub-edit"
+                    type="submit"
+                    onClick={onClick}
+                  />
+                </div>
+              ) : (
+                ""
+              )}
             </div>
           </div>
         </div>
@@ -329,7 +359,11 @@ export const CardApprove: FC<ApproveDetailType> = (props) => {
   function handlePdf() {
     const url = "/images/test2.pdf";
     const approver = status_by?.map((data) => {
-      return data.status + " by " + data.by + ",";
+      return data.status !== "" &&
+        data.status !== null &&
+        data.status !== undefined
+        ? data.status + " by " + data.by + ","
+        : "";
     });
     window.open(`/app2?url=${url}&approver=${approver}`);
   }
@@ -341,15 +375,15 @@ export const CardApprove: FC<ApproveDetailType> = (props) => {
           <h3 className="font-bold text-xl text-@Green">{submission_type}</h3>
         </div>
         <div className="mt-2">
-          <h3 className="capitalize font-semibold text-2xl text-black">
+          <p className="capitalize font-semibold text-xl text-black">
             From: {from?.position + " " + from?.name}
-          </h3>
-          <h4 className="capitalize font-semibold text-2xl text-black">
+          </p>
+          <p className="capitalize font-semibold text-lg text-black">
             To:{" "}
             {to?.map((data) => {
               return data.position + " " + data.name + ",";
             })}
-          </h4>
+          </p>
           <h5 className="text-@Gray">
             Cc:{" "}
             {cc?.map((data) => {
@@ -357,13 +391,13 @@ export const CardApprove: FC<ApproveDetailType> = (props) => {
             })}
           </h5>
           <p className="mt-5 text-lg">{message_body} </p>
-          <div className="mt-20 flex flex-col h-full justify-end ">
+          <div className="mt-20 flex flex-col h-full justify-end w-4/12">
             <button onClick={handlePdf} className="text-5xl text-@Red">
               <BsFileEarmarkPdfFill />
             </button>
-            <h3 className="capitalize font-semibold text-2xl text-black">
+            <p className="capitalize font-semibold text-2xl text-black">
               {attacment}
-            </h3>
+            </p>
             <h4 className="text-@Gray font-semibold">
               {status_by?.map((data) => {
                 return data.status + " " + data.by + ",";

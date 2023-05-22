@@ -57,7 +57,7 @@ const DrawCanvasExample: FC = () => {
   const customCanvasPluginInstance = customCanvasPlugin();
 
   return (
-    <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+    <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.6.172/build/pdf.worker.min.js">
       {urlnya !== null ? (
         <Viewer
           fileUrl={urlnya}

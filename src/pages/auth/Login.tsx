@@ -49,6 +49,7 @@ function Login() {
       })
       .catch((err) => {
         const { message } = err.response;
+        alert(message);
       });
   }
 

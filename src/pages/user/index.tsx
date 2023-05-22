@@ -106,40 +106,10 @@ const UserIndex: FC = () => {
   useEffect(() => {
     // ?${category}=${search}
     if (page == "user-home") {
-      axios
-        .get(`submission?${category}=${search}`, {
-          headers: {
-            Authorization: `Bearer ${cookie.token}`,
-          },
-        })
-        // const url =
-        //   "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
-        // axios({
-        //   method: "get",
-        //   url: `${url}/submission?${category}=${search}`,
-        // })
-        .then((res) => {
-          const { data } = res.data;
-          setDatasSubmission(data.submissions);
-          setSubTypes(data.submission_type_choices);
-          localStorage.removeItem("SubmissionType");
-          localStorage.setItem(
-            "SubmissionType",
-            JSON.stringify(data.submission_type_choices)
-          );
-        })
-        .catch((err) => {
-          const { message } = err.response;
-          Swal.fire({
-            icon: "error",
-            title: "Failed",
-            text: message,
-            showCancelButton: false,
-          });
-        });
+      fetchSubmission();
     } else if (page == "cc") {
       axios
-        .get(`cc`, {
+        .get(`cc?${category}=${search}`, {
           headers: {
             Authorization: `Bearer ${cookie.token}`,
           },
@@ -159,7 +129,7 @@ const UserIndex: FC = () => {
         });
     } else {
       axios
-        .get(`approver`, {
+        .get(`approver?${category}=${search}`, {
           headers: {
             Authorization: `Bearer ${cookie.token}`,
           },
@@ -179,6 +149,40 @@ const UserIndex: FC = () => {
         });
     }
   }, [page, category, search]);
+
+  function fetchSubmission() {
+    axios
+      .get(`submission?${category}=${search}`, {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
+      // const url =
+      //   "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
+      // axios({
+      //   method: "get",
+      //   url: `${url}/submission?${category}=${search}`,
+      // })
+      .then((res) => {
+        const { data } = res.data;
+        setDatasSubmission(data.submissions);
+        setSubTypes(data.submission_type_choices);
+        localStorage.removeItem("SubmissionType");
+        localStorage.setItem(
+          "SubmissionType",
+          JSON.stringify(data.submission_type_choices)
+        );
+      })
+      .catch((err) => {
+        const { message } = err.response;
+        Swal.fire({
+          icon: "error",
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      });
+  }
 
   function handleMenu1() {
     setBg1(true);
@@ -205,7 +209,7 @@ const UserIndex: FC = () => {
     setBg2(false);
     setBg3(true);
     setPage("approve");
-    setDatasApprove([]);
+    setDatasSubmission([]);
     setDatascc([]);
     setCreateSubmission(false);
   }
@@ -287,7 +291,7 @@ const UserIndex: FC = () => {
           return formData.append(`to`, value);
         });
       } else if (key === "cc") {
-        newData.to.map((value: any) => {
+        newData.cc.map((value: any) => {
           return formData.append(`cc`, value);
         });
       } else {
@@ -309,8 +313,8 @@ const UserIndex: FC = () => {
       .then((res) => {
         const { message } = res.data;
         Swal.fire({
-          icon: "error",
-          title: "Failed",
+          icon: "success",
+          title: "Success ",
           text: message,
           showCancelButton: false,
         });
@@ -322,7 +326,8 @@ const UserIndex: FC = () => {
           text: message,
           showCancelButton: false,
         });
-      });
+      })
+      .finally(fetchSubmission);
   };
 
   function handleSearch(event: React.ChangeEvent<HTMLSelectElement>) {
@@ -497,9 +502,19 @@ const UserIndex: FC = () => {
             </div>
           </UserHome>
         ) : page === "cc" ? (
-          <CC datas={datascc} />
+          <CC
+            datas={datascc}
+            onchange={(e) => handleSearch(e)}
+            onchangeInput={(e) => handleSearchInput(e)}
+            select={select}
+          />
         ) : (
-          <Approve datas={datasApprove} />
+          <Approve
+            datas={datasApprove}
+            onchange={(e) => handleSearch(e)}
+            onchangeInput={(e) => handleSearchInput(e)}
+            select={select}
+          />
         )}
       </SideBar>
     </Layout>

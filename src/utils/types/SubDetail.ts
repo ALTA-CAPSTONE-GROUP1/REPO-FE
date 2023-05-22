@@ -16,6 +16,7 @@ interface SubDetailType {
     approver_position: string;
   }[];
   action_message?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   attachment?: string;
 }
 
