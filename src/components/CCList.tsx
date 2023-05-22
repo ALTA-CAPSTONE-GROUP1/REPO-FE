@@ -3,16 +3,16 @@ import { FC, useEffect } from "react";
 import { BsDownload } from "react-icons/bs";
 
 const CCList: FC<ccTypes> = (props) => {
-  const { from, title, submission_type } = props;
+  const { from, title, submission_type, attachment, to } = props;
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const downloadFile = () => {
-    const url = "/images/test2.pdf";
-    // const url = { attachment };
-    window.open(`/app2?url=${url}`);
+    const approver = "Approve By " + to.position + " " + to.name;
+
+    window.open(`/app2?url=${attachment}&approver=${approver}`);
   };
 
   return (
@@ -23,7 +23,7 @@ const CCList: FC<ccTypes> = (props) => {
         <p>From: {from.position + " " + from.name}</p>
       </div>
       <div className=" w-4/12">
-        <p>To: {from.position + " " + from.name}</p>
+        <p>To: {to.position + " " + to.name}</p>
       </div>
       <div className=" w-2/12">
         <p>{title}</p>
@@ -31,7 +31,7 @@ const CCList: FC<ccTypes> = (props) => {
       <div className=" w-1/12">
         <p>{submission_type}</p>
       </div>
-      <div className=" w-1/12">
+      <div className=" w-1/12 flex justify-center">
         <button onClick={downloadFile} className=" text-@Blu font-bold">
           <BsDownload />
         </button>

@@ -59,7 +59,6 @@ export const Position: FC = () => {
             setValue("position", "");
             setValue("tag", "");
           }
-          console.log(result);
         });
       })
       .catch((error) => {
@@ -93,7 +92,6 @@ export const Position: FC = () => {
       .finally(() => {
         setLoading(false);
       });
-    console.log(data);
   }
 
   function handleDelete(id: number) {

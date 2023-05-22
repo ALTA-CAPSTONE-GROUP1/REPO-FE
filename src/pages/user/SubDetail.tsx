@@ -145,14 +145,14 @@ const SubDetail: FC = () => {
   }
 
   function handlePdf() {
-    const url = "/images/test2.pdf";
+    const url = data?.attachment;
     let approver;
     if (data?.approver_action && data?.approver_action?.length > 0) {
       approver = data?.approver_action?.map((data) => {
         return data.action !== "" &&
           data.action !== null &&
           data.action !== undefined
-          ? data.action + " by " + data.approver_position + ","
+          ? data.action + " by " + data.approver_position
           : "";
       });
     }
@@ -160,16 +160,13 @@ const SubDetail: FC = () => {
   }
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
-    alert(JSON.stringify(data));
     const newData = { ...data, attachment: file };
     const formData = new FormData();
     let key: keyof typeof newData;
     for (key in newData) {
       formData.append(key, newData[key]);
     }
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
+
     axios
       .put(`submission/${id}`, formData, {
         headers: {

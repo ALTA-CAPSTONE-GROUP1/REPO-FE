@@ -67,7 +67,6 @@ const Profile: FC = () => {
       });
   }
   const onSubmit: SubmitHandler<Schema> = (data) => {
-    alert(JSON.stringify(data));
     axios
       .put(`profile`, data, {
         headers: {

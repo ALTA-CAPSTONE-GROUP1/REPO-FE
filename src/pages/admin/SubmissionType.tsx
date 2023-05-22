@@ -138,7 +138,6 @@ export function SubmissionType() {
             }
           });
         }
-        console.log(data);
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -148,7 +147,6 @@ export function SubmissionType() {
           showCancelButton: false,
         });
       });
-    console.log(data);
   };
 
   useEffect(() => {

@@ -146,7 +146,7 @@ const ApproveDetail: FC = () => {
                 submission_type={data?.submission_type}
                 status_by={data?.status_by}
                 message={data?.message}
-                attacment={data?.attacment}
+                attachment={data?.attachment}
               />
             )}
             <form onSubmit={handleSubmit(onSubmit)}>
