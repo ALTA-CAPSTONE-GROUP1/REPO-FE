@@ -36,7 +36,7 @@ const ApproveList: FC<approveTypes> = (props) => {
       <div className=" w-1/12">
         <p>{submission_type}</p>
       </div>
-      <div className={`${colorStatus} max-w-[3rem]`}>
+      <div className={`${colorStatus} w-1/12`}>
         <p>{status}</p>
       </div>
       <div className=" min-w-[5rem] text-right  w-1/12">

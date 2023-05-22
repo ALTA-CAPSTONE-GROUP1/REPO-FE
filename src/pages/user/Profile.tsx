@@ -13,8 +13,8 @@ import Swal from "@/utils/Swal";
 
 const schema = z.object({
   email: z.string().min(1, { message: "Email is required" }),
-  name: z.string().min(1, { message: "Name is required" }),
   phone_number: z.string().min(1, { message: "No HP is required" }),
+  password: z.string(),
 });
 
 type Schema = z.infer<typeof schema>;
@@ -52,7 +52,6 @@ const Profile: FC = () => {
       })
       .then((res) => {
         const { data } = res.data;
-        setValue("name", data.name);
         setValue("email", data.email);
         setValue("phone_number", data.phone_number);
         setUseOffice(data.office);
@@ -106,7 +105,7 @@ const Profile: FC = () => {
             <div className="mt-5 w-full">
               <label className="font-semibold text-md text-black">Name</label>
               <Input
-                register={register}
+                // register={"register"}
                 name="name"
                 placeholder="Enter Name"
                 id="input-name"
@@ -167,8 +166,8 @@ const Profile: FC = () => {
                 Password
               </label>
               <Input
-                // error={errors.password?.message}
-                // register={register}
+                error={errors.password?.message}
+                register={register}
                 name="password"
                 placeholder="Enter Password"
                 id="input-no-hp"

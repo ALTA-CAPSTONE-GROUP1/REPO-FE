@@ -11,7 +11,7 @@ const List: FC<SubmissionType> = (props) => {
       setColorStatus("text-@Green");
     } else if (status == "rejected") {
       setColorStatus("text-@Red");
-    } else if (status == "revise") {
+    } else if (status == "revised") {
       setColorStatus("text-@Orange");
     }
 
@@ -35,26 +35,18 @@ const List: FC<SubmissionType> = (props) => {
   }
 
   const downloadFile = (attachment: string) => {
-    // const link = document.createElement("a");
-    // link.href = "/images/test.pdf";
-    // // link.download = "/images/test.pdf";
-    // document.body.appendChild(link);
-    // link.click();
-    // document.body.removeChild(link);
-    const url = "/images/test2.pdf";
-    // window.open(`/app2?url=${url}`);
-    window.open(attachment);
+    window.open(`/app2?url=${attachment}`);
   };
 
   return (
     <div
       className={`${colorBg} flex justify-around border-b-2 p-2 hover:border-slate-500 hover:border-t-2 hover:border-t-gray-200 font-bold text-sm`}
     >
-      <div>
-        <p>To: {toString}</p>
+      <div className="w-5/12">
+        <p className=" w-full truncate">To: {toString}</p>
       </div>
-      <div className="flex flex-col">
-        <p>{title}</p>
+      <div className="flex flex-col w-2/12 items-center">
+        <p className=" w-full truncate text-center">{title}</p>
         <button
           onClick={() => downloadFile(attachment)}
           className=" font-bold py-2 rounded flex justify-start items-center"
@@ -63,7 +55,7 @@ const List: FC<SubmissionType> = (props) => {
           {/* <p>{attachment}</p> */}
         </button>
       </div>
-      <div className={`${colorStatus} max-w-[3rem]`}>
+      <div className={`${colorStatus} w-1/12`}>
         <p>{status}</p>
       </div>
       <div className=" min-w-[5rem] text-right">

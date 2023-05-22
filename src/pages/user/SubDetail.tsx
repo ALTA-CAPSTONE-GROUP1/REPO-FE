@@ -3,7 +3,7 @@
 /* eslint-disable prefer-const */
 import SideBar from "@/components/SideBar";
 import { FC, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { CardSubmission } from "@/components/Card";
 import { Input } from "@/components/Input";
 import { RiCloseCircleFill } from "react-icons/ri";
@@ -14,7 +14,7 @@ import axios from "axios";
 import SubDetailType from "@/utils/types/SubDetail";
 import withReactContent from "sweetalert2-react-content";
 import * as z from "zod";
-import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 
 import Swal from "@/utils/Swal";
 import { to_cc_type } from "@/utils/types/submission";
@@ -27,27 +27,27 @@ interface submission_type {
 }
 
 const schema = z.object({
-  title: z.string().min(1, { message: "Title is required" }),
+  // title: z.string().min(1, { message: "Title is required" }),
   message: z.string().min(5, { message: "Message is required" }),
-  sub_type: z.string(),
-  value: z.string(),
-  attachment: z.any(),
-  to: z
-    .string()
-    .array()
-    .refine((val) =>
-      val.every((el) => {
-        return el !== "";
-      })
-    ),
-  cc: z
-    .string()
-    .array()
-    .refine((val) =>
-      val.every((el) => {
-        return el !== "";
-      })
-    ),
+  // sub_type: z.string(),
+  // value: z.string(),
+  // attachment: z.any(),
+  // to: z
+  //   .string()
+  //   .array()
+  //   .refine((val) =>
+  //     val.every((el) => {
+  //       return el !== "";
+  //     })
+  //   ),
+  // cc: z
+  //   .string()
+  //   .array()
+  //   .refine((val) =>
+  //     val.every((el) => {
+  //       return el !== "";
+  //     })
+  //   ),
 });
 
 type Schema = z.infer<typeof schema>;
@@ -62,16 +62,19 @@ const SubDetail: FC = () => {
 
   const [, setPage] = useState<string>("user-home");
 
-  const [selectValue, setSelectValue] = useState<number>();
+  const [file, setFile] = useState<any>();
 
-  const [subTypes, setSubTypes] = useState<submission_type[]>([]);
+  const [, setSubTypes] = useState<submission_type[]>([]);
   const [data, setData] = useState<Partial<SubDetailType>>();
-  const [to_cc, setTo_Cc] = useState<to_cc_type>();
+  const [to_cc] = useState<to_cc_type>();
 
   const [cookie, , removeCookie] = useCookies(["token", "user_position"]);
   const MySwal = withReactContent(Swal);
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams();
+
+  const status = new URLSearchParams(location.search).get("status");
 
   const {
     register,
@@ -80,16 +83,6 @@ const SubDetail: FC = () => {
     formState: { errors },
   } = useForm<Schema>({
     resolver: zodResolver(schema),
-  });
-
-  const { append: appendSubValTo } = useFieldArray({
-    control,
-    name: "to",
-  });
-
-  const { append: appendSubValCc } = useFieldArray({
-    control,
-    name: "cc",
   });
 
   useEffect(() => {
@@ -157,65 +150,34 @@ const SubDetail: FC = () => {
     let approver;
     if (data?.approver_action && data?.approver_action?.length > 0) {
       approver = data?.approver_action?.map((data) => {
-        return (
-          data.action +
-          " by " +
-          data.approver_position +
-          " " +
-          data.approver_name +
-          ","
-        );
+        return data.action !== "" &&
+          data.action !== null &&
+          data.action !== undefined
+          ? data.action + " by " + data.approver_position + ","
+          : "";
       });
     }
     window.open(`/app2?url=${url}&approver=${approver}`);
   }
 
-  function handleGetToCC(event: React.ChangeEvent<HTMLSelectElement>) {
-    let to: string[] = [];
-    let cc: string[] = [];
-    let type = "";
-    type = subTypes[0].name;
-    const value = event.target.value;
-    setSelectValue(parseInt(value));
-
-    axios
-      .get(
-        `submission/requirements?submissiont_type=${type}&submission_value=${value}`
-      )
-      .then((res) => {
-        const { data } = res.data;
-        data.to.map((dataz: any) => {
-          return to.push(dataz.approver_id);
-        });
-        data.cc.map((dataz: any) => {
-          return cc.push(dataz.cc_id);
-        });
-        console.log(to);
-        console.log(cc);
-        appendSubValTo(to);
-        appendSubValCc(cc);
-        setTo_Cc(data);
-      })
-      .catch((err) => {
-        const { message } = err.response;
-        Swal.fire({
-          title: "Failed",
-          text: message,
-          showCancelButton: false,
-        });
-      });
-  }
-
   const onSubmit: SubmitHandler<Schema> = (data) => {
     alert(JSON.stringify(data));
+    const newData = { ...data, attachment: file };
     const formData = new FormData();
-    let key: keyof typeof data;
-    for (key in data) {
-      if (key === "attachment") formData.append(key, data[key][0]);
-      formData.append(key, data[key]);
+    let key: keyof typeof newData;
+    for (key in newData) {
+      formData.append(key, newData[key]);
+    }
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
     }
     axios
-      .put(`submission/${id}`, formData)
+      .put(`submission/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
       .then((res) => {
         const { message } = res.data;
         MySwal.fire({
@@ -231,7 +193,8 @@ const SubDetail: FC = () => {
           text: message,
           showCancelButton: false,
         });
-      });
+      })
+      .finally(fetch);
   };
 
   function handleLogout() {
@@ -241,30 +204,45 @@ const SubDetail: FC = () => {
   }
 
   function handleDelete() {
-    // axios
-    //   .delete(`submission?${category}=${search}`)
-    const url = "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
-    axios({
-      method: "delete",
-      url: `${url}/submission/${id}`,
-    })
-      .then((res) => {
-        const { message } = res.data;
-        MySwal.fire({
-          icon: "success",
-          title: "Success",
-          text: message,
-          showCancelButton: false,
-        });
-      })
-      .catch((err) => {
-        const { message } = err.response;
-        MySwal.fire({
-          title: "Failed",
-          text: message,
-          showCancelButton: false,
-        });
-      });
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will not be able to recover your submission",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`submission/${id}`, {
+            headers: {
+              Authorization: `Bearer ${cookie.token}`,
+            },
+          })
+          // const url = "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
+          // axios({
+          //   method: "delete",
+          //   url: `${url}/submission/${id}`,
+          // })
+          .then((res) => {
+            const { message } = res.data;
+            MySwal.fire({
+              icon: "success",
+              title: "Success",
+              text: message,
+              showCancelButton: false,
+            }).finally(() => navigate("/user"));
+          })
+          .catch((err) => {
+            const { message } = err.response;
+            MySwal.fire({
+              title: "Failed",
+              text: message,
+              showCancelButton: false,
+            });
+          });
+      }
+    });
   }
 
   return (
@@ -285,6 +263,8 @@ const SubDetail: FC = () => {
               <Loading />
             ) : (
               <CardSubmission
+                status={status}
+                action_message={data?.action_message}
                 onClickDelete={handleDelete}
                 onClickPdf={handlePdf}
                 title={data?.title}
@@ -316,36 +296,16 @@ const SubDetail: FC = () => {
                 <div data-theme="light" className=" p-5 h-[90%]">
                   <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="form-control">
-                      <div className="input-group rounded-md justify-between w-[40%]">
-                        <select
-                          {...register("sub_type")}
-                          className="select select-bordered"
-                          value={data?.submission_type}
-                        >
-                          <option disabled selected>
-                            Submission Type
-                          </option>
-                          {subTypes.map((dataz) => {
-                            return (
-                              <option value={dataz.name}>{dataz.name}</option>
-                            );
-                          })}
-                        </select>
-                        <select
-                          {...register("value")}
-                          className="select select-bordered"
-                          onChange={(e) => handleGetToCC(e)}
-                          value={selectValue}
-                        >
-                          <option disabled selected>
-                            Value
-                          </option>
-                          {subTypes[0].values.map((dataz) => {
-                            return <option value={dataz}>{dataz}</option>;
-                          })}
-                        </select>
-                      </div>
                       <Input
+                        disabled
+                        defaultValue={data?.submission_type}
+                        name="sub_type"
+                        type="text"
+                        placeholder="Title"
+                        className=" border-b-2 focus:outline-none focus:border-b-@Red w-full mt-3"
+                      />
+                      <Input
+                        disabled
                         defaultValue={data?.title}
                         register={register}
                         name="title"
@@ -412,13 +372,26 @@ const SubDetail: FC = () => {
                         ></textarea>
                       </div>
                       <div className="flex justify-between items-end mt-5 h-20 max-h-20">
-                        <Input
-                          register={register}
-                          name="attachment"
-                          type="file"
-                          className="w-full "
-                          multiple
-                        />
+                        <div className="flex flex-col">
+                          <p className=" text-sm text-@Red">
+                            *Please Not Upload the Same File Before Update
+                          </p>
+
+                          <Input
+                            // register={register}
+                            name="attachment"
+                            type="file"
+                            className="w-full "
+                            multiple
+                            onChange={(event) => {
+                              if (!event.currentTarget.files) {
+                                return;
+                              }
+                              setFile(event.currentTarget.files[0]);
+                            }}
+                          />
+                        </div>
+
                         <RedButton
                           label="Update Submission"
                           type="submit"

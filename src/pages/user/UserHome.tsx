@@ -13,13 +13,24 @@ interface Props {
   onchangeInput: React.ChangeEventHandler<HTMLInputElement>;
   select: boolean;
 }
-
 const UserHome: FC<Props> = (props) => {
   const { datas, children, onchange, onchangeInput } = props;
 
   function isCurrentDate(dateString: string) {
     const currentDate = new Date().toISOString().slice(0, 10);
     return dateString === currentDate;
+  }
+
+  function coverTDate(datez: string) {
+    const dateString = datez;
+    const date = new Date(dateString);
+
+    const options = {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    } as Intl.DateTimeFormatOptions;
+    return date.toLocaleDateString("en-GB", options);
   }
 
   return (
@@ -66,14 +77,14 @@ const UserHome: FC<Props> = (props) => {
       <div className="h-full overflow-auto  min-w-[50rem]">
         {datas?.map((data) => {
           return (
-            <Link to={`/sub-detail/${data.id}`}>
+            <Link to={`/sub-detail/${data.id}?status=${data.status}`}>
               <List
                 to={data.to}
                 status={data.status}
                 receive_date={
-                  isCurrentDate(data.receive_date.split("T")[0])
-                    ? data.receive_date.split("T")[1].slice(0, 8)
-                    : data.receive_date.split("T")[0]
+                  isCurrentDate(data.receive_date.split(" ")[0])
+                    ? data.receive_date.split(" ")[1].slice(0, 8)
+                    : coverTDate(data.receive_date.split(" ")[0])
                 }
                 opened={data.opened}
                 id={data.id}

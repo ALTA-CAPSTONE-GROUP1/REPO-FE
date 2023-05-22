@@ -24,7 +24,7 @@ const schema = z.object({
 type Schema = z.infer<typeof schema>;
 
 const ApproveDetail: FC = () => {
-  const [, , removeCookie] = useCookies(["token", "user_position"]);
+  const [cookie, , removeCookie] = useCookies(["token", "user_position"]);
 
   const [bg1, setBg1] = useState<boolean>(false);
   const [bg2, setBg2] = useState<boolean>(false);
@@ -49,7 +49,11 @@ const ApproveDetail: FC = () => {
 
   function fetch() {
     axios
-      .get(`/approver/${id}`)
+      .get(`/approver/${id}`, {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
       .then((res) => {
         const { data } = res.data;
         setData(data);
@@ -88,7 +92,11 @@ const ApproveDetail: FC = () => {
   const onSubmit: SubmitHandler<Schema> = (data) => {
     const newData = { ...data, action: action };
     axios
-      .put(`approver/${id}`, newData)
+      .put(`approver/${id}`, newData, {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
       .then((res) => {
         const { message } = res.data;
         MySwal.fire({
