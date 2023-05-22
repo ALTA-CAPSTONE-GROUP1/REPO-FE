@@ -217,7 +217,6 @@ export const Approving: FC = () => {
                   <a className="text-5xl text-@Red">
                     <BsFileEarmarkPdfFill />
                   </a>
-                  {submissionData?.attachment}
                   {approverData &&
                     approverData.map((approver: any, index: number) => (
                       <div key={index} className="flex flex-row gap-2">
