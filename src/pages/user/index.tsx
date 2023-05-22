@@ -215,7 +215,9 @@ const UserIndex: FC = () => {
   }
 
   function handleTypeSelect(event: React.ChangeEvent<HTMLSelectElement>) {
+    alert(event.target.value);
     setIndexSub(subTypes.findIndex((item) => item.name === event.target.value));
+    alert(subTypes.findIndex((item) => item.name === event.target.value));
     setSelectSubType(
       subTypes[subTypes.findIndex((item) => item.name === event.target.value)]
         .name
@@ -223,12 +225,15 @@ const UserIndex: FC = () => {
   }
 
   function handleGetToCC(event: React.ChangeEvent<HTMLSelectElement>) {
+    alert(indexSubtypes);
+    alert(JSON.stringify(subTypes));
     console.log(selectValue);
     let to: string[] = [];
     let cc: string[] = [];
 
     let type = "";
-    if (indexSubtypes) {
+    if (indexSubtypes !== null && indexSubtypes !== undefined) {
+      console.log("jalan cuk");
       type = subTypes[indexSubtypes].name;
     }
     const values = event.target.value;
@@ -402,7 +407,7 @@ const UserIndex: FC = () => {
                             {...register("submission_value")}
                             className="select select-bordered"
                             onChange={(e) => handleGetToCC(e)}
-                            // value={selectValue}
+                            value={selectValue}
                           >
                             <option disabled selected>
                               Select Value

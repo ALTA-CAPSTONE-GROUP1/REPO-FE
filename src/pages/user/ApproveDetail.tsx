@@ -145,7 +145,7 @@ const ApproveDetail: FC = () => {
                 cc={data?.cc}
                 submission_type={data?.submission_type}
                 status_by={data?.status_by}
-                message_body={data?.message_body}
+                message={data?.message}
                 attacment={data?.attacment}
               />
             )}
