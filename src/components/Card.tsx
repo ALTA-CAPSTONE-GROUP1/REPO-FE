@@ -146,7 +146,7 @@ export const CardApproving: FC<ApproveDetailType> = (props) => {
     to,
     submission_type,
     status_by,
-    message_body,
+    message,
     attacment,
   } = props;
 
@@ -174,7 +174,7 @@ export const CardApproving: FC<ApproveDetailType> = (props) => {
               return data.position + " " + data.name + ",";
             })}
           </h5>
-          <p className="mt-5 text-xl">{message_body} </p>
+          <p className="mt-5 text-xl">{message} </p>
           <div className="mt-20 ">
             <a className="text-5xl text-@Red">
               <BsFileEarmarkPdfFill />
@@ -324,7 +324,7 @@ export const CardSubmission: FC<PropsSubmission> = (props) => {
               ) : (
                 ""
               )}
-              {status === "revised" ? (
+              {status === "revised" || status === "Revised" ? (
                 <div className="w-40">
                   <RedButton
                     label="Edit"
@@ -352,7 +352,7 @@ export const CardApprove: FC<ApproveDetailType> = (props) => {
     to,
     submission_type,
     status_by,
-    message_body,
+    message,
     attacment,
   } = props;
 
@@ -390,7 +390,7 @@ export const CardApprove: FC<ApproveDetailType> = (props) => {
               return data.position + " " + data.name + ",";
             })}
           </h5>
-          <p className="mt-5 text-lg">{message_body} </p>
+          <p className="mt-5 text-lg">{message} </p>
           <div className="mt-20 flex flex-col h-full justify-end w-4/12">
             <button onClick={handlePdf} className="text-5xl text-@Red">
               <BsFileEarmarkPdfFill />

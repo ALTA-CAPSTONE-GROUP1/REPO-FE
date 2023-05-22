@@ -78,7 +78,6 @@ const SubDetail: FC = () => {
 
   const {
     register,
-    control,
     handleSubmit,
     formState: { errors },
   } = useForm<Schema>({

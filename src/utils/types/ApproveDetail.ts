@@ -14,7 +14,7 @@ interface ApproveDetailType {
   }[];
   submission_type?: string;
   title?: string;
-  message_body?: string;
+  message?: string;
   status_by?: {
     status?: string;
     by?: string;

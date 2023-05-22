@@ -33,12 +33,24 @@ const Approve: FC<Props> = (props) => {
             <option
               className=" text-center rounded-tl-full"
               selected
-              value={"to"}
+              value={"from"}
             >
-              To
+              From
             </option>
-            <option className=" text-center rounded-bl-full" value={"title"}>
+            <option
+              className=" text-center rounded-tl-full"
+              selected
+              value={"title"}
+            >
               Title
+            </option>
+
+            <option
+              className=" text-center rounded-tl-full"
+              selected
+              value={"type"}
+            >
+              Type
             </option>
           </select>
 

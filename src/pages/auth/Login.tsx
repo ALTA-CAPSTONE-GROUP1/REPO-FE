@@ -12,7 +12,7 @@ import { Input } from "@/components/Input";
 
 const schema = z.object({
   id: z.string().min(1, { message: "Users ID is required" }),
-  password: z.string().min(4, { message: "Password is 4 minimum character" }),
+  password: z.string(),
 });
 
 type Schema = z.infer<typeof schema>;
