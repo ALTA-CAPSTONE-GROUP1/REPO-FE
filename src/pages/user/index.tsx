@@ -215,9 +215,7 @@ const UserIndex: FC = () => {
   }
 
   function handleTypeSelect(event: React.ChangeEvent<HTMLSelectElement>) {
-    alert(event.target.value);
     setIndexSub(subTypes.findIndex((item) => item.name === event.target.value));
-    alert(subTypes.findIndex((item) => item.name === event.target.value));
     setSelectSubType(
       subTypes[subTypes.findIndex((item) => item.name === event.target.value)]
         .name
@@ -225,20 +223,15 @@ const UserIndex: FC = () => {
   }
 
   function handleGetToCC(event: React.ChangeEvent<HTMLSelectElement>) {
-    alert(indexSubtypes);
-    alert(JSON.stringify(subTypes));
-    console.log(selectValue);
     let to: string[] = [];
     let cc: string[] = [];
 
     let type = "";
     if (indexSubtypes !== null && indexSubtypes !== undefined) {
-      console.log("jalan cuk");
       type = subTypes[indexSubtypes].name;
     }
     const values = event.target.value;
     setSelectValue(parseInt(values));
-    console.log(type);
     axios
       .get(
         `submission/requirements?submission_type=${type}&submission_value=${values}`,
@@ -278,15 +271,11 @@ const UserIndex: FC = () => {
   }
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
-    console.log(selectValue);
-    console.log(data);
-    console.log(file);
     const newData = {
       ...data,
       submission_value: parseInt(data.submission_value),
       attachment: file,
     };
-    console.log(newData);
     const formData = new FormData();
     let key: keyof typeof newData;
     for (key in newData) {
@@ -302,10 +291,6 @@ const UserIndex: FC = () => {
       } else {
         formData.append(key, newData[key]);
       }
-    }
-
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
     }
 
     axios

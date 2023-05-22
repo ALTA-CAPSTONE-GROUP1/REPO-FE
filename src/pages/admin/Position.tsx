@@ -90,7 +90,6 @@ export const Position: FC = () => {
       .finally(() => {
         setLoading(false);
       });
-    console.log(data);
   }
 
   function handleDelete(id: number) {

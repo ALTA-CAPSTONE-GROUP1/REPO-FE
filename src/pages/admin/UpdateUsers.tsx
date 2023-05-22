@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -66,8 +67,6 @@ export function UpdateUsers() {
         setValue("password", data.password);
         position = data.position;
         offices = data.office;
-        console.log(offices);
-        console.log(position);
       })
       .catch((err) => {
         const { data } = err.response;

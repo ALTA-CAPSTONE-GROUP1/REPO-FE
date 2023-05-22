@@ -15,12 +15,7 @@ import { Input } from "@/components/Input";
 
 const schema = z.object({
   submission_id: z.string().min(1, { message: "Submission ID is Failed" }),
-  token: z
-    .string()
-    .min(16, { message: "Submission ID Minimum 16 Character" })
-    .refine((value) => value === "ss#561618sadadadsw", {
-      message: "Invalid token",
-    }),
+  token: z.string().min(16, { message: "Submission ID Minimum 16 Character" }),
 });
 type Schema = z.infer<typeof schema>;
 
@@ -32,6 +27,7 @@ export const Approving: FC = () => {
     "submissionData",
     "applicantData",
     "approverData",
+    "token",
   ]);
   const navigate = useNavigate();
   const submissionData = cookies.submissionData;
@@ -48,9 +44,15 @@ export const Approving: FC = () => {
   });
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
+    const id = parseInt(data.submission_id);
+    const newData = { ...data, submission_id: id };
     setLoading(true);
     axios
-      .post(`hyper-approval`, data)
+      .post(`hyper-approval`, newData, {
+        headers: {
+          Authorization: `Bearer ${cookies.token}`,
+        },
+      })
       .then((res) => {
         const { data } = res.data;
         setCookie(
@@ -88,9 +90,12 @@ export const Approving: FC = () => {
   const onUpdate: SubmitHandler<Schema> = (data) => {
     setLoading(true);
     const newData = { ...data, action: action };
-    alert(JSON.stringify(newData));
     axios
-      .put(`hyper-approval`, newData)
+      .put(`hyper-approval`, newData, {
+        headers: {
+          Authorization: `Bearer ${cookies.token}`,
+        },
+      })
       .then((res) => {
         const { message, data } = res.data;
         if (data) {

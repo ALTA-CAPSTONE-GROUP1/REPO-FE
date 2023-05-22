@@ -19,7 +19,7 @@ interface ApproveDetailType {
     status?: string;
     by?: string;
   }[];
-  attacment?: string;
+  attachment?: string;
 }
 
 export default ApproveDetailType;

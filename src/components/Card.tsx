@@ -147,7 +147,7 @@ export const CardApproving: FC<ApproveDetailType> = (props) => {
     submission_type,
     status_by,
     message,
-    attacment,
+    attachment,
   } = props;
 
   return (
@@ -180,7 +180,7 @@ export const CardApproving: FC<ApproveDetailType> = (props) => {
               <BsFileEarmarkPdfFill />
             </a>
             <h3 className="capitalize font-semibold text-2xl text-black">
-              {attacment}
+              {attachment}
             </h3>
             <h4 className="text-@Gray font-semibold">
               {status_by?.map((data) => {
@@ -353,11 +353,11 @@ export const CardApprove: FC<ApproveDetailType> = (props) => {
     submission_type,
     status_by,
     message,
-    attacment,
+    attachment,
   } = props;
 
-  function handlePdf() {
-    const url = "/images/test2.pdf";
+  function handlePdf(url?: string) {
+    // const url = "/images/test2.pdf";
     const approver = status_by?.map((data) => {
       return data.status !== "" &&
         data.status !== null &&
@@ -392,12 +392,15 @@ export const CardApprove: FC<ApproveDetailType> = (props) => {
           </h5>
           <p className="mt-5 text-lg">{message} </p>
           <div className="mt-20 flex flex-col h-full justify-end w-4/12">
-            <button onClick={handlePdf} className="text-5xl text-@Red">
+            <button
+              onClick={() => handlePdf(attachment)}
+              className="text-5xl text-@Red"
+            >
               <BsFileEarmarkPdfFill />
             </button>
-            <p className="capitalize font-semibold text-2xl text-black">
+            {/* <p className="capitalize font-semibold text-2xl text-black">
               {attacment}
-            </p>
+            </p> */}
             <h4 className="text-@Gray font-semibold">
               {status_by?.map((data) => {
                 return data.status + " " + data.by + ",";
