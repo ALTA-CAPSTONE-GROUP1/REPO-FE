@@ -34,7 +34,7 @@ export const Approving: FC = () => {
     "approverData",
     "token",
   ]);
-  const [data, setData] = useState("");
+  const [setData] = useState("");
   const navigate = useNavigate();
   const submissionData = cookies.submissionData;
   const applicantData = cookies.applicantData;
