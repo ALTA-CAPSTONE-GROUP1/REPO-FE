@@ -1,7 +1,8 @@
-import { FC, ReactNode } from "react";
+import BounceLoader from "react-spinners/BounceLoader";
 import { RiMenu2Fill } from "react-icons/ri";
 import { BsSearch } from "react-icons/bs";
 import { Link } from "react-router-dom";
+import { FC, ReactNode, CSSProperties } from "react";
 
 import SubmissionType from "@/utils/types/submission";
 import List from "@/components/List";
@@ -12,9 +13,16 @@ interface Props {
   onchange: React.ChangeEventHandler<HTMLSelectElement>;
   onchangeInput: React.ChangeEventHandler<HTMLInputElement>;
   select: boolean;
+  loading: boolean;
 }
+const override: CSSProperties = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
+
 const UserHome: FC<Props> = (props) => {
-  const { datas, children, onchange, onchangeInput } = props;
+  const { datas, children, onchange, onchangeInput, loading } = props;
 
   function isCurrentDate(dateString: string) {
     const currentDate = new Date().toISOString().slice(0, 10);
@@ -75,27 +83,40 @@ const UserHome: FC<Props> = (props) => {
         </div>
       </div>
       <div className="h-full overflow-auto  min-w-[50rem]">
-        {datas?.map((data) => {
-          return (
-            <Link to={`/sub-detail/${data.id}?status=${data.status}`}>
-              <List
-                to={data.to}
-                status={data.status}
-                receive_date={
-                  isCurrentDate(data.receive_date.split(" ")[0])
-                    ? data.receive_date.split(" ")[1].slice(0, 8)
-                    : coverTDate(data.receive_date.split(" ")[0])
-                }
-                opened={data.opened}
-                id={data.id}
-                cc={data.cc}
-                title={data.title}
-                attachment={data.attachment}
-                submission_type={data.submission_type}
-              />
-            </Link>
-          );
-        })}
+        {loading ? (
+          <div className="sweet-loading w-full h-full flex justify-center items-center">
+            <BounceLoader
+              color={"#E9AAB3"}
+              loading={loading}
+              cssOverride={override}
+              size={120}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+          </div>
+        ) : (
+          datas?.map((data) => {
+            return (
+              <Link to={`/sub-detail/${data.id}?status=${data.status}`}>
+                <List
+                  to={data.to}
+                  status={data.status}
+                  receive_date={
+                    isCurrentDate(data.receive_date.split(" ")[0])
+                      ? data.receive_date.split(" ")[1].slice(0, 8)
+                      : coverTDate(data.receive_date.split(" ")[0])
+                  }
+                  opened={data.opened}
+                  id={data.id}
+                  cc={data.cc}
+                  title={data.title}
+                  attachment={data.attachment}
+                  submission_type={data.submission_type}
+                />
+              </Link>
+            );
+          })
+        )}
       </div>
       {children}
     </div>

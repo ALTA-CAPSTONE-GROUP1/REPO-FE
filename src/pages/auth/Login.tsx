@@ -46,6 +46,11 @@ function Login() {
         const { data } = res.data;
         const name = data.name;
         setCookie("username", name);
+      })
+      .catch((er) => {
+        const { message } = er.response;
+        console.log(message);
+        setCookie("username", "admin");
       });
   }
 
