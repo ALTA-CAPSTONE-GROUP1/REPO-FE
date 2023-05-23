@@ -46,10 +46,6 @@ function Login() {
         const { data } = res.data;
         const name = data.name;
         setCookie("username", name);
-      })
-      .catch((err) => {
-        const { message } = err.response;
-        alert(message);
       });
   }
 

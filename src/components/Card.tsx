@@ -269,25 +269,26 @@ export const CardSubmission: FC<PropsSubmission> = (props) => {
             </h3>
             <p></p>
             <h4 className="text-@Gray font-semibold max-w-[60%]">
-              {approver_action?.map((data) => {
-                return (
-                  <div
-                    className="tooltip"
-                    data-tip={
-                      data.action === "approve" ? `${action_message}` : ""
-                    }
-                  >
-                    <p>
-                      {data.action +
-                        " by " +
-                        data.approver_position +
-                        " " +
-                        data.approver_name +
-                        ","}
-                    </p>
-                  </div>
-                );
-              })}
+              <div className="tooltip" data-tip={`${action_message}`}>
+                {approver_action?.map((data) => {
+                  return (
+                    <div>
+                      {data.action !== null && data.action !== "" ? (
+                        <p>
+                          {data.action +
+                            " by " +
+                            data.approver_position +
+                            " " +
+                            data.approver_name +
+                            ","}
+                        </p>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </h4>
           </div>
           {/* <div className="flex flex-row gap-2 items-center">

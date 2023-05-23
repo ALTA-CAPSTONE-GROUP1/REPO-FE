@@ -20,16 +20,16 @@ const CCList: FC<ccTypes> = (props) => {
       className={`bg-@Red4 flex justify-around border-b-2 p-2 items-center hover:border-slate-500 hover:border-t-2 hover:border-t-gray-200 font-bold text-sm`}
     >
       <div className=" w-4/12">
-        <p>From: {from.position + " " + from.name}</p>
+        <p className="truncate">From: {from.position + " " + from.name}</p>
+      </div>
+      <div className=" w-3/12">
+        <p className="truncate">To: {to.position + " " + to.name}</p>
       </div>
       <div className=" w-4/12">
-        <p>To: {to.position + " " + to.name}</p>
+        <p className="truncate">{title}</p>
       </div>
       <div className=" w-2/12">
-        <p>{title}</p>
-      </div>
-      <div className=" w-1/12">
-        <p>{submission_type}</p>
+        <p className="truncate">{submission_type}</p>
       </div>
       <div className=" w-1/12 flex justify-center">
         <button onClick={downloadFile} className=" text-@Blu font-bold">

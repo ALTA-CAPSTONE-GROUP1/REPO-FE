@@ -23,6 +23,7 @@ export function SignID() {
     "official_name",
     "official_position",
     "date",
+    "token",
   ]);
 
   const {
@@ -36,7 +37,11 @@ export function SignID() {
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
     axios
-      .post(`sign_validation`, data)
+      .post(`sign_validation`, data, {
+        headers: {
+          Authorization: `Bearer ${cookies.token}`,
+        },
+      })
       .then((res) => {
         const { data } = res.data;
 

@@ -104,7 +104,6 @@ const UserIndex: FC = () => {
   });
 
   useEffect(() => {
-    // ?${category}=${search}
     if (page == "user-home") {
       fetchSubmission();
     } else if (page == "cc") {
