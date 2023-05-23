@@ -59,6 +59,7 @@ const UserIndex: FC = () => {
   const [bg2, setBg2] = useState<boolean>(false);
   const [bg3, setBg3] = useState<boolean>(false);
   const [bg1, setBg1] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
 
   const [datasSubmission, setDatasSubmission] = useState<SubmissionType[]>([]);
   const [datasApprove, setDatasApprove] = useState<approveTypes[]>([]);
@@ -180,7 +181,8 @@ const UserIndex: FC = () => {
           text: message,
           showCancelButton: false,
         });
-      });
+      })
+      .finally(() => setLoading(false));
   }
 
   function handleMenu1() {
@@ -348,6 +350,7 @@ const UserIndex: FC = () => {
       >
         {page === "user-home" || createSubmission ? (
           <UserHome
+            loading={loading}
             datas={datasSubmission}
             onchange={(e) => handleSearch(e)}
             onchangeInput={(e) => handleSearchInput(e)}
@@ -368,118 +371,126 @@ const UserIndex: FC = () => {
                       <RiCloseCircleFill />
                     </button>
                   </div>
-                  <div data-theme="light" className=" p-5 h-[90%]">
+                  <div data-theme="light" className=" px-5 pt-5 h-[90%]">
                     <form onSubmit={handleSubmit(onSubmit)}>
                       <div className="form-control">
-                        <div className="input-group rounded-md justify-between w-[40%]">
-                          <select
-                            {...register("submission_type")}
-                            className="select select-bordered"
-                            onChange={(e) => handleTypeSelect(e)}
-                            value={selectSubType}
-                          >
-                            <option disabled selected>
-                              Select Submission Type
-                            </option>
-                            {subTypes?.map((data) => {
-                              return (
-                                <option value={data.name}>{data.name}</option>
-                              );
-                            })}
-                          </select>
-                          <select
-                            {...register("submission_value")}
-                            className="select select-bordered"
-                            onChange={(e) => handleGetToCC(e)}
-                            value={selectValue}
-                          >
-                            <option disabled selected>
-                              Select Value
-                            </option>
-                            {indexSubtypes !== undefined
-                              ? subTypes[indexSubtypes].values.map((data) => {
-                                  return <option value={data}>{data}</option>;
-                                })
-                              : ""}
-                          </select>
-                        </div>
-                        <Input
-                          error={errors.title?.message}
-                          register={register}
-                          name="title"
-                          type="text"
-                          placeholder="Title"
-                          className=" border-b-2 focus:outline-none focus:border-b-@Red w-full mt-3"
-                        />
-                        <Input
-                          // register={register}
-                          disabled
-                          name="to"
-                          defaultValue={
-                            to_cc
-                              ? "To: " +
-                                to_cc?.to.map((data) => {
-                                  return (
-                                    data.approver_position +
-                                    " " +
-                                    data.approver_name
-                                  );
-                                })
-                              : ""
-                          }
-                          placeholder="To:"
-                          className=" border-b-2 focus:outline-none focus:border-b-@Red w-full mt-3"
-                        />
-
-                        <Input
-                          disabled
-                          name="cc"
-                          type="text"
-                          defaultValue={
-                            to_cc
-                              ? "Cc: " +
-                                to_cc?.cc.map((data) => {
-                                  return data.cc_position + " " + data.cc_name;
-                                })
-                              : ""
-                          }
-                          placeholder="CC:"
-                          className=" border-b-2 focus:outline-none focus:border-b-@Red w-full mt-3"
-                        />
-
-                        <div
-                          className={`${
-                            errors.message?.message
-                              ? "tooltip tooltip-open w-full tooltip-bottom"
-                              : ""
-                          }`}
-                          data-tip={errors.message?.message}
-                        >
-                          <textarea
-                            {...register("message")}
-                            name="message"
-                            className="textarea pb-20 w-full focus:border-@Red focus:outline-none"
-                            placeholder="Messages"
-                          ></textarea>
-                        </div>
-
-                        <div className="flex justify-between items-end mt-5 h-20 max-h-20">
+                        <div className=" flex-grow">
+                          <div className="input-group rounded-md justify-between w-[40%]">
+                            <select
+                              {...register("submission_type")}
+                              className="select select-bordered"
+                              onChange={(e) => handleTypeSelect(e)}
+                              value={selectSubType}
+                            >
+                              <option disabled selected>
+                                Select Submission Type
+                              </option>
+                              {subTypes?.map((data) => {
+                                return (
+                                  <option value={data.name}>{data.name}</option>
+                                );
+                              })}
+                            </select>
+                            <select
+                              {...register("submission_value")}
+                              className="select select-bordered"
+                              onChange={(e) => handleGetToCC(e)}
+                              value={selectValue}
+                            >
+                              <option disabled selected>
+                                Select Value
+                              </option>
+                              {indexSubtypes !== undefined
+                                ? subTypes[indexSubtypes].values.map((data) => {
+                                    return <option value={data}>{data}</option>;
+                                  })
+                                : ""}
+                            </select>
+                          </div>
+                          <Input
+                            error={errors.title?.message}
+                            register={register}
+                            name="title"
+                            type="text"
+                            placeholder="Title"
+                            className=" border-b-2 focus:outline-none focus:border-b-@Red w-full mt-3"
+                          />
                           <Input
                             // register={register}
-                            name="attachment"
-                            type="file"
-                            className="w-full "
-                            multiple
-                            onChange={(event) => {
-                              if (!event.currentTarget.files) {
-                                return;
-                              }
-                              setFile(event.currentTarget.files[0]);
-                            }}
+                            disabled
+                            name="to"
+                            defaultValue={
+                              to_cc
+                                ? "To: " +
+                                  to_cc?.to.map((data) => {
+                                    return (
+                                      data.approver_position +
+                                      " " +
+                                      data.approver_name
+                                    );
+                                  })
+                                : ""
+                            }
+                            placeholder="To:"
+                            className=" border-b-2 focus:outline-none focus:border-b-@Red w-full mt-3"
                           />
-                          <button className=" bg-@Red rounded-full text-white py-3 px-5">
-                            Send
-                          </button>
+
+                          <Input
+                            disabled
+                            name="cc"
+                            type="text"
+                            defaultValue={
+                              to_cc
+                                ? "Cc: " +
+                                  to_cc?.cc.map((data) => {
+                                    return (
+                                      data.cc_position + " " + data.cc_name
+                                    );
+                                  })
+                                : ""
+                            }
+                            placeholder="CC:"
+                            className=" border-b-2 focus:outline-none focus:border-b-@Red w-full mt-3"
+                          />
+
+                          <div
+                            className={`${
+                              errors.message?.message
+                                ? "tooltip tooltip-open w-full tooltip-bottom"
+                                : ""
+                            }`}
+                            data-tip={errors.message?.message}
+                          >
+                            <textarea
+                              {...register("message")}
+                              name="message"
+                              className="textarea pb-20 w-full focus:border-@Red focus:outline-none resize-none"
+                              placeholder="Messages"
+                            ></textarea>
+                          </div>
+                        </div>
+                        <div className=" mt-auto">
+                          <p className=" text-sm text-@Red">
+                            *Requirement File: {to_cc?.requirement}
+                          </p>
+                          <div className="flex justify-between items-end h-10 max-h-20">
+                            <Input
+                              // register={register}
+                              name="attachment"
+                              type="file"
+                              className="w-full "
+                              multiple
+                              onChange={(event) => {
+                                if (!event.currentTarget.files) {
+                                  return;
+                                }
+                                setFile(event.currentTarget.files[0]);
+                              }}
+                            />
+                            <button className=" bg-@Red rounded-full text-white py-2 px-8">
+                              Send
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </form>
