@@ -8,7 +8,7 @@
 
 Simplify your application process, anytime, anywhere!
 ## 🌐 Deployment
-- [Vercel](https://vercel.com/azhari12/e-proposal-pb3i)
+- [Vercel](https://e-proposal-pb3i.vercel.app/)
 
 ## 🖼 Prototype
 - [Figma](https://www.figma.com/file/o8ZmTq7YDpstHXnlLwOwm2/Untitled?type=design&node-id=15%3A12&t=8ihBD1Z9pm1shDTb-1)
