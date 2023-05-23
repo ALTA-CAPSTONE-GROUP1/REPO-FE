@@ -1,11 +1,14 @@
 
 # Welcome to E-Proposal, make your proposal journey easier
-![Logo](https://cdn.discordapp.com/attachments/1105103339307405324/1110024205430444073/eproplogo.jpeg)
+<div align="center">
+  <img src="https://res.cloudinary.com/dc0wgpho2/image/upload/v1684720861/eproplogo_koyqxz.jpg" alt="Logo">
+</div>
+
 ## 📑 About the Project
 
 Simplify your application process, anytime, anywhere!
 ## 🌐 Deployment
-- [Vercel](https://vercel.com/azhari12/e-proposal-pb3i)
+- [Vercel](https://e-proposal-pb3i.vercel.app/)
 
 ## 🖼 Prototype
 - [Figma](https://www.figma.com/file/o8ZmTq7YDpstHXnlLwOwm2/Untitled?type=design&node-id=15%3A12&t=8ihBD1Z9pm1shDTb-1)

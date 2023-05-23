@@ -3,7 +3,7 @@ import { BsFileEarmarkPdfFill } from "react-icons/bs";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
-import { FC, useState } from "react";
+import { FC, FormEvent, useState } from "react";
 import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -34,14 +34,13 @@ export const Approving: FC = () => {
     "approverData",
     "token",
   ]);
-  const [, setData] = useState("");
+  const [ID, setID] = useState<number>();
   const navigate = useNavigate();
   const submissionData = cookies.submissionData;
   const applicantData = cookies.applicantData;
   const approverData = cookies.approverData;
 
   const {
-    watch,
     register,
     handleSubmit,
     formState: { errors },
@@ -51,7 +50,9 @@ export const Approving: FC = () => {
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
     const id = parseInt(data.submission_id);
+    setID(id);
     const newData = { ...data, submission_id: id };
+
     setLoading(true);
     axios
       .post(`hyper-approval`, newData, {
@@ -80,7 +81,7 @@ export const Approving: FC = () => {
           { path: "/" }
         );
         setCookie("approverData", data.approver_action, { path: "/" });
-        setData(data);
+        // setData(data);
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -95,9 +96,11 @@ export const Approving: FC = () => {
       });
   };
 
-  const onUpdate: SubmitHandler<Schema> = (data) => {
+  const onUpdate = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setLoading(true);
-    const newData = { ...data, action: action };
+
+    const newData = { submission_id: ID, new_status: action };
     axios
       .put(`hyper-approval`, newData, {
         headers: {
@@ -178,16 +181,16 @@ export const Approving: FC = () => {
                   id="button-search-id-submission"
                   type="submit"
                   onClick={() => {
-                    if (watch("token") === "eproposal16character") {
-                      setClicked(true);
-                    } else {
-                      Swal.fire({
-                        icon: "error",
-                        title: "Invalid Token",
-                        text: "Please enter a valid token.",
-                        showCancelButton: false,
-                      });
-                    }
+                    // if (watch("token") === "ss#561618sadadadsw") {
+                    setClicked(true);
+                    // } else {
+                    //   Swal.fire({
+                    //     icon: "error",
+                    //     title: "Invalid Token",
+                    //     text: "Please enter a valid token.",
+                    //     showCancelButton: false,
+                    //   });
+                    // }
                   }}
                 />
               </div>
@@ -237,7 +240,7 @@ export const Approving: FC = () => {
                       </div>
                     ))}
                 </div>
-                <form onSubmit={handleSubmit(onUpdate)}>
+                <form onSubmit={(e) => onUpdate(e)}>
                   <div className="flex justify-end mb-5 pr-4">
                     <div className="flex flex-col md:flex-row gap-2">
                       <div className="w-40">

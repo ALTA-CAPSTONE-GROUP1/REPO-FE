@@ -7,11 +7,11 @@ const List: FC<SubmissionType> = (props) => {
   const { status, receive_date, opened, title, attachment, to } = props;
   const [toString, setTo] = useState<string>("");
   useEffect(() => {
-    if (status == "approved") {
+    if (status == "approved" || status == "Approved") {
       setColorStatus("text-@Green");
-    } else if (status == "rejected") {
+    } else if (status == "rejected" || status == "Rejected") {
       setColorStatus("text-@Red");
-    } else if (status == "revised") {
+    } else if (status == "revised" || status == "Revised") {
       setColorStatus("text-@Orange");
     }
 

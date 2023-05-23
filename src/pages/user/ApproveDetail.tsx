@@ -18,7 +18,7 @@ import Swal from "@/utils/Swal";
 
 const schema = z.object({
   action: z.string(),
-  approval_message: z.string(),
+  approval_message: z.string().min(1, { message: "Please Write Note" }),
 });
 
 type Schema = z.infer<typeof schema>;
@@ -39,7 +39,11 @@ const ApproveDetail: FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { register, handleSubmit } = useForm<Schema>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Schema>({
     resolver: zodResolver(schema),
   });
 
@@ -151,12 +155,22 @@ const ApproveDetail: FC = () => {
             )}
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="flex justify-end mb-5 pr-4 ">
-                <textarea
-                  {...register("approval_message")}
-                  placeholder="Input Note"
-                  id="note-acction"
-                  className="textarea rounded-lg resize-none shadow-md w-1/2 pb-20"
-                ></textarea>
+                <div
+                  className={`${
+                    errors.approval_message?.message
+                      ? "tooltip tooltip-open tooltip-bottom w-1/2"
+                      : ""
+                  } w-1/2`}
+                  data-tip={errors.approval_message?.message}
+                >
+                  <textarea
+                    {...register("approval_message")}
+                    name="approval_message"
+                    className="textarea rounded-lg resize-none shadow-md w-full  pb-20"
+                    placeholder="Input Note"
+                    id="note-acction"
+                  ></textarea>
+                </div>
                 <input
                   type="text"
                   {...register("action")}

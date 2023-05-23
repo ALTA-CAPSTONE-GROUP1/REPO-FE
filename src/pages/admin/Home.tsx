@@ -109,7 +109,7 @@ export function HomeAdmin() {
 
   const fetchDataPositions = async () => {
     axios
-      .get("position", {
+      .get("position?limit=50", {
         headers: {
           Authorization: `Bearer ${cookie.token}`,
         },
