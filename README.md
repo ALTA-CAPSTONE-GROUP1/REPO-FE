@@ -3,6 +3,7 @@
 <div align="center">
   <img src="https://res.cloudinary.com/dc0wgpho2/image/upload/v1684720861/eproplogo_koyqxz.jpg" alt="Logo">
 </div>
+
 ## 📑 About the Project
 
 Simplify your application process, anytime, anywhere!
