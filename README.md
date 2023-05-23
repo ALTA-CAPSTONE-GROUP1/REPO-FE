@@ -1,6 +1,8 @@
 
 # Welcome to E-Proposal, make your proposal journey easier
-![Logo](https://cdn.discordapp.com/attachments/1105103339307405324/1110024205430444073/eproplogo.jpeg)
+<div align="center">
+  <img src="https://res.cloudinary.com/dc0wgpho2/image/upload/v1684720861/eproplogo_koyqxz.jpg" alt="Logo">
+</div>
 ## 📑 About the Project
 
 Simplify your application process, anytime, anywhere!
