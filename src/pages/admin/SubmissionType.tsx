@@ -282,7 +282,7 @@ export function SubmissionType() {
     updateSubVal(index, newData);
   };
 
-  function handleDelete(submissionTypeName: string) {
+  function handleDelete(submission_type_name: string) {
     Swal.fire({
       title: "Are you sure?",
       text: "You will not be able to recover your account!",
@@ -294,7 +294,7 @@ export function SubmissionType() {
       .then((result) => {
         if (result.isConfirmed) {
           axios
-            .delete(`submission-type${submissionTypeName}`, {
+            .delete(`submission-type?submission_type=${submission_type_name}`, {
               headers: {
                 Authorization: `Bearer ${cookie.token}`,
               },
