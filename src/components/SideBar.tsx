@@ -11,9 +11,7 @@ interface Props {
   onClickCC: React.MouseEventHandler<HTMLButtonElement>;
   onClickApprove: React.MouseEventHandler<HTMLButtonElement>;
   onClickLogout: React.MouseEventHandler<HTMLButtonElement>;
-  bg1: boolean;
-  bg2: boolean;
-  bg3: boolean;
+  bg: string;
 }
 const SideBar: FC<Props> = (props) => {
   const {
@@ -23,9 +21,7 @@ const SideBar: FC<Props> = (props) => {
     onClickCC,
     onClickApprove,
     onClickLogout,
-    bg1,
-    bg2,
-    bg3,
+    bg,
   } = props;
 
   return (
@@ -37,7 +33,7 @@ const SideBar: FC<Props> = (props) => {
         <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
         <ul className="menu p-4 w-80 text-base-content bg-@Red4  font-semibold ">
           <li className="bg-@Red rounded-full mt-3 text-white ">
-            {bg1 ? (
+            {bg === "user-home" ? (
               <button
                 className="flex justify-center items-center"
                 onClick={onClick}
@@ -82,18 +78,28 @@ const SideBar: FC<Props> = (props) => {
               </button>
             )}
           </li>
-          <li className={`${bg1 ? "bg-@Red3" : ""}  rounded-full mt-3 `}>
+          <li
+            className={`${
+              bg === "user-home" ? "bg-@Red3" : ""
+            }  rounded-full mt-3 `}
+          >
             <button onClick={onClickUserHome}>
               <RiFileAddFill /> Submission
             </button>
           </li>
-          <li className={`${bg2 ? "bg-@Red3" : ""}  rounded-full mt-3 `}>
+          <li
+            className={`${bg === "cc" ? "bg-@Red3" : ""}  rounded-full mt-3 `}
+          >
             <button onClick={onClickCC}>
               {" "}
               <RiFileList2Fill /> CC
             </button>
           </li>
-          <li className={`${bg3 ? "bg-@Red3" : ""}  rounded-full mt-3 `}>
+          <li
+            className={`${
+              bg === "approve" ? "bg-@Red3" : ""
+            }  rounded-full mt-3 `}
+          >
             <button onClick={onClickApprove}>
               <BsFileCheckFill /> Approve
             </button>
@@ -102,7 +108,9 @@ const SideBar: FC<Props> = (props) => {
             <div className="divider"></div>
           </li>
           <li className="flex justify-center items-center">
-            <button onClick={onClickLogout}><RiLogoutBoxLine/> Logout</button>
+            <button onClick={onClickLogout}>
+              <RiLogoutBoxLine /> Logout
+            </button>
           </li>
         </ul>
       </div>

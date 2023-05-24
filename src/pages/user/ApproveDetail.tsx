@@ -26,14 +26,12 @@ type Schema = z.infer<typeof schema>;
 const ApproveDetail: FC = () => {
   const [cookie, , removeCookie] = useCookies(["token", "user_position"]);
 
-  const [bg1, setBg1] = useState<boolean>(false);
-  const [bg2, setBg2] = useState<boolean>(false);
-  const [bg3, setBg3] = useState<boolean>(true);
   const [loading] = useState<boolean>(false);
 
   const [data, setData] = useState<ApproveDetailType>();
 
   const [action, setAction] = useState<string>("");
+  const [bg] = useState<string>("approve");
 
   const MySwal = withReactContent(Swal);
   const navigate = useNavigate();
@@ -73,24 +71,15 @@ const ApproveDetail: FC = () => {
   }
 
   function handleMenu1() {
-    setBg1(true);
-    setBg2(false);
-    setBg3(false);
-    navigate("/user");
+    navigate("/user?menu=user-home");
   }
 
   function handleMenu2() {
-    setBg1(false);
-    setBg2(true);
-    setBg3(false);
-    navigate("/user");
+    navigate("/user?menu=cc");
   }
 
   function handleMenu3() {
-    setBg1(false);
-    setBg2(false);
-    setBg3(true);
-    navigate("/user");
+    navigate("/user?menu=approve");
   }
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
@@ -129,9 +118,7 @@ const ApproveDetail: FC = () => {
     <Layout>
       <SideBar
         onClickLogout={handleLogout}
-        bg1={bg1}
-        bg2={bg2}
-        bg3={bg3}
+        bg={bg}
         onClickUserHome={handleMenu1}
         onClickCC={handleMenu2}
         onClickApprove={handleMenu3}

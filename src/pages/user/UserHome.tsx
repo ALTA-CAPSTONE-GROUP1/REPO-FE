@@ -94,6 +94,10 @@ const UserHome: FC<Props> = (props) => {
               data-testid="loader"
             />
           </div>
+        ) : datas.length == 0 ? (
+          <div className=" w-full h-full flex justify-center items-center text-4xl font-bold text-@Gray">
+            <p>No Submission Yet</p>
+          </div>
         ) : (
           datas?.map((data) => {
             return (
