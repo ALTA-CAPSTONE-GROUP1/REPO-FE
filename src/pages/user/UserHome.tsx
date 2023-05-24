@@ -12,6 +12,8 @@ interface Props {
   children: ReactNode;
   onchange: React.ChangeEventHandler<HTMLSelectElement>;
   onchangeInput: React.ChangeEventHandler<HTMLInputElement>;
+  onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  onClickSearch: React.MouseEventHandler<HTMLButtonElement>;
   select: boolean;
   loading: boolean;
 }
@@ -22,7 +24,15 @@ const override: CSSProperties = {
 };
 
 const UserHome: FC<Props> = (props) => {
-  const { datas, children, onchange, onchangeInput, loading } = props;
+  const {
+    datas,
+    children,
+    onchange,
+    onchangeInput,
+    loading,
+    onKeyDown,
+    onClickSearch,
+  } = props;
 
   function isCurrentDate(dateString: string) {
     const currentDate = new Date().toISOString().slice(0, 10);
@@ -70,15 +80,18 @@ const UserHome: FC<Props> = (props) => {
           <label className="relative block flex-initial w-full rounded-r-full ">
             <input
               onChange={onchangeInput}
+              onKeyDown={onKeyDown}
               className="rounded-r-full placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-@Red focus:ring-@Red focus:ring-1 sm:text-sm"
               placeholder="Search for anything..."
               type="text"
               name="search"
             />
-            <span className="sr-only">Search</span>
-            <span className="absolute inset-y-0 right-4 flex justify-end items-center pl-2">
-              <BsSearch className="h-5 w-5 font-bold" />
-            </span>
+            <button
+              className="absolute inset-y-0 right-4 flex justify-end items-center pl-2"
+              onClick={onClickSearch}
+            >
+              <BsSearch className="h-5 w-5 font-bold hover:w-8 hover:h-8 transition-all" />
+            </button>
           </label>
         </div>
       </div>

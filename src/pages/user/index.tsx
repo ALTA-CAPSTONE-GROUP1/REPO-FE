@@ -116,7 +116,7 @@ const UserIndex: FC = () => {
     } else {
       fetchApprove();
     }
-  }, [page, category, search]);
+  }, [page]);
 
   function fetchSubmission() {
     setLoading(true);
@@ -207,6 +207,8 @@ const UserIndex: FC = () => {
     setPage("user-home");
     setDatasApprove([]);
     setDatascc([]);
+    setCategory("");
+    setSearch("");
   }
 
   function handleMenu2() {
@@ -215,6 +217,8 @@ const UserIndex: FC = () => {
     setDatasSubmission([]);
     setCreateSubmission(false);
     setDatasApprove([]);
+    setCategory("");
+    setSearch("");
   }
 
   function handleMenu3() {
@@ -223,6 +227,8 @@ const UserIndex: FC = () => {
     setDatasSubmission([]);
     setDatascc([]);
     setCreateSubmission(false);
+    setCategory("");
+    setSearch("");
   }
 
   function handleTypeSelect(event: React.ChangeEvent<HTMLSelectElement>) {
@@ -340,6 +346,18 @@ const UserIndex: FC = () => {
     setSearch(event.target.value);
   }
 
+  function handleEnterAndClicked(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      if (page == "user-home") {
+        fetchSubmission();
+      } else if (page == "cc") {
+        fetchCc();
+      } else {
+        fetchApprove();
+      }
+    }
+  }
+
   function handleLogout() {
     removeCookie("token");
     removeCookie("user_position");
@@ -358,6 +376,8 @@ const UserIndex: FC = () => {
       >
         {page === "user-home" || createSubmission ? (
           <UserHome
+            onKeyDown={handleEnterAndClicked}
+            onClickSearch={fetchSubmission}
             loading={loading}
             datas={datasSubmission}
             onchange={(e) => handleSearch(e)}
@@ -511,6 +531,8 @@ const UserIndex: FC = () => {
           </UserHome>
         ) : page === "cc" ? (
           <CC
+            onKeyDown={handleEnterAndClicked}
+            onClickSearch={fetchCc}
             loading={loading}
             datas={datascc}
             onchange={(e) => handleSearch(e)}
@@ -519,6 +541,8 @@ const UserIndex: FC = () => {
           />
         ) : (
           <Approve
+            onKeyDown={handleEnterAndClicked}
+            onClickSearch={fetchApprove}
             loading={loading}
             datas={datasApprove}
             onchange={(e) => handleSearch(e)}
