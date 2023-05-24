@@ -1,7 +1,8 @@
-import { BsSearch } from "react-icons/bs";
-import { Link } from "react-router-dom";
-import { FC } from "react";
+import BounceLoader from "react-spinners/BounceLoader";
 import { RiMenu2Fill } from "react-icons/ri";
+import { BsSearch } from "react-icons/bs";
+import { FC, CSSProperties } from "react";
+import { Link } from "react-router-dom";
 
 import ApproveList from "@/components/ApproveList";
 import approveTypes from "@/utils/types/approve";
@@ -11,10 +12,34 @@ interface Props {
   onchange: React.ChangeEventHandler<HTMLSelectElement>;
   onchangeInput: React.ChangeEventHandler<HTMLInputElement>;
   select: boolean;
+  loading: boolean;
 }
 
+const override: CSSProperties = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
+
 const Approve: FC<Props> = (props) => {
-  const { datas, onchange, onchangeInput } = props;
+  const { datas, onchange, onchangeInput, loading } = props;
+
+  function isCurrentDate(dateString: string) {
+    const currentDate = new Date().toISOString().slice(0, 10);
+    return dateString === currentDate;
+  }
+
+  function coverTDate(datez: string) {
+    const dateString = datez;
+    const date = new Date(dateString);
+
+    const options = {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    } as Intl.DateTimeFormatOptions;
+    return date.toLocaleDateString("en-GB", options);
+  }
 
   return (
     <div className="drawer-content flex flex-col">
@@ -70,21 +95,42 @@ const Approve: FC<Props> = (props) => {
         </div>
       </div>
       <div className="h-full overflow-auto  min-w-[50rem]">
-        {datas.map((data) => {
-          return (
-            <Link to={`/approve-detail/${data.submission_id}`}>
-              <ApproveList
-                submission_id={data.submission_id}
-                from={data.from}
-                title={data.title}
-                submission_type={data.submission_type}
-                status={data.status === "Sent" ? "Waiting You" : data.status}
-                receive_date={data.receive_date}
-                opened={data.opened}
-              />
-            </Link>
-          );
-        })}
+        {loading ? (
+          <div className="sweet-loading w-full h-full flex justify-center items-center">
+            <BounceLoader
+              color={"#E9AAB3"}
+              loading={loading}
+              cssOverride={override}
+              size={120}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+          </div>
+        ) : datas.length == 0 ? (
+          <div className=" w-full h-full flex justify-center items-center text-4xl font-bold text-@Gray">
+            <p>No Submission To Approve</p>
+          </div>
+        ) : (
+          datas.map((data) => {
+            return (
+              <Link to={`/approve-detail/${data.submission_id}`}>
+                <ApproveList
+                  submission_id={data.submission_id}
+                  from={data.from}
+                  title={data.title}
+                  submission_type={data.submission_type}
+                  status={data.status === "Sent" ? "Waiting You" : data.status}
+                  receive_date={
+                    isCurrentDate(data.receive_date.split(" ")[0])
+                      ? data.receive_date.split(" ")[1].slice(0, 8)
+                      : coverTDate(data.receive_date.split(" ")[0])
+                  }
+                  opened={data.opened}
+                />
+              </Link>
+            );
+          })
+        )}
       </div>
     </div>
   );

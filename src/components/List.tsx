@@ -45,14 +45,14 @@ const List: FC<SubmissionType> = (props) => {
       <div className="w-5/12">
         <p className=" w-full truncate">To: {toString}</p>
       </div>
-      <div className="flex flex-col w-2/12 items-center">
-        <p className=" w-full truncate text-center">{title}</p>
+      <div className="flex flex-col w-2/12">
+        <p className=" w-full truncate">{title}</p>
         <button
           onClick={() => downloadFile(attachment)}
-          className=" font-bold py-2 rounded flex justify-start items-center"
+          className=" font-bold py-2 rounded flex"
         >
           <img src="/images/pdf.png" alt="" className="w-6 h-6 object-cover" />
-          {/* <p>{attachment}</p> */}
+          <p>{attachment.split("/")[attachment.split("/").length - 1]}</p>
         </button>
       </div>
       <div className={`${colorStatus} w-1/12`}>

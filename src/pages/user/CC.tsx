@@ -1,7 +1,8 @@
-import { BsSearch } from "react-icons/bs";
-import { Link } from "react-router-dom";
-import { FC } from "react";
+import BounceLoader from "react-spinners/BounceLoader";
 import { RiMenu2Fill } from "react-icons/ri";
+import { BsSearch } from "react-icons/bs";
+import { FC, CSSProperties } from "react";
+import { Link } from "react-router-dom";
 
 import CCList from "@/components/CCList";
 import ccTypes from "@/utils/types/cc";
@@ -11,9 +12,17 @@ interface Props {
   onchange: React.ChangeEventHandler<HTMLSelectElement>;
   onchangeInput: React.ChangeEventHandler<HTMLInputElement>;
   select: boolean;
+  loading: boolean;
 }
+
+const override: CSSProperties = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
+
 const CC: FC<Props> = (props) => {
-  const { datas, onchange, onchangeInput } = props;
+  const { datas, onchange, onchangeInput, loading } = props;
 
   return (
     <div className="drawer-content flex flex-col h-[90%]">
@@ -63,20 +72,37 @@ const CC: FC<Props> = (props) => {
         </div>
       </div>
       <div className="h-full overflow-auto  min-w-[50rem]">
-        {datas?.map((data) => {
-          return (
-            <Link to={""}>
-              <CCList
-                submission_id={data.submission_id}
-                from={data.from}
-                to={data.to}
-                title={data.title}
-                submission_type={data.submission_type}
-                attachment={data.attachment}
-              />
-            </Link>
-          );
-        })}
+        {loading ? (
+          <div className="sweet-loading w-full h-full flex justify-center items-center">
+            <BounceLoader
+              color={"#E9AAB3"}
+              loading={loading}
+              cssOverride={override}
+              size={120}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+          </div>
+        ) : datas.length == 0 ? (
+          <div className=" w-full h-full flex justify-center items-center text-4xl font-bold text-@Gray">
+            <p>No Submission was Cc to you</p>
+          </div>
+        ) : (
+          datas?.map((data) => {
+            return (
+              <Link to={""}>
+                <CCList
+                  submission_id={data.submission_id}
+                  from={data.from}
+                  to={data.to}
+                  title={data.title}
+                  submission_type={data.submission_type}
+                  attachment={data.attachment}
+                />
+              </Link>
+            );
+          })
+        )}
       </div>
     </div>
   );

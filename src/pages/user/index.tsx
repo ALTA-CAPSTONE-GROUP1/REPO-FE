@@ -6,7 +6,7 @@ import withReactContent from "sweetalert2-react-content";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RiCloseCircleFill } from "react-icons/ri";
 import { FC, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -56,9 +56,7 @@ interface submission_type {
 const UserIndex: FC = () => {
   const [createSubmission, setCreateSubmission] = useState<boolean>(false);
   const [select, setSelect] = useState<boolean>(false);
-  const [bg2, setBg2] = useState<boolean>(false);
-  const [bg3, setBg3] = useState<boolean>(false);
-  const [bg1, setBg1] = useState<boolean>(true);
+
   const [loading, setLoading] = useState(true);
 
   const [datasSubmission, setDatasSubmission] = useState<SubmissionType[]>([]);
@@ -69,7 +67,7 @@ const UserIndex: FC = () => {
 
   const [selectSubType, setSelectSubType] = useState<string>();
   const [category, setCategory] = useState<string>("to");
-  const [page, setPage] = useState<string>("user-home");
+
   const [search, setSearch] = useState<string>("");
 
   const [selectValue, setSelectValue] = useState<number>();
@@ -80,6 +78,12 @@ const UserIndex: FC = () => {
   const [cookie, , removeCookie] = useCookies(["token", "user_position"]);
   const MySwal = withReactContent(Swal);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const menu = new URLSearchParams(location.search).get("menu");
+
+  const [page, setPage] = useState<string>(menu ? menu : "user-home");
+  const [bg, setBg] = useState<string>(menu ? menu : "user-home");
 
   const {
     register,
@@ -108,49 +112,14 @@ const UserIndex: FC = () => {
     if (page == "user-home") {
       fetchSubmission();
     } else if (page == "cc") {
-      axios
-        .get(`cc?${category}=${search}`, {
-          headers: {
-            Authorization: `Bearer ${cookie.token}`,
-          },
-        })
-        .then((res) => {
-          const { data } = res.data;
-          setDatascc(data);
-        })
-        .catch((err) => {
-          const { message } = err.response;
-          Swal.fire({
-            icon: "error",
-            title: "Failed",
-            text: message,
-            showCancelButton: false,
-          });
-        });
+      fetchCc();
     } else {
-      axios
-        .get(`approver?${category}=${search}`, {
-          headers: {
-            Authorization: `Bearer ${cookie.token}`,
-          },
-        })
-        .then((res) => {
-          const { data } = res.data;
-          setDatasApprove(data);
-        })
-        .catch((err) => {
-          const { message } = err.response;
-          Swal.fire({
-            icon: "error",
-            title: "Failed",
-            text: message,
-            showCancelButton: false,
-          });
-        });
+      fetchApprove();
     }
   }, [page, category, search]);
 
   function fetchSubmission() {
+    setLoading(true);
     axios
       .get(`submission?${category}=${search}`, {
         headers: {
@@ -185,20 +154,63 @@ const UserIndex: FC = () => {
       .finally(() => setLoading(false));
   }
 
-  function handleMenu1() {
-    setBg1(true);
-    setBg2(false);
-    setBg3(false);
+  function fetchCc() {
+    setLoading(true);
+    axios
+      .get(`cc?${category}=${search}`, {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
+      .then((res) => {
+        const { data } = res.data;
+        setDatascc(data);
+      })
+      .catch((err) => {
+        const { message } = err.response;
+        Swal.fire({
+          icon: "error",
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      })
+      .finally(() => setLoading(false));
+  }
 
+  function fetchApprove() {
+    setLoading(true);
+    axios
+      .get(`approver?${category}=${search}`, {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
+      .then((res) => {
+        const { data } = res.data;
+        setDatasApprove(data);
+      })
+      .catch((err) => {
+        const { message } = err.response;
+        Swal.fire({
+          icon: "error",
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      })
+      .finally(() => setLoading(false));
+  }
+
+  function handleMenu1() {
+    setBg("user-home");
     setPage("user-home");
     setDatasApprove([]);
     setDatascc([]);
   }
 
   function handleMenu2() {
-    setBg1(false);
-    setBg2(true);
-    setBg3(false);
+    setBg("cc");
     setPage("cc");
     setDatasSubmission([]);
     setCreateSubmission(false);
@@ -206,9 +218,7 @@ const UserIndex: FC = () => {
   }
 
   function handleMenu3() {
-    setBg1(false);
-    setBg2(false);
-    setBg3(true);
+    setBg("approve");
     setPage("approve");
     setDatasSubmission([]);
     setDatascc([]);
@@ -340,9 +350,7 @@ const UserIndex: FC = () => {
     <Layout>
       <SideBar
         onClickLogout={handleLogout}
-        bg1={bg1}
-        bg2={bg2}
-        bg3={bg3}
+        bg={bg}
         onClick={() => setCreateSubmission(!createSubmission)}
         onClickUserHome={handleMenu1}
         onClickCC={handleMenu2}
@@ -503,6 +511,7 @@ const UserIndex: FC = () => {
           </UserHome>
         ) : page === "cc" ? (
           <CC
+            loading={loading}
             datas={datascc}
             onchange={(e) => handleSearch(e)}
             onchangeInput={(e) => handleSearchInput(e)}
@@ -510,6 +519,7 @@ const UserIndex: FC = () => {
           />
         ) : (
           <Approve
+            loading={loading}
             datas={datasApprove}
             onchange={(e) => handleSearch(e)}
             onchangeInput={(e) => handleSearchInput(e)}

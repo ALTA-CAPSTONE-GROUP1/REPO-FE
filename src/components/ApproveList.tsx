@@ -30,17 +30,17 @@ const ApproveList: FC<approveTypes> = (props) => {
       <div className=" w-4/12">
         <p>From: {from}</p>
       </div>
-      <div className=" w-2/12">
+      <div className=" w-3/12">
         <p>{title}</p>
       </div>
-      <div className=" w-1/12">
+      <div className=" w-2/12">
         <p>{submission_type}</p>
       </div>
       <div className={`${colorStatus} w-1/12`}>
         <p>{status}</p>
       </div>
       <div className=" min-w-[5rem] text-right  w-1/12">
-        <p>{receive_date.split(" ")[1]}</p>
+        <p>{receive_date}</p>
       </div>
     </div>
   );
