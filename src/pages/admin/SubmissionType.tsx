@@ -8,8 +8,11 @@ import {
   useForm,
 } from "react-hook-form";
 import { BsFillPlusCircleFill, BsPatchMinusFill } from "react-icons/bs";
+import { RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
+
 import Swal from "sweetalert2";
 import axios from "axios";
 import * as z from "zod";
@@ -20,8 +23,11 @@ import { TabSubmisionType } from "@/components/Tab";
 import { LayoutAdmin } from "@/components/Layout";
 import { RedButton } from "@/components/Button";
 import { Input } from "@/components/Input";
+<<<<<<< HEAD
 import { useCookies } from "react-cookie";
 import { RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
+=======
+>>>>>>> 08e3bdcff178352c3aef25fde493a667901c19e1
 
 const schema = z.object({
   submission_type_name: z
@@ -258,6 +264,51 @@ export function SubmissionType() {
       });
   };
 
+  function handleDelete(submission_type_name: string) {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will not be able to recover your account!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          axios
+            .delete(`submission-type?submission_type=${submission_type_name}`, {
+              headers: {
+                Authorization: `Bearer ${cookie.token}`,
+              },
+            })
+            .then((response) => {
+              const { message } = response.data;
+              Swal.fire({
+                icon: "success",
+                title: "Success",
+                text: message,
+                showCancelButton: false,
+              });
+            })
+            .catch((error) => {
+              const { data } = error.response;
+              Swal.fire({
+                icon: "error",
+                title: "Failed",
+                text: data.message,
+                showCancelButton: false,
+              });
+            });
+          console.log(data);
+        }
+      })
+      .finally(fetchData);
+  }
+
+  function handlePage(page: number) {
+    setOffSet(page);
+  }
+
   const handleAddPosition = () => {
     setDataPosition([...dataPosition, ""]);
   };
@@ -330,9 +381,12 @@ export function SubmissionType() {
     updateSubVal(index, newData);
   };
 
+<<<<<<< HEAD
   function handlePage(page: number) {
     setOffSet(page);
   }
+=======
+>>>>>>> 08e3bdcff178352c3aef25fde493a667901c19e1
   return (
     <LayoutAdmin>
       <div

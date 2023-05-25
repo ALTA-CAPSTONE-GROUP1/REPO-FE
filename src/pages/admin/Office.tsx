@@ -1,18 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { FC, useState, useEffect } from "react";
+import { RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { FC, useState, useEffect } from "react";
+import { useCookies } from "react-cookie";
+
 import Swal from "sweetalert2";
 import axios from "axios";
 import * as z from "zod";
 
+import { OfficeData, Meta } from "@/utils/types/Admin";
 import { LayoutAdmin } from "@/components/Layout";
-import { OfficeData } from "@/utils/types/Admin";
+import { TableOffice } from "@/components/Table";
 import { RedButton } from "@/components/Button";
 import { TabOffice } from "@/components/Tab";
 import { Input } from "@/components/Input";
-import { TableOffice } from "@/components/Table";
-import { useCookies } from "react-cookie";
 
 const schema = z.object({
   name: z.string(),
@@ -23,7 +25,12 @@ type Schema = z.infer<typeof schema>;
 export const Office: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [officeData, setOfficeData] = useState<OfficeData[]>([]);
+  const [offSet, setOffSet] = useState<number>(0);
+  const [meta, setMeta] = useState<Meta>();
+
   const [cookie] = useCookies(["token", "user_position"]);
+
+  const limit = 5;
 
   const { setValue, register, handleSubmit } = useForm<Schema>({
     resolver: zodResolver(schema),
@@ -64,17 +71,19 @@ export const Office: FC = () => {
   };
   useEffect(() => {
     fetchDataOffices();
-  }, []);
+  }, [offSet]);
+
   const fetchDataOffices = async () => {
     axios
-      .get("office", {
+      .get(`office?limit=${limit}&offset=${offSet}`, {
         headers: {
           Authorization: `Bearer ${cookie.token}`,
         },
       })
       .then((response) => {
-        const { data } = response.data;
+        const { data, meta } = response.data;
         setOfficeData(data);
+        setMeta(meta);
       })
       .catch((error) => {
         alert(error.toString());
@@ -121,6 +130,10 @@ export const Office: FC = () => {
       }
     });
   };
+
+  function handlePage(page: number) {
+    setOffSet(page);
+  }
 
   return (
     <LayoutAdmin>
@@ -171,6 +184,34 @@ export const Office: FC = () => {
           ) : (
             ""
           )}
+          <div className="flex flex-row p-2 bg-white text-black border rounded-es-md rounded-ee-md justify-between items-center">
+            <button
+              className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md"
+              disabled={meta?.current_page === 1}
+              onClick={() => handlePage(offSet - 5)}
+            >
+              <RiArrowLeftLine /> Previous
+            </button>
+            <div className="btn-group">
+              {Array.from({ length: meta?.total_page || 0 }, (_, index) => (
+                <button
+                  key={index}
+                  className={`btn btn-ghost ${
+                    meta?.current_page === index + 1 ? "bg-@Red2" : ""
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+            <button
+              className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md"
+              disabled={meta?.current_page === meta?.total_page}
+              onClick={() => handlePage(offSet + 5)}
+            >
+              Next <RiArrowRightLine />
+            </button>
+          </div>
         </div>
       </div>
     </LayoutAdmin>
