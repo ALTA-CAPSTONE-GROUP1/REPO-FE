@@ -1,7 +1,8 @@
-import { FC, ReactNode } from "react";
+import BounceLoader from "react-spinners/BounceLoader";
 import { RiMenu2Fill } from "react-icons/ri";
 import { BsSearch } from "react-icons/bs";
 import { Link } from "react-router-dom";
+import { FC, ReactNode, CSSProperties } from "react";
 
 import SubmissionType from "@/utils/types/submission";
 import List from "@/components/List";
@@ -11,10 +12,27 @@ interface Props {
   children: ReactNode;
   onchange: React.ChangeEventHandler<HTMLSelectElement>;
   onchangeInput: React.ChangeEventHandler<HTMLInputElement>;
+  onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  onClickSearch: React.MouseEventHandler<HTMLButtonElement>;
   select: boolean;
+  loading: boolean;
 }
+const override: CSSProperties = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
+
 const UserHome: FC<Props> = (props) => {
-  const { datas, children, onchange, onchangeInput } = props;
+  const {
+    datas,
+    children,
+    onchange,
+    onchangeInput,
+    loading,
+    onKeyDown,
+    onClickSearch,
+  } = props;
 
   function isCurrentDate(dateString: string) {
     const currentDate = new Date().toISOString().slice(0, 10);
@@ -62,40 +80,60 @@ const UserHome: FC<Props> = (props) => {
           <label className="relative block flex-initial w-full rounded-r-full ">
             <input
               onChange={onchangeInput}
+              onKeyDown={onKeyDown}
               className="rounded-r-full placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-@Red focus:ring-@Red focus:ring-1 sm:text-sm"
               placeholder="Search for anything..."
               type="text"
               name="search"
             />
-            <span className="sr-only">Search</span>
-            <span className="absolute inset-y-0 right-4 flex justify-end items-center pl-2">
-              <BsSearch className="h-5 w-5 font-bold" />
-            </span>
+            <button
+              className="absolute inset-y-0 right-4 flex justify-end items-center pl-2"
+              onClick={onClickSearch}
+            >
+              <BsSearch className="h-5 w-5 font-bold hover:w-8 hover:h-8 transition-all" />
+            </button>
           </label>
         </div>
       </div>
       <div className="h-full overflow-auto  min-w-[50rem]">
-        {datas?.map((data) => {
-          return (
-            <Link to={`/sub-detail/${data.id}?status=${data.status}`}>
-              <List
-                to={data.to}
-                status={data.status}
-                receive_date={
-                  isCurrentDate(data.receive_date.split(" ")[0])
-                    ? data.receive_date.split(" ")[1].slice(0, 8)
-                    : coverTDate(data.receive_date.split(" ")[0])
-                }
-                opened={data.opened}
-                id={data.id}
-                cc={data.cc}
-                title={data.title}
-                attachment={data.attachment}
-                submission_type={data.submission_type}
-              />
-            </Link>
-          );
-        })}
+        {loading ? (
+          <div className="sweet-loading w-full h-full flex justify-center items-center">
+            <BounceLoader
+              color={"#E9AAB3"}
+              loading={loading}
+              cssOverride={override}
+              size={120}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+          </div>
+        ) : datas.length == 0 ? (
+          <div className=" w-full h-full flex justify-center items-center text-4xl font-bold text-@Gray">
+            <p>No Submission Yet</p>
+          </div>
+        ) : (
+          datas?.map((data) => {
+            return (
+              <Link to={`/sub-detail/${data.id}?status=${data.status}`}>
+                <List
+                  to={data.to}
+                  status={data.status}
+                  receive_date={
+                    isCurrentDate(data.receive_date.split(" ")[0])
+                      ? data.receive_date.split(" ")[1].slice(0, 8)
+                      : coverTDate(data.receive_date.split(" ")[0])
+                  }
+                  opened={data.opened}
+                  id={data.id}
+                  cc={data.cc}
+                  title={data.title}
+                  attachment={data.attachment}
+                  submission_type={data.submission_type}
+                />
+              </Link>
+            );
+          })
+        )}
       </div>
       {children}
     </div>

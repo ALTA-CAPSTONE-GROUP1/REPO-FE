@@ -126,22 +126,20 @@ export function SubmissionType() {
         },
       })
       .then((res) => {
-        const { message, data } = res.data;
-        if (data) {
-          Swal.fire({
-            icon: "success",
-            title: "Success",
-            text: message,
-            showCancelButton: false,
-          }).then((result) => {
-            if (result.isConfirmed) {
-              setValue("submission_type_name", "");
-              setValue("position", []);
-              setValue("submission_value", []);
-              setValue("requirement", "");
-            }
-          });
-        }
+        const { message } = res.data;
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: message,
+          showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setValue("submission_type_name", "");
+            setValue("position", []);
+            setValue("submission_value", []);
+            setValue("requirement", "");
+          }
+        });
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -150,7 +148,8 @@ export function SubmissionType() {
           text: message,
           showCancelButton: false,
         });
-      });
+      })
+      .finally(fetchData);
   };
 
   useEffect(() => {

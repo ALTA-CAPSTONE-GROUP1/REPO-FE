@@ -55,17 +55,15 @@ type Schema = z.infer<typeof schema>;
 const SubDetail: FC = () => {
   const [createSubmission, setCreateSubmission] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
-  const [bg1, setBg1] = useState<boolean>(false);
-  const [bg2, setBg2] = useState<boolean>(false);
-  const [bg3, setBg3] = useState<boolean>(false);
+
   const [loading] = useState<boolean>(false);
 
-  const [, setPage] = useState<string>("user-home");
+  const [bg] = useState<string>("user-home");
 
   const [file, setFile] = useState<any>();
 
-  const [, setSubTypes] = useState<submission_type[]>([]);
   const [data, setData] = useState<Partial<SubDetailType>>();
+  const [, setSubTypes] = useState<submission_type[]>([]);
   const [to_cc] = useState<to_cc_type>();
 
   const [cookie, , removeCookie] = useCookies(["token", "user_position"]);
@@ -120,28 +118,15 @@ const SubDetail: FC = () => {
   }
 
   function handleMenu1() {
-    setBg1(true);
-    setBg2(false);
-    setBg3(false);
-
-    setPage("user-home");
-    navigate("/user");
+    navigate("/user?menu=user-home");
   }
 
   function handleMenu2() {
-    setBg1(false);
-    setBg2(true);
-    setBg3(false);
-    setPage("cc");
-    navigate("/user");
+    navigate("/user?menu=cc");
   }
 
   function handleMenu3() {
-    setBg1(false);
-    setBg2(false);
-    setBg3(true);
-    setPage("approve");
-    navigate("/user");
+    navigate("/user?menu=approve");
   }
 
   function handlePdf() {
@@ -245,9 +230,7 @@ const SubDetail: FC = () => {
     <Layout>
       <SideBar
         onClickLogout={handleLogout}
-        bg1={bg1}
-        bg2={bg2}
-        bg3={bg3}
+        bg={bg}
         onClick={() => setCreateSubmission(!createSubmission)}
         onClickUserHome={handleMenu1}
         onClickCC={handleMenu2}
