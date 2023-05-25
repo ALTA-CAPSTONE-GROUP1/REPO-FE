@@ -24,8 +24,11 @@ import { LayoutAdmin } from "@/components/Layout";
 import { RedButton } from "@/components/Button";
 import { Input } from "@/components/Input";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { useCookies } from "react-cookie";
 import { RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
+=======
+>>>>>>> 08e3bdcff178352c3aef25fde493a667901c19e1
 =======
 >>>>>>> 08e3bdcff178352c3aef25fde493a667901c19e1
 
@@ -382,9 +385,12 @@ export function SubmissionType() {
   };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   function handlePage(page: number) {
     setOffSet(page);
   }
+=======
+>>>>>>> 08e3bdcff178352c3aef25fde493a667901c19e1
 =======
 >>>>>>> 08e3bdcff178352c3aef25fde493a667901c19e1
   return (
