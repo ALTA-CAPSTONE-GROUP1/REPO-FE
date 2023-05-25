@@ -34,3 +34,11 @@ export interface SubmissionDetail {
   submission_value: number;
   submission_requirement: string;
 }
+
+export interface Meta {
+  current_limit: number;
+  current_offset: number;
+  current_page: number;
+  total_data: number;
+  total_page: number;
+}

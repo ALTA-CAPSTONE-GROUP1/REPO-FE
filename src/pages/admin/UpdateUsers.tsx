@@ -5,6 +5,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
 import { useCookies } from "react-cookie";
+
 import Swal from "sweetalert2";
 import axios from "axios";
 import * as z from "zod";
@@ -82,7 +83,7 @@ export function UpdateUsers() {
 
   const fetchDataPositions = async () => {
     axios
-      .get("position", {
+      .get("position?limit=50", {
         headers: {
           Authorization: `Bearer ${cookie.token}`,
         },
@@ -106,7 +107,7 @@ export function UpdateUsers() {
 
   const fetchDataOffices = async () => {
     axios
-      .get("office", {
+      .get("office?limit=50", {
         headers: {
           Authorization: `Bearer ${cookie.token}`,
         },

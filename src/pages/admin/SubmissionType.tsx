@@ -8,19 +8,21 @@ import {
   useForm,
 } from "react-hook-form";
 import { BsFillPlusCircleFill, BsPatchMinusFill } from "react-icons/bs";
+import { RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
+
 import Swal from "sweetalert2";
 import axios from "axios";
 import * as z from "zod";
 
-import { PositionData, SubmissionDetail } from "@/utils/types/Admin";
+import { PositionData, SubmissionDetail, Meta } from "@/utils/types/Admin";
 import { TableSubmission } from "@/components/Table";
 import { TabSubmisionType } from "@/components/Tab";
 import { LayoutAdmin } from "@/components/Layout";
 import { RedButton } from "@/components/Button";
 import { Input } from "@/components/Input";
-import { useCookies } from "react-cookie";
 
 const schema = z.object({
   submission_type_name: z
@@ -75,9 +77,14 @@ type Schema = z.infer<typeof schema>;
 export function SubmissionType() {
   const [positionData, setPositionData] = useState<PositionData[]>([]);
   const [dataPosition, setDataPosition] = useState<string[]>([""]);
-  const [, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<SubmissionDetail[]>([]);
+  const [, setLoading] = useState<boolean>(false);
+  const [offSet, setOffSet] = useState<number>(0);
+  const [meta, setMeta] = useState<Meta>();
+
   const [cookie] = useCookies(["token", "user_position"]);
+
+  const limit = 5;
 
   const {
     setValue,
@@ -153,13 +160,13 @@ export function SubmissionType() {
 
   const fetchData = async () => {
     axios
-      .get("submission-type", {
+      .get(`submission-type?limit=${limit}&offset=${offSet}`, {
         headers: {
           Authorization: `Bearer ${cookie.token}`,
         },
       })
       .then((response) => {
-        const { data } = response.data;
+        const { data, meta } = response.data;
         const submissionData = data.submission_type;
         const submissionDetails = submissionData.reduce(
           (acc: any, submission: any) => {
@@ -176,6 +183,7 @@ export function SubmissionType() {
           []
         );
         setData(submissionDetails);
+        setMeta(meta);
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -208,6 +216,51 @@ export function SubmissionType() {
         setLoading(false);
       });
   };
+
+  function handleDelete(submission_type_name: string) {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will not be able to recover your account!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          axios
+            .delete(`submission-type?submission_type=${submission_type_name}`, {
+              headers: {
+                Authorization: `Bearer ${cookie.token}`,
+              },
+            })
+            .then((response) => {
+              const { message } = response.data;
+              Swal.fire({
+                icon: "success",
+                title: "Success",
+                text: message,
+                showCancelButton: false,
+              });
+            })
+            .catch((error) => {
+              const { data } = error.response;
+              Swal.fire({
+                icon: "error",
+                title: "Failed",
+                text: data.message,
+                showCancelButton: false,
+              });
+            });
+          console.log(data);
+        }
+      })
+      .finally(fetchData);
+  }
+
+  function handlePage(page: number) {
+    setOffSet(page);
+  }
 
   const handleAddPosition = () => {
     setDataPosition([...dataPosition, ""]);
@@ -280,47 +333,6 @@ export function SubmissionType() {
     };
     updateSubVal(index, newData);
   };
-
-  function handleDelete(submission_type_name: string) {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You will not be able to recover your account!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "Cancel",
-    })
-      .then((result) => {
-        if (result.isConfirmed) {
-          axios
-            .delete(`submission-type?submission_type=${submission_type_name}`, {
-              headers: {
-                Authorization: `Bearer ${cookie.token}`,
-              },
-            })
-            .then((response) => {
-              const { message } = response.data;
-              Swal.fire({
-                icon: "success",
-                title: "Success",
-                text: message,
-                showCancelButton: false,
-              });
-            })
-            .catch((error) => {
-              const { data } = error.response;
-              Swal.fire({
-                icon: "error",
-                title: "Failed",
-                text: data.message,
-                showCancelButton: false,
-              });
-            });
-          console.log(data);
-        }
-      })
-      .finally(fetchData);
-  }
 
   return (
     <LayoutAdmin>
@@ -580,6 +592,34 @@ export function SubmissionType() {
               handleDelete(submissionTypeName)
             }
           />
+          <div className="flex flex-row p-2 bg-white text-black border rounded-es-md rounded-ee-md justify-between items-center">
+            <button
+              className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md"
+              disabled={meta?.current_page === 1}
+              onClick={() => handlePage(offSet - 5)}
+            >
+              <RiArrowLeftLine /> Previous
+            </button>
+            <div className="btn-group">
+              {Array.from({ length: meta?.total_page || 0 }, (_, index) => (
+                <button
+                  key={index}
+                  className={`btn btn-ghost ${
+                    meta?.current_page === index + 1 ? "bg-@Red2" : ""
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+            <button
+              className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md"
+              disabled={meta?.current_page === meta?.total_page}
+              onClick={() => handlePage(offSet + 5)}
+            >
+              Next <RiArrowRightLine />
+            </button>
+          </div>
         </div>
       </div>
     </LayoutAdmin>

@@ -1,18 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
+import { useCookies } from "react-cookie";
+
 import Swal from "sweetalert2";
 import axios from "axios";
 import * as z from "zod";
 
-import { OfficeData, PositionData, UserData } from "@/utils/types/Admin";
+import { OfficeData, PositionData, UserData, Meta } from "@/utils/types/Admin";
 import { LayoutAdmin } from "@/components/Layout";
 import { TableUsers } from "@/components/Table";
 import { RedButton } from "@/components/Button";
 import { TabUser } from "@/components/Tab";
 import { Input } from "@/components/Input";
-import { useCookies } from "react-cookie";
 
 const schema = z.object({
   email: z.string().min(1, { message: "Email is required" }),
@@ -27,9 +29,14 @@ type Schema = z.infer<typeof schema>;
 export function HomeAdmin() {
   const [positionData, setPositionData] = useState<PositionData[]>([]);
   const [officeData, setOfficeData] = useState<OfficeData[]>([]);
-  const [data, setData] = useState<UserData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [data, setData] = useState<UserData[]>([]);
+  const [offSet, setOffSet] = useState<number>(0);
+  const [meta, setMeta] = useState<Meta>();
+
   const [cookie] = useCookies(["token", "user_position"]);
+
+  const limit = 5;
 
   const {
     register,
@@ -86,18 +93,19 @@ export function HomeAdmin() {
     fetchDataPositions();
     fetchDataOffices();
     fetchData();
-  }, []);
+  }, [offSet]);
 
   const fetchData = async () => {
     axios
-      .get("users", {
+      .get(`users?limit=${limit}&offset=${offSet}`, {
         headers: {
           Authorization: `Bearer ${cookie.token}`,
         },
       })
       .then((response) => {
-        const { data } = response.data;
+        const { data, meta } = response.data;
         setData(data);
+        setMeta(meta);
       })
       .catch((error) => {
         alert(error.toString());
@@ -109,7 +117,7 @@ export function HomeAdmin() {
 
   const fetchDataPositions = async () => {
     axios
-      .get("position?limit=50", {
+      .get(`position?limit=50`, {
         headers: {
           Authorization: `Bearer ${cookie.token}`,
         },
@@ -128,7 +136,7 @@ export function HomeAdmin() {
 
   const fetchDataOffices = async () => {
     axios
-      .get("office", {
+      .get("office?limit=50", {
         headers: {
           Authorization: `Bearer ${cookie.token}`,
         },
@@ -183,6 +191,10 @@ export function HomeAdmin() {
         }
       })
       .finally(fetchData);
+  }
+
+  function handlePage(page: number) {
+    setOffSet(page);
   }
 
   return (
@@ -282,6 +294,34 @@ export function HomeAdmin() {
             dataUsers={data}
             onclickDelete={(id) => handleDelete(id)}
           />
+          <div className="flex flex-row p-2 bg-white text-black border rounded-es-md rounded-ee-md justify-between items-center">
+            <button
+              className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md"
+              disabled={meta?.current_page === 1}
+              onClick={() => handlePage(offSet - 5)}
+            >
+              <RiArrowLeftLine /> Previous
+            </button>
+            <div className="btn-group">
+              {Array.from({ length: meta?.total_page || 0 }, (_, index) => (
+                <button
+                  key={index}
+                  className={`btn btn-ghost ${
+                    meta?.current_page === index + 1 ? "bg-@Red2" : ""
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+            <button
+              className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md"
+              disabled={meta?.current_page === meta?.total_page}
+              onClick={() => handlePage(offSet + 5)}
+            >
+              Next <RiArrowRightLine />
+            </button>
+          </div>
         </div>
       </div>
     </LayoutAdmin>
