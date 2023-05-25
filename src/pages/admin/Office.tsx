@@ -15,6 +15,7 @@ import { TableOffice } from "@/components/Table";
 import { RedButton } from "@/components/Button";
 import { TabOffice } from "@/components/Tab";
 import { Input } from "@/components/Input";
+import { BsSearch } from "react-icons/bs";
 
 const schema = z.object({
   name: z.string(),
@@ -23,10 +24,12 @@ const schema = z.object({
 type Schema = z.infer<typeof schema>;
 
 export const Office: FC = () => {
-  const [loading, setLoading] = useState<boolean>(false);
   const [officeData, setOfficeData] = useState<OfficeData[]>([]);
-  const [offSet, setOffSet] = useState<number>(0);
   const [meta, setMeta] = useState<Meta>();
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [search, setSearch] = useState<string>("");
+  const [offSet, setOffSet] = useState<number>(0);
 
   const [cookie] = useCookies(["token", "user_position"]);
 
@@ -75,7 +78,7 @@ export const Office: FC = () => {
 
   const fetchDataOffices = async () => {
     axios
-      .get(`office?limit=${limit}&offset=${offSet}`, {
+      .get(`office?search=${search}&limit=${limit}&offset=${offSet}`, {
         headers: {
           Authorization: `Bearer ${cookie.token}`,
         },
@@ -135,6 +138,10 @@ export const Office: FC = () => {
     setOffSet(page);
   }
 
+  const handleSearch = () => {
+    fetchDataOffices();
+  };
+
   return (
     <LayoutAdmin>
       <div
@@ -176,14 +183,38 @@ export const Office: FC = () => {
         </form>
 
         <div className="overflow-x-auto w-full p-6 mt-20 hidden md:block">
-          {officeData ? (
-            <TableOffice
-              data={officeData}
-              onClickDelete={(id) => handleDelete(id)}
-            />
-          ) : (
-            ""
-          )}
+          <div className="flex flex-row p-2 bg-@Red2 text-black rounded-ss-md rounded-se-md justify-between items-center">
+            <p className="font-bold">Office List</p>
+            <label className="relative block flex-initial w-64 rounded-full ">
+              <input
+                className="rounded-full placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-@Red focus:ring-@Red focus:ring-1 sm:text-sm"
+                placeholder="Search for anything..."
+                type="text"
+                name="search"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.preventDefault();
+                    handleSearch();
+                  }
+                }}
+              />
+
+              <button
+                className="absolute inset-y-0 right-4 flex justify-end items-center pl-2 hover:text-@Red"
+                onClick={handleSearch}
+              >
+                <BsSearch className="h-5 w-5 font-bold" />
+              </button>
+            </label>
+          </div>
+
+          <TableOffice
+            data={officeData}
+            onClickDelete={(id) => handleDelete(id)}
+          />
+
           <div className="flex flex-row p-2 bg-white text-black border rounded-es-md rounded-ee-md justify-between items-center">
             <button
               className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md"
