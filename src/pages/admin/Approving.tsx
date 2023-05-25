@@ -10,10 +10,12 @@ import axios from "axios";
 import * as z from "zod";
 
 import { BlueButton, Red2Button, RedButton } from "@/components/Button";
+import { HyperApproval } from "@/utils/types/Admin";
 import { LayoutAdmin } from "@/components/Layout";
 import { Input } from "@/components/Input";
 
 const schema = z.object({
+  user_id: z.string().min(1, { message: "User ID is Failed" }),
   submission_id: z.string().min(1, { message: "Submission ID is Failed" }),
   token: z
     .string()
@@ -25,19 +27,19 @@ const schema = z.object({
 type Schema = z.infer<typeof schema>;
 
 export const Approving: FC = () => {
+  const [action, setAction] = useState<string>("");
   const [, setLoading] = useState<boolean>(true);
   const [clicked, setClicked] = useState(false);
-  const [action, setAction] = useState<string>("");
-  const [cookies, setCookie] = useCookies([
+  const [cookies] = useCookies([
     "submissionData",
     "applicantData",
     "approverData",
     "token",
   ]);
   const [ID, setID] = useState<number>();
+  const [data, setData] = useState<HyperApproval>();
+
   const navigate = useNavigate();
-  const submissionData = cookies.submissionData;
-  const applicantData = cookies.applicantData;
   const approverData = cookies.approverData;
 
   const {
@@ -62,26 +64,8 @@ export const Approving: FC = () => {
       })
       .then((res) => {
         const { data } = res.data;
-        setCookie(
-          "submissionData",
-          {
-            title: data.submission_title,
-            type: data.submission_type,
-            attachment: data.attachment,
-            messageBody: data.message_body,
-          },
-          { path: "/" }
-        );
-        setCookie(
-          "applicantData",
-          {
-            name: data.applicant_name,
-            position: data.applicant_position,
-          },
-          { path: "/" }
-        );
-        setCookie("approverData", data.approver_action, { path: "/" });
-        // setData(data);
+        setData(data);
+        console.log(data);
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -153,6 +137,18 @@ export const Approving: FC = () => {
             <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
               <div className="mt-5 w-full">
                 <label className="font-semibold text-md text-black">
+                  User ID
+                </label>
+                <Input
+                  register={register}
+                  name="user_id"
+                  placeholder="Enter User ID"
+                  id="input-id-submission"
+                  error={errors.user_id?.message}
+                />
+              </div>
+              <div className="mt-5 w-full">
+                <label className="font-semibold text-md text-black">
                   ID Submission
                 </label>
                 <Input
@@ -181,46 +177,33 @@ export const Approving: FC = () => {
                   id="button-search-id-submission"
                   type="submit"
                   onClick={() => {
-                    // if (watch("token") === "ss#561618sadadadsw") {
                     setClicked(true);
-                    // } else {
-                    //   Swal.fire({
-                    //     icon: "error",
-                    //     title: "Invalid Token",
-                    //     text: "Please enter a valid token.",
-                    //     showCancelButton: false,
-                    //   });
-                    // }
                   }}
                 />
               </div>
             </div>
           </div>
         </form>
-        {clicked && submissionData ? (
+        {clicked && data ? (
           <div className="overflow-x-auto w-full p-6 mt-2">
             <h3 className="font-bold text-2xl text-black">Submission</h3>
 
             <div className="mt-5">
               <div className="flex justify-between">
                 <h3 className="font-bold text-3xl text-black">
-                  {submissionData?.title}
+                  {data.submission_title}
                 </h3>
                 <h3 className="font-bold text-xl text-@Green">
-                  {submissionData?.type}
+                  {data.submission_type}
                 </h3>
               </div>
               <div className="mt-2">
-                <h3 className="capitalize font-semibold text-2xl text-black">
-                  {applicantData?.position} {applicantData?.name}
-                </h3>
-
-                <p className="mt-5 text-xl">{submissionData?.messageBody}</p>
+                <p className="mt-5 text-xl">{data.message_body}</p>
                 <div className="mt-20 ">
                   <a className="text-5xl text-@Red">
                     <BsFileEarmarkPdfFill />
                   </a>
-                  {approverData &&
+                  {data &&
                     approverData.map((approver: any, index: number) => (
                       <div key={index} className="flex flex-row gap-2">
                         <h3 className="capitalize font-semibold text-xl text-black gap-2">

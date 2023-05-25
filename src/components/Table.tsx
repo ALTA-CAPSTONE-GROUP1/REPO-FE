@@ -2,7 +2,7 @@
 import { RiDeleteBin6Line, RiPencilLine } from "react-icons/ri";
 import { useTable, Column, Row } from "react-table";
 import { useNavigate } from "react-router-dom";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import {
   SubmissionDetail,
@@ -10,7 +10,6 @@ import {
   OfficeData,
   UserData,
 } from "@/utils/types/Admin";
-import { BsSearch } from "react-icons/bs";
 
 type PropsTablePosition = {
   data: PositionData[];
@@ -29,7 +28,6 @@ const columns: readonly Column<PositionData>[] = [
 
 export function TablePosition(props: PropsTablePosition) {
   const data = useMemo(() => props.data, [props.data]);
-  const [searchQuery, setSearchQuery] = useState("");
 
   const tableHooks = (hooks: any) => {
     hooks.visibleColumns.push((columns: any) => [
@@ -51,12 +49,6 @@ export function TablePosition(props: PropsTablePosition) {
     ]);
   };
 
-  const handleSearchQueryChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setSearchQuery(event.target.value);
-  };
-
   const tableInstance = useTable(
     {
       columns,
@@ -71,23 +63,6 @@ export function TablePosition(props: PropsTablePosition) {
 
   return (
     <>
-      <div className="flex flex-row p-2 bg-@Red2 text-black rounded-ss-md rounded-se-md justify-between items-center">
-        <p className="font-bold">Position List</p>
-        <label className="relative block flex-initial w-64 rounded-full ">
-          <input
-            className="rounded-full placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-@Red focus:ring-@Red focus:ring-1 sm:text-sm"
-            placeholder="Search for anything..."
-            type="text"
-            name="search"
-            value={searchQuery}
-            onChange={handleSearchQueryChange}
-          />
-          <span className="sr-only">Search</span>
-          <span className="absolute inset-y-0 right-4 flex justify-end items-center pl-2">
-            <BsSearch className="h-5 w-5 font-bold" />
-          </span>
-        </label>
-      </div>
       <table className="table w-full border border-@Gray2">
         <thead {...getTableProps()}>
           {headerGroups.map((headerGroup) => (
@@ -162,7 +137,6 @@ const columnsUser: readonly Column<UserData>[] = [
 
 export function TableUsers(props: PropsTableUsers) {
   const data = useMemo(() => props.dataUsers, [props.dataUsers]);
-  const [searchQuery, setSearchQuery] = useState("");
 
   const navigate = useNavigate();
 
@@ -192,12 +166,6 @@ export function TableUsers(props: PropsTableUsers) {
     ]);
   };
 
-  const handleSearchQueryChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setSearchQuery(event.target.value);
-  };
-
   const tableInstanceUser = useTable(
     {
       columns: columnsUser,
@@ -212,23 +180,6 @@ export function TableUsers(props: PropsTableUsers) {
   const isEven = (index: number) => index % 2 == 0;
   return (
     <>
-      <div className="flex flex-row p-2 bg-@Red2 text-black rounded-ss-md rounded-se-md justify-between items-center">
-        <p className="font-bold">Users List</p>
-        <label className="relative block flex-initial w-64 rounded-full ">
-          <input
-            className="rounded-full placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-@Red focus:ring-@Red focus:ring-1 sm:text-sm"
-            placeholder="Search for anything..."
-            type="text"
-            name="search"
-            value={searchQuery}
-            onChange={handleSearchQueryChange}
-          />
-          <span className="sr-only">Search</span>
-          <span className="absolute inset-y-0 right-4 flex justify-end items-center pl-2">
-            <BsSearch className="h-5 w-5 font-bold" />
-          </span>
-        </label>
-      </div>
       <table className="table w-full border border-@Gray2">
         <thead {...getTableProps()}>
           {headerGroups.map((headerGroup) => (
@@ -279,7 +230,6 @@ const columnsOffice: readonly Column<OfficeData>[] = [
 
 export function TableOffice(props: PropsTableOffice) {
   const data = useMemo(() => props.data, [props.data]);
-  const [searchQuery, setSearchQuery] = useState("");
 
   const tableHooks = (hooks: any) => {
     hooks.visibleColumns.push((columns: any) => [
@@ -301,12 +251,6 @@ export function TableOffice(props: PropsTableOffice) {
     ]);
   };
 
-  const handleSearchQueryChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setSearchQuery(event.target.value);
-  };
-
   const tableInstance = useTable(
     {
       columns: columnsOffice,
@@ -321,23 +265,6 @@ export function TableOffice(props: PropsTableOffice) {
   const isEven = (index: number) => index % 2 == 0;
   return (
     <>
-      <div className="flex flex-row p-2 bg-@Red2 text-black rounded-ss-md rounded-se-md justify-between items-center">
-        <p className="font-bold">Office List</p>
-        <label className="relative block flex-initial w-64 rounded-full ">
-          <input
-            className="rounded-full placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-@Red focus:ring-@Red focus:ring-1 sm:text-sm"
-            placeholder="Search for anything..."
-            type="text"
-            name="search"
-            value={searchQuery}
-            onChange={handleSearchQueryChange}
-          />
-          <span className="sr-only">Search</span>
-          <span className="absolute inset-y-0 right-4 flex justify-end items-center pl-2">
-            <BsSearch className="h-5 w-5 font-bold" />
-          </span>
-        </label>
-      </div>
       <table className="table w-full border border-@Gray2">
         <thead {...getTableProps()}>
           {headerGroups.map((headerGroup) => (
@@ -396,7 +323,6 @@ const columnsSubmission: Column<SubmissionDetail>[] = [
 
 export function TableSubmission(props: PropsSubmissionProps) {
   const data = useMemo(() => props.data, [props.data]);
-  const [searchQuery, setSearchQuery] = useState("");
 
   const tableHooks = (hooks: any) => {
     hooks.visibleColumns.push((columns: any) => [
@@ -420,12 +346,6 @@ export function TableSubmission(props: PropsSubmissionProps) {
     ]);
   };
 
-  const handleSearchQueryChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setSearchQuery(event.target.value);
-  };
-
   const tableInstance = useTable(
     {
       columns: columnsSubmission,
@@ -441,23 +361,6 @@ export function TableSubmission(props: PropsSubmissionProps) {
 
   return (
     <>
-      <div className="flex flex-row p-2 bg-@Red2 text-black rounded-ss-md rounded-se-md justify-between items-center">
-        <p className="font-bold">Submission List</p>
-        <label className="relative block flex-initial w-64 rounded-full ">
-          <input
-            className="rounded-full placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-@Red focus:ring-@Red focus:ring-1 sm:text-sm"
-            placeholder="Search for anything..."
-            type="text"
-            name="search"
-            value={searchQuery}
-            onChange={handleSearchQueryChange}
-          />
-          <span className="sr-only">Search</span>
-          <span className="absolute inset-y-0 right-4 flex justify-end items-center pl-2">
-            <BsSearch className="h-5 w-5 font-bold" />
-          </span>
-        </label>
-      </div>
       <table className="table w-full border border-@Gray2">
         <thead {...getTableProps()}>
           {headerGroups.map((headerGroup) => (

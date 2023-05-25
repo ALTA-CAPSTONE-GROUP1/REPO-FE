@@ -42,3 +42,14 @@ export interface Meta {
   total_data: number;
   total_page: number;
 }
+
+export interface HyperApproval {
+  submission_type?: string;
+  submission_title?: string;
+  message_body?: string;
+  approver_action?: {
+    action?: string;
+    approver_name?: string;
+    approver_position: string;
+  }[];
+}
