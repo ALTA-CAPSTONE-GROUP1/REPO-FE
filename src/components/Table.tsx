@@ -1,10 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  RiArrowLeftLine,
-  RiArrowRightLine,
-  RiDeleteBin6Line,
-  RiPencilLine,
-} from "react-icons/ri";
+import { RiDeleteBin6Line, RiPencilLine } from "react-icons/ri";
 import { useTable, Column, Row } from "react-table";
 import { useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
@@ -34,12 +29,8 @@ const columns: readonly Column<PositionData>[] = [
 
 export function TablePosition(props: PropsTablePosition) {
   const data = useMemo(() => props.data, [props.data]);
-  const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const rowsPerPage = 5;
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const endIndex = startIndex + rowsPerPage;
-  const totalPages = Math.ceil(data.length / rowsPerPage);
+
   const tableHooks = (hooks: any) => {
     hooks.visibleColumns.push((columns: any) => [
       ...columns,
@@ -59,26 +50,17 @@ export function TablePosition(props: PropsTablePosition) {
       },
     ]);
   };
-  const filteredData = data.filter((item) =>
-    item.position.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const limitedData = filteredData.slice(startIndex, endIndex);
 
   const handleSearchQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setSearchQuery(event.target.value);
-    setCurrentPage(1);
   };
 
   const tableInstance = useTable(
     {
       columns,
-      data: limitedData,
+      data,
     },
     tableHooks
   );
@@ -137,35 +119,6 @@ export function TablePosition(props: PropsTablePosition) {
           })}
         </tbody>
       </table>
-      <div className="flex flex-row p-2 bg-white text-black border rounded-es-md rounded-ee-md justify-between items-center">
-        <button
-          className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md"
-          disabled={currentPage === 1}
-          onClick={() => handlePageChange(currentPage - 1)}
-        >
-          <RiArrowLeftLine /> Previous
-        </button>
-        <div className="btn-group">
-          {Array.from({ length: totalPages }, (_, index) => (
-            <button
-              key={index}
-              className={`btn btn-ghost ${
-                currentPage === index + 1 ? "bg-@Red2" : ""
-              }`}
-              onClick={() => handlePageChange(index + 1)}
-            >
-              {index + 1}
-            </button>
-          ))}
-        </div>
-        <button
-          className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md"
-          disabled={currentPage === totalPages}
-          onClick={() => handlePageChange(currentPage + 1)}
-        >
-          Next <RiArrowRightLine />
-        </button>
-      </div>
     </>
   );
 }
@@ -209,13 +162,7 @@ const columnsUser: readonly Column<UserData>[] = [
 
 export function TableUsers(props: PropsTableUsers) {
   const data = useMemo(() => props.dataUsers, [props.dataUsers]);
-
-  const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const rowsPerPage = 5;
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const endIndex = startIndex + rowsPerPage;
-  const totalPages = Math.ceil(data.length / rowsPerPage);
 
   const navigate = useNavigate();
 
@@ -245,29 +192,16 @@ export function TableUsers(props: PropsTableUsers) {
     ]);
   };
 
-  const filteredData = data.filter((item) =>
-    Object.values(item).some((value) =>
-      value.toString().toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  );
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const limitedData = filteredData.slice(startIndex, endIndex);
-
   const handleSearchQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setSearchQuery(event.target.value);
-    setCurrentPage(1);
   };
 
   const tableInstanceUser = useTable(
     {
       columns: columnsUser,
-      data: limitedData,
+      data,
     },
     tableHooks
   );
@@ -326,35 +260,6 @@ export function TableUsers(props: PropsTableUsers) {
           })}
         </tbody>
       </table>
-      <div className="flex flex-row p-2 bg-white text-black border rounded-es-md rounded-ee-md justify-between items-center">
-        <button
-          className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md"
-          disabled={currentPage === 1}
-          onClick={() => handlePageChange(currentPage - 1)}
-        >
-          <RiArrowLeftLine /> Previous
-        </button>
-        <div className="btn-group">
-          {Array.from({ length: totalPages }, (_, index) => (
-            <button
-              key={index}
-              className={`btn btn-ghost ${
-                currentPage === index + 1 ? "bg-@Red2" : ""
-              }`}
-              onClick={() => handlePageChange(index + 1)}
-            >
-              {index + 1}
-            </button>
-          ))}
-        </div>
-        <button
-          className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md"
-          disabled={currentPage === totalPages}
-          onClick={() => handlePageChange(currentPage + 1)}
-        >
-          Next <RiArrowRightLine />
-        </button>
-      </div>
     </>
   );
 }
@@ -374,12 +279,7 @@ const columnsOffice: readonly Column<OfficeData>[] = [
 
 export function TableOffice(props: PropsTableOffice) {
   const data = useMemo(() => props.data, [props.data]);
-  const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const rowsPerPage = 5;
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const endIndex = startIndex + rowsPerPage;
-  const totalPages = Math.ceil(data.length / rowsPerPage);
 
   const tableHooks = (hooks: any) => {
     hooks.visibleColumns.push((columns: any) => [
@@ -401,30 +301,20 @@ export function TableOffice(props: PropsTableOffice) {
     ]);
   };
 
-  const filteredData = data.filter((item) =>
-    item.Name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const limitedData = filteredData.slice(startIndex, endIndex);
-
   const handleSearchQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setSearchQuery(event.target.value);
-    setCurrentPage(1);
   };
 
   const tableInstance = useTable(
     {
       columns: columnsOffice,
-      data: limitedData,
+      data,
     },
     tableHooks
   );
+
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     tableInstance;
 
@@ -479,35 +369,6 @@ export function TableOffice(props: PropsTableOffice) {
           })}
         </tbody>
       </table>
-      <div className="flex flex-row p-2 bg-white text-black border rounded-es-md rounded-ee-md justify-between items-center">
-        <button
-          className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md"
-          disabled={currentPage === 1}
-          onClick={() => handlePageChange(currentPage - 1)}
-        >
-          <RiArrowLeftLine /> Previous
-        </button>
-        <div className="btn-group">
-          {Array.from({ length: totalPages }, (_, index) => (
-            <button
-              key={index}
-              className={`btn btn-ghost ${
-                currentPage === index + 1 ? "bg-@Red2" : ""
-              }`}
-              onClick={() => handlePageChange(index + 1)}
-            >
-              {index + 1}
-            </button>
-          ))}
-        </div>
-        <button
-          className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md"
-          disabled={currentPage === totalPages}
-          onClick={() => handlePageChange(currentPage + 1)}
-        >
-          Next <RiArrowRightLine />
-        </button>
-      </div>
     </>
   );
 }
@@ -535,12 +396,7 @@ const columnsSubmission: Column<SubmissionDetail>[] = [
 
 export function TableSubmission(props: PropsSubmissionProps) {
   const data = useMemo(() => props.data, [props.data]);
-  const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const rowsPerPage = 5;
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const endIndex = startIndex + rowsPerPage;
-  const totalPages = Math.ceil(data.length / rowsPerPage);
 
   const tableHooks = (hooks: any) => {
     hooks.visibleColumns.push((columns: any) => [
@@ -564,29 +420,16 @@ export function TableSubmission(props: PropsSubmissionProps) {
     ]);
   };
 
-  const filteredData = data.filter((item) =>
-    Object.values(item).some((value) =>
-      value.toString().toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  );
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  const limitedData = filteredData.slice(startIndex, endIndex);
-
   const handleSearchQueryChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setSearchQuery(event.target.value);
-    setCurrentPage(1);
   };
 
   const tableInstance = useTable(
     {
       columns: columnsSubmission,
-      data: limitedData,
+      data,
     },
     tableHooks
   );
@@ -646,35 +489,6 @@ export function TableSubmission(props: PropsSubmissionProps) {
           })}
         </tbody>
       </table>
-      <div className="flex flex-row p-2 bg-white text-black border rounded-es-md rounded-ee-md justify-between items-center">
-        <button
-          className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md"
-          disabled={currentPage === 1}
-          onClick={() => handlePageChange(currentPage - 1)}
-        >
-          <RiArrowLeftLine /> Previous
-        </button>
-        <div className="btn-group">
-          {Array.from({ length: totalPages }, (_, index) => (
-            <button
-              key={index}
-              className={`btn btn-ghost ${
-                currentPage === index + 1 ? "bg-@Red2" : ""
-              }`}
-              onClick={() => handlePageChange(index + 1)}
-            >
-              {index + 1}
-            </button>
-          ))}
-        </div>
-        <button
-          className="btn btn-ghost btn-xl text-xl text-@Gray capitalize border border-@Gray rounded-md"
-          disabled={currentPage === totalPages}
-          onClick={() => handlePageChange(currentPage + 1)}
-        >
-          Next <RiArrowRightLine />
-        </button>
-      </div>
     </>
   );
 }
