@@ -7,9 +7,9 @@ const ApproveList: FC<approveTypes> = (props) => {
   const { from, title, submission_type, status, receive_date, opened } = props;
 
   useEffect(() => {
-    if (status == "approved") {
+    if (status == "approved" || status === "approve") {
       setColorStatus("text-@Green");
-    } else if (status == "rejected") {
+    } else if (status == "reject") {
       setColorStatus("text-@Red");
     } else if (status == "revise") {
       setColorStatus("text-@Orange");
@@ -28,7 +28,7 @@ const ApproveList: FC<approveTypes> = (props) => {
       className={`${colorBg} flex justify-around border-b-2 p-2 items-center hover:border-slate-500 hover:border-t-2 hover:border-t-gray-200 font-bold text-sm`}
     >
       <div className=" w-4/12">
-        <p>From: {from}</p>
+        <p>From: {from.position + " " + from.name}</p>
       </div>
       <div className=" w-3/12">
         <p>{title}</p>
@@ -37,7 +37,7 @@ const ApproveList: FC<approveTypes> = (props) => {
         <p>{submission_type}</p>
       </div>
       <div className={`${colorStatus} w-1/12`}>
-        <p>{status}</p>
+        <p>{status === "" ? "waiting your action" : status}</p>
       </div>
       <div className=" min-w-[5rem] text-right  w-1/12">
         <p>{receive_date}</p>

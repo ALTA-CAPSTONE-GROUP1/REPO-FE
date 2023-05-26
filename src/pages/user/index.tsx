@@ -18,6 +18,7 @@ import { Layout } from "@/components/Layout";
 import { Input } from "@/components/Input";
 import SideBar from "@/components/SideBar";
 import ccTypes from "@/utils/types/cc";
+import Meta from "@/utils/types/Meta";
 import UserHome from "./UserHome";
 import Approve from "./Approve";
 import CC from "./CC";
@@ -64,14 +65,15 @@ const UserIndex: FC = () => {
   const [subTypes, setSubTypes] = useState<submission_type[]>([]);
   const [datascc, setDatascc] = useState<ccTypes[]>([]);
   const [to_cc, setTo_Cc] = useState<to_cc_type>();
+  const [meta, setMeta] = useState<Meta>();
 
   const [selectSubType, setSelectSubType] = useState<string>();
   const [category, setCategory] = useState<string>("to");
-
   const [search, setSearch] = useState<string>("");
 
   const [selectValue, setSelectValue] = useState<number>();
   const [indexSubtypes, setIndexSub] = useState<number>();
+  const [offset, setOffset] = useState<number>(0);
 
   const [file, setFile] = useState<any>();
 
@@ -84,6 +86,9 @@ const UserIndex: FC = () => {
 
   const [page, setPage] = useState<string>(menu ? menu : "user-home");
   const [bg, setBg] = useState<string>(menu ? menu : "user-home");
+
+  // const [pagination, setPagination] = useState<string>(``);
+  const [load, setLoad] = useState<boolean>(false);
 
   const {
     register,
@@ -103,7 +108,11 @@ const UserIndex: FC = () => {
     name: "to",
   });
 
-  const { append: appendSubValCc } = useFieldArray({
+  const {
+    append: appendSubValCc,
+    fields: fieldsSubValCc,
+    remove: removeSubValCc,
+  } = useFieldArray({
     control,
     name: "cc",
   });
@@ -116,16 +125,21 @@ const UserIndex: FC = () => {
     } else {
       fetchApprove();
     }
-  }, [page]);
+  }, [page, offset]);
 
   function fetchSubmission() {
     setLoading(true);
     axios
-      .get(`submission?${category}=${search}`, {
-        headers: {
-          Authorization: `Bearer ${cookie.token}`,
-        },
-      })
+      .get(
+        `submission?${category}=${search}${
+          load ? `&limit=10&offset=${offset}` : ``
+        }`,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie.token}`,
+          },
+        }
+      )
       // const url =
       //   "https://virtserver.swaggerhub.com/123ADIYUDA/E-Proposal/1.0.0";
       // axios({
@@ -133,8 +147,17 @@ const UserIndex: FC = () => {
       //   url: `${url}/submission?${category}=${search}`,
       // })
       .then((res) => {
-        const { data } = res.data;
-        setDatasSubmission(data.submissions);
+        const { data, meta } = res.data;
+        if (load) {
+          let temp: SubmissionType[] = [];
+          temp = datasSubmission;
+          console.log("sebelum di ush", temp);
+          setDatasSubmission([...temp, ...data.submissions]);
+        } else {
+          setOffset(0);
+          setDatasSubmission(data.submissions);
+        }
+        setMeta(meta);
         setSubTypes(data.submission_type_choices);
         localStorage.removeItem("SubmissionType");
         localStorage.setItem(
@@ -157,14 +180,26 @@ const UserIndex: FC = () => {
   function fetchCc() {
     setLoading(true);
     axios
-      .get(`cc?${category}=${search}`, {
-        headers: {
-          Authorization: `Bearer ${cookie.token}`,
-        },
-      })
+      .get(
+        `cc?${category}=${search}${load ? `&limit=10&offset=${offset}` : ``}`,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie.token}`,
+          },
+        }
+      )
       .then((res) => {
         const { data } = res.data;
-        setDatascc(data);
+        if (load) {
+          let temp: ccTypes[] = [];
+          temp = datascc;
+          console.log("sebelum di ush", temp);
+          setDatascc([...temp, ...data]);
+        } else {
+          setOffset(0);
+          setDatascc(data);
+        }
+        setMeta(meta);
       })
       .catch((err) => {
         const { message } = err.response;
@@ -181,14 +216,27 @@ const UserIndex: FC = () => {
   function fetchApprove() {
     setLoading(true);
     axios
-      .get(`approver?${category}=${search}`, {
-        headers: {
-          Authorization: `Bearer ${cookie.token}`,
-        },
-      })
+      .get(
+        `approver?${category}=${search}${
+          load ? `&limit=10&offset=${offset}` : `&limit=15`
+        }`,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie.token}`,
+          },
+        }
+      )
       .then((res) => {
         const { data } = res.data;
-        setDatasApprove(data);
+        if (load) {
+          let temp: approveTypes[] = [];
+          temp = datasApprove;
+          console.log("sebelum di ush", temp);
+          setDatasApprove([...temp, ...data]);
+        } else {
+          setOffset(0);
+          setDatasApprove(data);
+        }
       })
       .catch((err) => {
         const { message } = err.response;
@@ -207,8 +255,10 @@ const UserIndex: FC = () => {
     setPage("user-home");
     setDatasApprove([]);
     setDatascc([]);
-    setCategory("");
+    setCategory("to");
     setSearch("");
+
+    navigate("/user");
   }
 
   function handleMenu2() {
@@ -217,8 +267,9 @@ const UserIndex: FC = () => {
     setDatasSubmission([]);
     setCreateSubmission(false);
     setDatasApprove([]);
-    setCategory("");
+    setCategory("to");
     setSearch("");
+    navigate("/user");
   }
 
   function handleMenu3() {
@@ -227,8 +278,9 @@ const UserIndex: FC = () => {
     setDatasSubmission([]);
     setDatascc([]);
     setCreateSubmission(false);
-    setCategory("");
+    setCategory("from");
     setSearch("");
+    navigate("/user");
   }
 
   function handleTypeSelect(event: React.ChangeEvent<HTMLSelectElement>) {
@@ -268,7 +320,11 @@ const UserIndex: FC = () => {
         });
 
         for (let i = 0; i < fieldsSubVal.length; i++) {
-          removeSubValTo(i);
+          removeSubValTo(0);
+        }
+
+        for (let i = 0; i < fieldsSubValCc.length; i++) {
+          removeSubValCc(0);
         }
 
         appendSubValTo(to);
@@ -293,6 +349,7 @@ const UserIndex: FC = () => {
       submission_value: parseInt(data.submission_value),
       attachment: file,
     };
+
     const formData = new FormData();
     let key: keyof typeof newData;
     for (key in newData) {
@@ -309,32 +366,47 @@ const UserIndex: FC = () => {
         formData.append(key, newData[key]);
       }
     }
-
-    axios
-      .post("submission", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${cookie.token}`,
-        },
-      })
-      .then((res) => {
-        const { message } = res.data;
-        Swal.fire({
-          icon: "success",
-          title: "Success ",
-          text: message,
-          showCancelButton: false,
-        });
-      })
-      .catch((err) => {
-        const { message } = err.response;
-        MySwal.fire({
-          title: "Failed",
-          text: message,
-          showCancelButton: false,
-        });
-      })
-      .finally(fetchSubmission);
+    Swal.fire({
+      title: "Are you sure?",
+      text: `You will Send this submission`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: `Yes, send it!`,
+      cancelButtonText: "Cancel",
+      showLoaderOnConfirm: true,
+      allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+      Swal.showLoading();
+      if (result.isConfirmed) {
+        axios
+          .post("submission", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${cookie.token}`,
+            },
+          })
+          .then((res) => {
+            const { message } = res.data;
+            Swal.fire({
+              icon: "success",
+              title: "Success ",
+              text: message,
+              showCancelButton: false,
+            });
+          })
+          .catch((err) => {
+            const { message } = err.response;
+            MySwal.fire({
+              title: "Failed",
+              text: message,
+              showCancelButton: false,
+            });
+          })
+          .finally(fetchSubmission);
+      } else {
+        Swal.hideLoading();
+      }
+    });
   };
 
   function handleSearch(event: React.ChangeEvent<HTMLSelectElement>) {
@@ -343,19 +415,52 @@ const UserIndex: FC = () => {
   }
 
   function handleSearchInput(event: React.ChangeEvent<HTMLInputElement>) {
-    setSearch(event.target.value);
+    const search = event.target.value;
+    setSearch(search);
+    setLoad(false);
+    if (search === "") {
+      setOffset(10);
+      // page === "user-home"
+      //   ? fetchSubmission()
+      //   : page === "cc"
+      //   ? fetchCc()
+      //   : fetchApprove();
+    }
   }
 
   function handleEnterAndClicked(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
-      if (page == "user-home") {
-        fetchSubmission();
-      } else if (page == "cc") {
-        fetchCc();
-      } else {
-        fetchApprove();
-      }
+      // setPagination("");
+      setLoading(true);
+      setTimeout(() => {
+        setOffset(offset + 10);
+        // if (page == "user-home") {
+        //   fetchSubmission();
+        // } else if (page == "cc") {
+        //   fetchCc();
+        // } else {
+        //   fetchApprove();
+        // }
+      }, 1000);
     }
+  }
+
+  function handleClickSearch() {
+    // setPagination("adasd");
+    setLoading(true);
+    setTimeout(() => {
+      setOffset(offset + 10);
+    }, 1000);
+  }
+
+  function handleLoad() {
+    const plus = 10;
+    // setPagination(`&limit=10&offset=${plus}`);
+    setLoad(true);
+    setLoading(true);
+    setTimeout(() => {
+      setOffset(offset + plus);
+    }, 1000);
   }
 
   function handleLogout() {
@@ -376,8 +481,10 @@ const UserIndex: FC = () => {
       >
         {page === "user-home" || createSubmission ? (
           <UserHome
+            onLoadMore={handleLoad}
+            meta={meta}
             onKeyDown={handleEnterAndClicked}
-            onClickSearch={fetchSubmission}
+            onClickSearch={handleClickSearch}
             loading={loading}
             datas={datasSubmission}
             onchange={(e) => handleSearch(e)}
@@ -531,6 +638,8 @@ const UserIndex: FC = () => {
           </UserHome>
         ) : page === "cc" ? (
           <CC
+            onLoadMore={handleLoad}
+            meta={meta}
             onKeyDown={handleEnterAndClicked}
             onClickSearch={fetchCc}
             loading={loading}
@@ -541,6 +650,8 @@ const UserIndex: FC = () => {
           />
         ) : (
           <Approve
+            onLoadMore={handleLoad}
+            meta={meta}
             onKeyDown={handleEnterAndClicked}
             onClickSearch={fetchApprove}
             loading={loading}

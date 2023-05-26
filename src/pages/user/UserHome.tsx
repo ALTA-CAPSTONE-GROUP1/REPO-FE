@@ -6,14 +6,17 @@ import { FC, ReactNode, CSSProperties } from "react";
 
 import SubmissionType from "@/utils/types/submission";
 import List from "@/components/List";
+import Meta from "@/utils/types/Meta";
 
 interface Props {
   datas: SubmissionType[];
+  meta?: Meta;
   children: ReactNode;
   onchange: React.ChangeEventHandler<HTMLSelectElement>;
   onchangeInput: React.ChangeEventHandler<HTMLInputElement>;
   onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   onClickSearch: React.MouseEventHandler<HTMLButtonElement>;
+  onLoadMore: React.MouseEventHandler<HTMLButtonElement>;
   select: boolean;
   loading: boolean;
 }
@@ -32,6 +35,8 @@ const UserHome: FC<Props> = (props) => {
     loading,
     onKeyDown,
     onClickSearch,
+    meta,
+    onLoadMore,
   } = props;
 
   function isCurrentDate(dateString: string) {
@@ -112,27 +117,42 @@ const UserHome: FC<Props> = (props) => {
             <p>No Submission Yet</p>
           </div>
         ) : (
-          datas?.map((data) => {
-            return (
-              <Link to={`/sub-detail/${data.id}?status=${data.status}`}>
-                <List
-                  to={data.to}
-                  status={data.status}
-                  receive_date={
-                    isCurrentDate(data.receive_date.split(" ")[0])
-                      ? data.receive_date.split(" ")[1].slice(0, 8)
-                      : coverTDate(data.receive_date.split(" ")[0])
-                  }
-                  opened={data.opened}
-                  id={data.id}
-                  cc={data.cc}
-                  title={data.title}
-                  attachment={data.attachment}
-                  submission_type={data.submission_type}
-                />
-              </Link>
-            );
-          })
+          <div>
+            {datas?.map((data) => {
+              return (
+                <Link to={`/sub-detail/${data.id}?status=${data.status}`}>
+                  <List
+                    to={data.to}
+                    status={data.status}
+                    receive_date={
+                      isCurrentDate(data.receive_date.split(" ")[0])
+                        ? data.receive_date.split(" ")[1].slice(0, 8)
+                        : coverTDate(data.receive_date.split(" ")[0])
+                    }
+                    opened={data.opened}
+                    id={data.id}
+                    cc={data.cc}
+                    title={data.title}
+                    attachment={data.attachment}
+                    submission_type={data.submission_type}
+                  />
+                </Link>
+              );
+            })}
+            <div className="flex w-full bg-@Red4 justify-center">
+              {datas.length === meta?.current_limit ? (
+                datas.length !== meta.total_data ? (
+                  <button onClick={onLoadMore} className=" hover:font-bold">
+                    Load more ...
+                  </button>
+                ) : (
+                  ""
+                )
+              ) : (
+                ""
+              )}
+            </div>
+          </div>
         )}
       </div>
       {children}

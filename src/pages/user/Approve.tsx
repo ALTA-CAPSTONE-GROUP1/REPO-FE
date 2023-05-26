@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 
 import ApproveList from "@/components/ApproveList";
 import approveTypes from "@/utils/types/approve";
+import Meta from "@/utils/types/Meta";
 
 interface Props {
   datas: approveTypes[];
@@ -13,8 +14,10 @@ interface Props {
   onchangeInput: React.ChangeEventHandler<HTMLInputElement>;
   onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   onClickSearch: React.MouseEventHandler<HTMLButtonElement>;
+  onLoadMore: React.MouseEventHandler<HTMLButtonElement>;
   select: boolean;
   loading: boolean;
+  meta?: Meta;
 }
 
 const override: CSSProperties = {
@@ -24,8 +27,16 @@ const override: CSSProperties = {
 };
 
 const Approve: FC<Props> = (props) => {
-  const { datas, onchange, onchangeInput, loading, onClickSearch, onKeyDown } =
-    props;
+  const {
+    datas,
+    onchange,
+    onchangeInput,
+    loading,
+    onClickSearch,
+    onKeyDown,
+    meta,
+    onLoadMore,
+  } = props;
 
   function isCurrentDate(dateString: string) {
     const currentDate = new Date().toISOString().slice(0, 10);
@@ -58,26 +69,14 @@ const Approve: FC<Props> = (props) => {
             onChange={onchange}
             className=" bg-@Red flex-initial w-[10%] rounded-l-full focus:rounded-none transition-all ease-in-out flex justify-center items-center"
           >
-            <option
-              className=" text-center rounded-tl-full"
-              selected
-              value={"from"}
-            >
+            <option className=" text-center rounded-tl-full" value={"from"}>
               From
             </option>
-            <option
-              className=" text-center rounded-tl-full"
-              selected
-              value={"title"}
-            >
+            <option className=" text-center rounded-tl-full" value={"title"}>
               Title
             </option>
 
-            <option
-              className=" text-center rounded-tl-full"
-              selected
-              value={"type"}
-            >
+            <option className=" text-center rounded-tl-full" value={"type"}>
               Type
             </option>
           </select>
@@ -119,7 +118,9 @@ const Approve: FC<Props> = (props) => {
         ) : (
           datas.map((data) => {
             return (
-              <Link to={`/approve-detail/${data.submission_id}`}>
+              <Link
+                to={`/approve-detail/${data.submission_id}?status=${data.status}`}
+              >
                 <ApproveList
                   submission_id={data.submission_id}
                   from={data.from}
@@ -137,6 +138,19 @@ const Approve: FC<Props> = (props) => {
             );
           })
         )}
+        <div className="flex w-full bg-@Red4 justify-center">
+          {datas.length === meta?.current_limit ? (
+            datas.length !== meta.total_data ? (
+              <button onClick={onLoadMore} className=" hover:font-bold">
+                Load more ...
+              </button>
+            ) : (
+              ""
+            )
+          ) : (
+            ""
+          )}
+        </div>
       </div>
     </div>
   );

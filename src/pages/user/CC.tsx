@@ -6,13 +6,16 @@ import { Link } from "react-router-dom";
 
 import CCList from "@/components/CCList";
 import ccTypes from "@/utils/types/cc";
+import Meta from "@/utils/types/Meta";
 
 interface Props {
+  meta?: Meta;
   datas: ccTypes[];
   onchange: React.ChangeEventHandler<HTMLSelectElement>;
   onchangeInput: React.ChangeEventHandler<HTMLInputElement>;
   onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   onClickSearch: React.MouseEventHandler<HTMLButtonElement>;
+  onLoadMore: React.MouseEventHandler<HTMLButtonElement>;
   select: boolean;
   loading: boolean;
 }
@@ -24,8 +27,16 @@ const override: CSSProperties = {
 };
 
 const CC: FC<Props> = (props) => {
-  const { datas, onchange, onchangeInput, loading, onKeyDown, onClickSearch } =
-    props;
+  const {
+    datas,
+    onchange,
+    onchangeInput,
+    loading,
+    onKeyDown,
+    onClickSearch,
+    meta,
+    onLoadMore,
+  } = props;
 
   return (
     <div className="drawer-content flex flex-col h-[90%]">
@@ -109,6 +120,19 @@ const CC: FC<Props> = (props) => {
             );
           })
         )}
+        <div className="flex w-full bg-@Red4 justify-center">
+          {datas.length === meta?.current_limit ? (
+            datas.length !== meta.total_data ? (
+              <button onClick={onLoadMore} className=" hover:font-bold">
+                Load more ...
+              </button>
+            ) : (
+              ""
+            )
+          ) : (
+            ""
+          )}
+        </div>
       </div>
     </div>
   );
