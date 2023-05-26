@@ -19,7 +19,7 @@ import { BsSearch } from "react-icons/bs";
 
 const schema = z.object({
   position: z.string().min(1, { message: "Position is required" }),
-  tag: z.string(),
+  tag: z.string().min(1, { message: "Tag is required" }),
 });
 
 type Schema = z.infer<typeof schema>;
