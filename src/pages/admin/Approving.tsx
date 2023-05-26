@@ -204,7 +204,7 @@ export const Approving: FC = () => {
                     <BsFileEarmarkPdfFill />
                   </a>
                   {data &&
-                    approverData.map((approver: any, index: number) => (
+                    approverData?.map((approver: any, index: number) => (
                       <div key={index} className="flex flex-row gap-2">
                         <h3 className="capitalize font-semibold text-xl text-black gap-2">
                           {approver.approver_position} {approver.approver_name}

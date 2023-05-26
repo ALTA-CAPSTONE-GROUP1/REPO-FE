@@ -27,10 +27,12 @@ const List: FC<SubmissionType> = (props) => {
 
   function fetchData() {
     let stringJoin = "";
-    to.map((data) => {
-      return (stringJoin +=
-        data.approver_position + " " + data.approver_name + ",");
-    });
+    to !== null
+      ? to.map((data) => {
+          return (stringJoin +=
+            data.approver_position + " " + data.approver_name + ",");
+        })
+      : "";
     setTo(stringJoin);
   }
 
