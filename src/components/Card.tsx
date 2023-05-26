@@ -1,10 +1,11 @@
-import { FC } from "react";
-import { BsFileEarmarkPdfFill } from "react-icons/bs";
-import { Link } from "react-router-dom";
 import { BlueButton, Red2Button, RedButton } from "@/components/Button";
 import { RiDeleteBin6Line, RiPencilLine } from "react-icons/ri";
-import SubDetailType from "@/utils/types/SubDetail";
 import ApproveDetailType from "@/utils/types/ApproveDetail";
+import { BsFileEarmarkPdfFill } from "react-icons/bs";
+import SubDetailType from "@/utils/types/SubDetail";
+import PulseLoader from "react-spinners/PulseLoader";
+import { FC, CSSProperties } from "react";
+import { Link } from "react-router-dom";
 
 interface PropsTableUsers {
   name: string;
@@ -15,6 +16,26 @@ interface PropsTableUsers {
   link_del: string;
   link_update: string;
 }
+
+const override: CSSProperties = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
+
+const loader = (): JSX.Element => {
+  return (
+    <PulseLoader
+      color={"#E9AAB3"}
+      loading={true}
+      cssOverride={override}
+      size={8}
+      aria-label="Loading Spinner"
+      data-testid="loader"
+    />
+  );
+};
+
 export const CardTableUser: FC<PropsTableUsers> = (props) => {
   const {
     name,
@@ -243,23 +264,52 @@ export const CardSubmission: FC<PropsSubmission> = (props) => {
     <div className="overflow-x-auto w-full px-6">
       <div className="mt-10">
         <div className="flex justify-between">
-          <h3 className="font-bold text-3xl text-black">{title}</h3>
-          <h3 className="font-bold text-xl text-@Green">{submission_type}</h3>
+          <h3 className="font-bold text-3xl text-black">
+            {title ? title : loader()}
+          </h3>
+          <h3 className="font-bold text-xl text-@Green">
+            {submission_type ? submission_type : loader()}{" "}
+          </h3>
         </div>
         <div className="mt-2">
-          <h3 className="capitalize font-semibold text-2xl text-black">
-            To:{" "}
-            {to?.map((data) => {
-              return data.approver_position + " " + data.approver_name + ",";
-            })}
+          <h3 className="capitalize font-semibold text-xl text-black">
+            <div className="flex">
+              <p className=" pr-2"> To: </p>
+              <p>
+                {to
+                  ? to?.map((data, index) => {
+                      return to.length - 1 === index
+                        ? " " +
+                            data.approver_position +
+                            " " +
+                            data.approver_name +
+                            ""
+                        : data.approver_position +
+                            " " +
+                            data.approver_name +
+                            ",";
+                    })
+                  : loader()}
+              </p>
+            </div>
           </h3>
           <h5 className="text-@Gray">
-            Cc:{" "}
-            {cc?.map((data) => {
-              return data.cc_position + " " + data.cc_name + ",";
-            })}
+            <div className="flex">
+              <p className=" pr-2"> Cc: </p>
+              <p>
+                {cc
+                  ? cc?.map((data, index) => {
+                      return cc.length - 1 === index
+                        ? " " + data.cc_position + " " + data.cc_name + ""
+                        : data.cc_position + " " + data.cc_name + ",";
+                    })
+                  : loader()}
+              </p>
+            </div>
           </h5>
-          <p className="mt-5 text-base min-h-[10rem]">{message} </p>
+          <p className="mt-5 text-base min-h-[10rem]">
+            {message ? message : loader()}{" "}
+          </p>
           <div className="mt-20 ">
             <button onClick={onClickPdf} className="text-5xl text-@Red">
               <BsFileEarmarkPdfFill />
@@ -274,13 +324,20 @@ export const CardSubmission: FC<PropsSubmission> = (props) => {
                   return (
                     <div>
                       {data.action !== null && data.action !== "" ? (
-                        <p>
-                          {data.action +
-                            " by " +
-                            data.approver_position +
-                            " " +
-                            data.approver_name +
-                            ","}
+                        <p className=" text-left">
+                          {data.action === "waiting for you"
+                            ? "revise" +
+                              " by " +
+                              data.approver_position +
+                              " " +
+                              data.approver_name +
+                              ","
+                            : data.action +
+                              " by " +
+                              data.approver_position +
+                              " " +
+                              data.approver_name +
+                              ","}
                         </p>
                       ) : (
                         ""
@@ -372,26 +429,47 @@ export const CardApprove: FC<ApproveDetailType> = (props) => {
     <div className="overflow-x-auto w-full p-6 mt-2">
       <div className="mt-5">
         <div className="flex justify-between">
-          <h3 className="font-bold text-3xl text-black">{title}</h3>
-          <h3 className="font-bold text-xl text-@Green">{submission_type}</h3>
+          <h3 className="font-bold text-3xl text-black">
+            {title ? title : loader()}
+          </h3>
+          <h3 className="font-bold text-xl text-@Green">
+            {submission_type ? submission_type : loader()}{" "}
+          </h3>
         </div>
         <div className="mt-2">
-          <p className="capitalize font-semibold text-xl text-black">
-            From: {from?.position + " " + from?.name}
-          </p>
-          <p className="capitalize font-semibold text-lg text-black">
-            To:{" "}
-            {to?.map((data) => {
-              return data.position + " " + data.name + ",";
-            })}
-          </p>
+          <div className="flex capitalize font-semibold text-xl text-black">
+            <p className="pr-2">From: </p>
+            <p className="">
+              {from ? from?.position + " " + from?.name : loader()}
+            </p>
+          </div>
+          <div className="flex">
+            <p className=" pr-2"> To: </p>
+            <p>
+              {to
+                ? to?.map((data, index) => {
+                    return to.length - 1 === index
+                      ? " " + data.position + " " + data.name + ""
+                      : data.position + " " + data.name + ",";
+                  })
+                : loader()}
+            </p>
+          </div>
           <h5 className="text-@Gray">
-            Cc:{" "}
-            {cc?.map((data) => {
-              return data.position + " " + data.name + ",";
-            })}
+            <div className="flex">
+              <p className=" pr-2"> Cc: </p>
+              <p>
+                {cc
+                  ? cc?.map((data, index) => {
+                      return cc.length - 1 === index
+                        ? " " + data.position + " " + data.name + ""
+                        : data.position + " " + data.name + ",";
+                    })
+                  : loader()}
+              </p>
+            </div>
           </h5>
-          <p className="mt-5 text-lg">{message} </p>
+          <p className="mt-5 text-lg">{message ? message : loader()} </p>
           <div className="mt-20 flex flex-col h-full justify-end w-4/12">
             <button
               onClick={() => handlePdf(attachment)}
@@ -399,12 +477,12 @@ export const CardApprove: FC<ApproveDetailType> = (props) => {
             >
               <BsFileEarmarkPdfFill />
             </button>
-            {/* <p className="capitalize font-semibold text-2xl text-black">
-              {attacment}
-            </p> */}
+            <p className="capitalize font-semibold text-md text-black">
+              {attachment?.split("/")[attachment?.split("/").length - 1]}
+            </p>
             <h4 className="text-@Gray font-semibold">
               {status_by?.map((data) => {
-                return data.status + " " + data.by + ",";
+                return data.status + " " + data.by;
               })}
             </h4>
           </div>

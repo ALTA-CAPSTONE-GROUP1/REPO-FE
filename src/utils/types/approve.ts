@@ -1,6 +1,9 @@
 interface approveTypes {
   submission_id: number;
-  from: string;
+  from: {
+    name: string;
+    position: string;
+  };
   title: string;
   submission_type: string;
   status: string;

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import withReactContent from "sweetalert2-react-content";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -35,7 +35,10 @@ const ApproveDetail: FC = () => {
 
   const MySwal = withReactContent(Swal);
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams();
+
+  const status = new URLSearchParams(location.search).get("status");
 
   const {
     register,
@@ -84,33 +87,52 @@ const ApproveDetail: FC = () => {
 
   const onSubmit: SubmitHandler<Schema> = (data) => {
     const newData = { ...data, action: action };
-    axios
-      .put(`approver/${id}`, newData, {
-        headers: {
-          Authorization: `Bearer ${cookie.token}`,
-        },
-      })
-      .then((res) => {
-        const { message } = res.data;
-        MySwal.fire({
-          title: "Success",
-          text: message + " with " + action + " this submission",
-          showCancelButton: false,
-        });
-      })
-      .catch((err) => {
-        const { message } = err.response;
-        MySwal.fire({
-          title: "Failed",
-          text: message,
-          showCancelButton: false,
-        });
-      });
+    Swal.fire({
+      title: "Are you sure?",
+      text: `You will ${action} this submission`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: `Yes, ${action} it!`,
+      cancelButtonText: "Cancel",
+      showLoaderOnConfirm: true,
+      allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+      Swal.showLoading();
+      if (result.isConfirmed) {
+        axios
+          .put(`approver/${id}`, newData, {
+            headers: {
+              Authorization: `Bearer ${cookie.token}`,
+            },
+          })
+          .then((res) => {
+            const { message } = res.data;
+            Swal.fire({
+              icon: "success",
+              title: "Success",
+              text: message + " with " + action + " this submission",
+              showCancelButton: false,
+            }).finally(() => Swal.hideLoading());
+          })
+          .catch((err) => {
+            const { message } = err.response;
+            Swal.fire({
+              icon: "error",
+              title: "Failed",
+              text: message,
+              showCancelButton: false,
+            }).finally(() => Swal.hideLoading());
+          });
+      } else {
+        Swal.hideLoading();
+      }
+    });
   };
 
   function handleLogout() {
     removeCookie("token");
     removeCookie("user_position");
+
     navigate("/");
   }
 
@@ -140,60 +162,64 @@ const ApproveDetail: FC = () => {
                 attachment={data?.attachment}
               />
             )}
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="flex justify-end mb-5 pr-4 ">
-                <div
-                  className={`${
-                    errors.approval_message?.message
-                      ? "tooltip tooltip-open tooltip-bottom w-1/2"
-                      : ""
-                  } w-1/2`}
-                  data-tip={errors.approval_message?.message}
-                >
-                  <textarea
-                    {...register("approval_message")}
-                    name="approval_message"
-                    className="textarea rounded-lg resize-none shadow-md w-full  pb-20"
-                    placeholder="Input Note"
-                    id="note-acction"
-                  ></textarea>
+            {status === "" ? (
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="flex justify-end mb-5 pr-4 ">
+                  <div
+                    className={`${
+                      errors.approval_message?.message
+                        ? "tooltip tooltip-open tooltip-bottom w-1/2"
+                        : ""
+                    } w-1/2`}
+                    data-tip={errors.approval_message?.message}
+                  >
+                    <textarea
+                      {...register("approval_message")}
+                      name="approval_message"
+                      className="textarea rounded-lg resize-none shadow-md w-full  pb-20"
+                      placeholder="Input Note"
+                      id="note-acction"
+                    ></textarea>
+                  </div>
+                  <input
+                    type="text"
+                    {...register("action")}
+                    value={action}
+                    hidden
+                  />
                 </div>
-                <input
-                  type="text"
-                  {...register("action")}
-                  value={action}
-                  hidden
-                />
-              </div>
-              <div className="flex justify-end mb-5 pr-4">
-                <div className="flex flex-col md:flex-row gap-2">
-                  <div className="w-40">
-                    <Red2Button
-                      label="Revise"
-                      id="button-approve-revise"
-                      type="submit"
-                      onClick={() => setAction("revise")}
-                    />
-                  </div>
-                  <div className="w-40">
-                    <RedButton
-                      label="Reject"
-                      id="button-approve-eject"
-                      type="submit"
-                      onClick={() => setAction("reject")}
-                    />
-                  </div>
-                  <div className="w-40">
-                    <BlueButton
-                      label="Approve"
-                      id="button-approve-approve"
-                      type="submit"
-                      onClick={() => setAction("approve")}
-                    />
+                <div className="flex justify-end mb-5 pr-4">
+                  <div className="flex flex-col md:flex-row gap-2">
+                    <div className="w-40">
+                      <Red2Button
+                        label="Revise"
+                        id="button-approve-revise"
+                        type="submit"
+                        onClick={() => setAction("revise")}
+                      />
+                    </div>
+                    <div className="w-40">
+                      <RedButton
+                        label="Reject"
+                        id="button-approve-eject"
+                        type="submit"
+                        onClick={() => setAction("reject")}
+                      />
+                    </div>
+                    <div className="w-40">
+                      <BlueButton
+                        label="Approve"
+                        id="button-approve-approve"
+                        type="submit"
+                        onClick={() => setAction("approve")}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-            </form>
+              </form>
+            ) : (
+              ""
+            )}
           </div>
         </div>
       </SideBar>
