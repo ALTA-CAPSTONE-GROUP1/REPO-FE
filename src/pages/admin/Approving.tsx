@@ -38,6 +38,7 @@ export const Approving: FC = () => {
   ]);
   const [ID, setID] = useState<number>();
   const [data, setData] = useState<HyperApproval>();
+  const [userID, setUserID] = useState<string>("");
 
   const navigate = useNavigate();
   const approverData = cookies.approverData;
@@ -53,6 +54,7 @@ export const Approving: FC = () => {
   const onSubmit: SubmitHandler<Schema> = (data) => {
     const id = parseInt(data.submission_id);
     setID(id);
+    setUserID(data.user_id);
     const newData = { ...data, submission_id: id };
 
     setLoading(true);
@@ -65,7 +67,6 @@ export const Approving: FC = () => {
       .then((res) => {
         const { data } = res.data;
         setData(data);
-        console.log(data);
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -84,7 +85,7 @@ export const Approving: FC = () => {
     event.preventDefault();
     setLoading(true);
 
-    const newData = { submission_id: ID, new_status: action };
+    const newData = { submission_id: ID, new_status: action, user_id: userID };
     axios
       .put(`hyper-approval`, newData, {
         headers: {
@@ -92,19 +93,17 @@ export const Approving: FC = () => {
         },
       })
       .then((res) => {
-        const { message, data } = res.data;
-        if (data) {
-          Swal.fire({
-            icon: "success",
-            title: "Success",
-            text: message + " with " + action + " this submission",
-            showCancelButton: false,
-          }).then((result) => {
-            if (result.isConfirmed) {
-              navigate("/approving");
-            }
-          });
-        }
+        const { message } = res.data;
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: message + " with " + action + " this submission",
+          showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/approving");
+          }
+        });
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -132,7 +131,7 @@ export const Approving: FC = () => {
               Approve Submission
             </h3>
             <h3 className="text-sm">
-              To approve submission, an admin must have a token.{" "}
+              To approve submission, an admin must have a token.
             </h3>
             <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
               <div className="mt-5 w-full">

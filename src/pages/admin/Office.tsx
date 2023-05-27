@@ -18,7 +18,7 @@ import { Input } from "@/components/Input";
 import { BsSearch } from "react-icons/bs";
 
 const schema = z.object({
-  name: z.string(),
+  name: z.string().min(1, { message: "Office Name is Failed" }),
 });
 
 type Schema = z.infer<typeof schema>;
