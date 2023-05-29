@@ -1,12 +1,12 @@
 
-# Welcome to E-Proposal, make your proposal journey easier
+# Welcome to E-Proposal, Simplify your application process, anytime, anywhere! 
 <div align="center">
   <img src="https://res.cloudinary.com/dc0wgpho2/image/upload/v1684720861/eproplogo_koyqxz.jpg" alt="Logo">
 </div>
 
 ## 📑 About the Project
 
-Simplify your application process, anytime, anywhere!
+Introducing ePropApp - Simplify your administrative process, anytime, anywhere! Our application aims to streamline internal company administration by facilitating seamless submission of requests, especially for companies with multiple branches and employees. With ePropApp, you can easily manage and submit requests across branches and departments, making the entire process efficient and hassle-free.
 ## 🌐 Deployment
 - [Vercel](https://e-proposal-pb3i.vercel.app/)
 
@@ -63,7 +63,10 @@ npm run dev
 - [React Hook Form](https://react-hook-form.com/)
 - [React PDF Viewer](https://react-pdf-viewer.dev/)
 - [React Table](https://react-table-v7.tanstack.com/)
-- [axios](https://axios-http.com/docs/intro)
+- [Axios](https://axios-http.com/docs/intro)
+- [React Cookie](https://www.npmjs.com/package/react-cookie)
+- [React DOM](https://www.npmjs.com/package/react-dom)
+- [Zod](https://zod.dev/)
 
 ## 🤖 Author
 
